@@ -6,7 +6,7 @@ INJECTED from C:\Users\Jin\AndroidStudioProjects\SpareTimeForU\app\src\main\Andr
 INJECTED from C:\Users\Jin\AndroidStudioProjects\SpareTimeForU\app\src\main\AndroidManifest.xml:2:1-21:12
 MERGED from [com.android.support:design:26.0.0-beta1] C:\Users\Jin\.gradle\caches\transforms-1\files-1.1\design-26.0.0-beta1.aar\d47a2389f86675d659e2c9cf68168381\AndroidManifest.xml:17:1-31:12
 MERGED from [com.android.support:appcompat-v7:26.0.0-beta1] C:\Users\Jin\.gradle\caches\transforms-1\files-1.1\appcompat-v7-26.0.0-beta1.aar\cca0f84aec5bb875129c51c8c684a278\AndroidManifest.xml:17:1-31:12
-MERGED from [com.android.support.constraint:constraint-layout:1.0.2] C:\Users\Jin\.gradle\caches\transforms-1\files-1.1\constraint-layout-1.0.2.aar\5760ae21ed9ed48f92c1cdf7e561dd9e\AndroidManifest.xml:2:1-11:12
+MERGED from [com.android.support.constraint:constraint-layout:1.0.2] C:\Users\Jin\.gradle\caches\transforms-1\files-1.1\constraint-layout-1.0.2.aar\bc15cf5e6e4b5b6aa3fc3a0ccff9bca6\AndroidManifest.xml:2:1-11:12
 MERGED from [com.android.support:recyclerview-v7:26.0.0-beta1] C:\Users\Jin\.gradle\caches\transforms-1\files-1.1\recyclerview-v7-26.0.0-beta1.aar\69ceb4f9ed96e47f5803718d1b9a126a\AndroidManifest.xml:17:1-28:12
 MERGED from [com.android.support:animated-vector-drawable:26.0.0-beta1] C:\Users\Jin\.gradle\caches\transforms-1\files-1.1\animated-vector-drawable-26.0.0-beta1.aar\3eef2e80ba39873d063eed210d805ea8\AndroidManifest.xml:17:1-28:12
 MERGED from [com.android.support:support-vector-drawable:26.0.0-beta1] C:\Users\Jin\.gradle\caches\transforms-1\files-1.1\support-vector-drawable-26.0.0-beta1.aar\00d46f8e35fa7dc5d5882d76ede396c2\AndroidManifest.xml:17:1-28:12
@@ -40,8 +40,8 @@ MERGED from [com.android.support:design:26.0.0-beta1] C:\Users\Jin\.gradle\cache
 MERGED from [com.android.support:design:26.0.0-beta1] C:\Users\Jin\.gradle\caches\transforms-1\files-1.1\design-26.0.0-beta1.aar\d47a2389f86675d659e2c9cf68168381\AndroidManifest.xml:25:5-29:19
 MERGED from [com.android.support:appcompat-v7:26.0.0-beta1] C:\Users\Jin\.gradle\caches\transforms-1\files-1.1\appcompat-v7-26.0.0-beta1.aar\cca0f84aec5bb875129c51c8c684a278\AndroidManifest.xml:25:5-29:19
 MERGED from [com.android.support:appcompat-v7:26.0.0-beta1] C:\Users\Jin\.gradle\caches\transforms-1\files-1.1\appcompat-v7-26.0.0-beta1.aar\cca0f84aec5bb875129c51c8c684a278\AndroidManifest.xml:25:5-29:19
-MERGED from [com.android.support.constraint:constraint-layout:1.0.2] C:\Users\Jin\.gradle\caches\transforms-1\files-1.1\constraint-layout-1.0.2.aar\5760ae21ed9ed48f92c1cdf7e561dd9e\AndroidManifest.xml:9:5-20
-MERGED from [com.android.support.constraint:constraint-layout:1.0.2] C:\Users\Jin\.gradle\caches\transforms-1\files-1.1\constraint-layout-1.0.2.aar\5760ae21ed9ed48f92c1cdf7e561dd9e\AndroidManifest.xml:9:5-20
+MERGED from [com.android.support.constraint:constraint-layout:1.0.2] C:\Users\Jin\.gradle\caches\transforms-1\files-1.1\constraint-layout-1.0.2.aar\bc15cf5e6e4b5b6aa3fc3a0ccff9bca6\AndroidManifest.xml:9:5-20
+MERGED from [com.android.support.constraint:constraint-layout:1.0.2] C:\Users\Jin\.gradle\caches\transforms-1\files-1.1\constraint-layout-1.0.2.aar\bc15cf5e6e4b5b6aa3fc3a0ccff9bca6\AndroidManifest.xml:9:5-20
 MERGED from [com.android.support:recyclerview-v7:26.0.0-beta1] C:\Users\Jin\.gradle\caches\transforms-1\files-1.1\recyclerview-v7-26.0.0-beta1.aar\69ceb4f9ed96e47f5803718d1b9a126a\AndroidManifest.xml:22:5-26:19
 MERGED from [com.android.support:recyclerview-v7:26.0.0-beta1] C:\Users\Jin\.gradle\caches\transforms-1\files-1.1\recyclerview-v7-26.0.0-beta1.aar\69ceb4f9ed96e47f5803718d1b9a126a\AndroidManifest.xml:22:5-26:19
 MERGED from [com.android.support:animated-vector-drawable:26.0.0-beta1] C:\Users\Jin\.gradle\caches\transforms-1\files-1.1\animated-vector-drawable-26.0.0-beta1.aar\3eef2e80ba39873d063eed210d805ea8\AndroidManifest.xml:22:5-26:19
@@ -96,8 +96,8 @@ MERGED from [com.android.support:design:26.0.0-beta1] C:\Users\Jin\.gradle\cache
 MERGED from [com.android.support:design:26.0.0-beta1] C:\Users\Jin\.gradle\caches\transforms-1\files-1.1\design-26.0.0-beta1.aar\d47a2389f86675d659e2c9cf68168381\AndroidManifest.xml:21:5-23:62
 MERGED from [com.android.support:appcompat-v7:26.0.0-beta1] C:\Users\Jin\.gradle\caches\transforms-1\files-1.1\appcompat-v7-26.0.0-beta1.aar\cca0f84aec5bb875129c51c8c684a278\AndroidManifest.xml:21:5-23:78
 MERGED from [com.android.support:appcompat-v7:26.0.0-beta1] C:\Users\Jin\.gradle\caches\transforms-1\files-1.1\appcompat-v7-26.0.0-beta1.aar\cca0f84aec5bb875129c51c8c684a278\AndroidManifest.xml:21:5-23:78
-MERGED from [com.android.support.constraint:constraint-layout:1.0.2] C:\Users\Jin\.gradle\caches\transforms-1\files-1.1\constraint-layout-1.0.2.aar\5760ae21ed9ed48f92c1cdf7e561dd9e\AndroidManifest.xml:5:5-7:41
-MERGED from [com.android.support.constraint:constraint-layout:1.0.2] C:\Users\Jin\.gradle\caches\transforms-1\files-1.1\constraint-layout-1.0.2.aar\5760ae21ed9ed48f92c1cdf7e561dd9e\AndroidManifest.xml:5:5-7:41
+MERGED from [com.android.support.constraint:constraint-layout:1.0.2] C:\Users\Jin\.gradle\caches\transforms-1\files-1.1\constraint-layout-1.0.2.aar\bc15cf5e6e4b5b6aa3fc3a0ccff9bca6\AndroidManifest.xml:5:5-7:41
+MERGED from [com.android.support.constraint:constraint-layout:1.0.2] C:\Users\Jin\.gradle\caches\transforms-1\files-1.1\constraint-layout-1.0.2.aar\bc15cf5e6e4b5b6aa3fc3a0ccff9bca6\AndroidManifest.xml:5:5-7:41
 MERGED from [com.android.support:recyclerview-v7:26.0.0-beta1] C:\Users\Jin\.gradle\caches\transforms-1\files-1.1\recyclerview-v7-26.0.0-beta1.aar\69ceb4f9ed96e47f5803718d1b9a126a\AndroidManifest.xml:20:5-44
 MERGED from [com.android.support:recyclerview-v7:26.0.0-beta1] C:\Users\Jin\.gradle\caches\transforms-1\files-1.1\recyclerview-v7-26.0.0-beta1.aar\69ceb4f9ed96e47f5803718d1b9a126a\AndroidManifest.xml:20:5-44
 MERGED from [com.android.support:animated-vector-drawable:26.0.0-beta1] C:\Users\Jin\.gradle\caches\transforms-1\files-1.1\animated-vector-drawable-26.0.0-beta1.aar\3eef2e80ba39873d063eed210d805ea8\AndroidManifest.xml:20:5-44

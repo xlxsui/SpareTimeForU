@@ -4,7 +4,24 @@
             "outputFile": "C:\\Users\\Jin\\AndroidStudioProjects\\SpareTimeForU\\app\\build\\intermediates\\incremental\\mergeDebugResources\\merged.dir\\values\\values.xml",
             "map": [
                 {
-                    "source": "C:\\Users\\Jin\\.gradle\\caches\\transforms-1\\files-1.1\\constraint-layout-1.0.2.aar\\5760ae21ed9ed48f92c1cdf7e561dd9e\\res\\values\\values.xml",
+                    "source": "C:\\Users\\Jin\\.gradle\\caches\\transforms-1\\files-1.1\\recyclerview-v7-26.0.0-beta1.aar\\69ceb4f9ed96e47f5803718d1b9a126a\\res\\values\\values.xml",
+                    "from": {
+                        "startLines": "3,4,5,6,7,8,9",
+                        "startColumns": "4,4,4,4,4,4,4",
+                        "startOffsets": "685,744,792,848,923,999,1071",
+                        "endColumns": "58,47,55,74,75,71,65",
+                        "endOffsets": "739,787,843,918,994,1066,1132"
+                    },
+                    "to": {
+                        "startLines": "650,651,652,660,661,662,694",
+                        "startColumns": "4,4,4,4,4,4,4",
+                        "startOffsets": "56652,56711,56759,57426,57501,57577,59507",
+                        "endColumns": "58,47,55,74,75,71,65",
+                        "endOffsets": "56706,56754,56810,57496,57572,57644,59568"
+                    }
+                },
+                {
+                    "source": "C:\\Users\\Jin\\.gradle\\caches\\transforms-1\\files-1.1\\constraint-layout-1.0.2.aar\\bc15cf5e6e4b5b6aa3fc3a0ccff9bca6\\res\\values\\values.xml",
                     "from": {
                         "startLines": "2,3,4,7,8,11,14,15,18,21,22,23,24,28,29,30,31,36,37,38,41,44,45,48,51,54,57,58,61,64,65,70,71,75,76,77,78,79,80,81,82,83,84,85",
                         "startColumns": "4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4",
@@ -20,23 +37,6 @@
                         "endLines": "2,6,9,10,13,16,17,20,23,24,25,26,30,31,32,33,38,39,40,43,46,47,50,53,56,59,60,63,66,67,72,73,77,78,79,80,81,82,83,84,85,86,87,93",
                         "endColumns": "51,69,11,67,11,11,66,11,11,66,64,64,11,65,65,66,11,68,65,11,11,66,11,11,11,11,64,11,11,64,11,66,11,64,64,61,61,61,58,59,60,60,58,11",
                         "endOffsets": "147,366,499,567,696,822,889,1012,1137,1204,1269,1334,1474,1540,1606,1673,1883,1952,2018,2143,2269,2336,2462,2589,2714,2841,2906,3032,3155,3220,3428,3495,3634,3699,3764,3826,3888,3950,4009,4069,4130,4191,4250,4459"
-                    }
-                },
-                {
-                    "source": "C:\\Users\\Jin\\.gradle\\caches\\transforms-1\\files-1.1\\recyclerview-v7-26.0.0-beta1.aar\\69ceb4f9ed96e47f5803718d1b9a126a\\res\\values\\values.xml",
-                    "from": {
-                        "startLines": "3,4,5,6,7,8,9",
-                        "startColumns": "4,4,4,4,4,4,4",
-                        "startOffsets": "685,744,792,848,923,999,1071",
-                        "endColumns": "58,47,55,74,75,71,65",
-                        "endOffsets": "739,787,843,918,994,1066,1132"
-                    },
-                    "to": {
-                        "startLines": "650,651,652,660,661,662,694",
-                        "startColumns": "4,4,4,4,4,4,4",
-                        "startOffsets": "56652,56711,56759,57426,57501,57577,59507",
-                        "endColumns": "58,47,55,74,75,71,65",
-                        "endOffsets": "56706,56754,56810,57496,57572,57644,59568"
                     }
                 },
                 {
@@ -97,9 +97,9 @@
                     "from": {
                         "startLines": "2",
                         "startColumns": "4",
-                        "startOffsets": "55",
+                        "startOffsets": "57",
                         "endColumns": "56",
-                        "endOffsets": "107"
+                        "endOffsets": "109"
                     },
                     "to": {
                         "startLines": "142",
