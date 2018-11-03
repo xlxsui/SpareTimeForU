@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/navigation_errand"
+        android:icon="@drawable/navigation_errand"
+        android:title="@string/navigation_errand" />
+
+    <item
+        android:id="@+id/navigation_second_hand"
+        android:icon="@drawable/navigation_second_hand"
+        android:title="@string/navigation_second_hand" />
+
+    <item
+        android:id="@+id/navigation"
+        android:icon="@drawable/navigation_study"
+        android:title="@string/navigation_study" />
+
+    <item
+        android:id="@+id/navigation_study"
+        android:icon="@drawable/navigation_search"
+        android:title="@string/navigation_serch" />
+
+</menu>
