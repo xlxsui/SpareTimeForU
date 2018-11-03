@@ -20,6 +20,9 @@ public class ErrandFragment extends Fragment {
 
     private RecyclerView mRecyclerView;
 
+
+
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
