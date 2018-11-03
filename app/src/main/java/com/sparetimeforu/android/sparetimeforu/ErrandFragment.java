@@ -12,6 +12,7 @@ import android.view.ViewGroup;
  * Created by Jin on 2018/11/3.
  */
 
+
 /**
  * 跑腿的Fragment
  */
@@ -19,8 +20,6 @@ public class ErrandFragment extends Fragment {
     //have what, do what
 
     private RecyclerView mRecyclerView;
-
-
 
 
     @Nullable
