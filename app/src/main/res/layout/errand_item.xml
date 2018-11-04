@@ -53,9 +53,10 @@
                     android:id="@+id/errand_grade"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
+                    android:layout_margin="1dp"
                     android:gravity="center"
-                    android:text="6"
-                    android:textSize="18sp"
+                    android:text="lv6"
+                    android:textSize="14sp"
                     android:textStyle="bold" />
 
             </LinearLayout>

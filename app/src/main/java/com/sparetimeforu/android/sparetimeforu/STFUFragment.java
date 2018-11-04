@@ -2,7 +2,10 @@ package com.sparetimeforu.android.sparetimeforu;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.design.widget.BottomNavigationView;
+import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
@@ -10,6 +13,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
@@ -22,24 +26,17 @@ import android.widget.Toast;
  */
 
 public class STFUFragment extends Fragment {
-
-    private TextView mTitle;
-    private ImageView mSlideIcon;
-    private Fragment mMenuFragment;
-    private Fragment mErrandFragment;
+    private Toolbar mToolbar;
     private FrameLayout mMainFragmentLayout;
+    private Fragment mErrandFragment;
+    private BottomNavigationView mBottomNavigationView;
+    private NavigationView mNavigationView;
 
-    private boolean isFragmentLoaded;
+
 
     public static STFUFragment newInstance() {
         return new STFUFragment();
     }
-
-    @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-    }
-
 
     @Nullable
     @Override
@@ -49,47 +46,72 @@ public class STFUFragment extends Fragment {
 
 
         final View view = inflater.inflate(R.layout.fragment_stfu, container, false);
-        Toolbar toolbar = (Toolbar) view.findViewById(R.id.toolbar);
-        ((AppCompatActivity) getActivity()).setSupportActionBar(toolbar);
-        mMainFragmentLayout = (FrameLayout) view.findViewById(R.id.main_fragment);
-        initAddLayout(R.layout.fragment_errand);
 
 
-        mTitle = (TextView) view.findViewById(R.id.title_top);
-        mTitle.setText("汕大顺手邦");
-
-        /**
-         * mSlideIcon
-         */
-        mSlideIcon = (ImageView) view.findViewById(R.id.menu_slide_icon);
-        mSlideIcon.setOnClickListener(new View.OnClickListener() {
+        mToolbar = (Toolbar) view.findViewById(R.id.toolbar);
+        ((AppCompatActivity) getActivity()).setSupportActionBar(mToolbar);
+        TextView title = (TextView) view.findViewById(R.id.title_top);
+        title.setText("汕大顺手邦");
+        ImageView slideIcon = (ImageView) view.findViewById(R.id.menu_slide_icon);
+        slideIcon.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (!isFragmentLoaded) {
-                    loadMenuFragment();
-                    mTitle.setText("个人信息");
-                } else {
-                    if (mMenuFragment != null) {
-                        if (mMenuFragment.isAdded()) {
-                            hideMenuFragment();
-                        }
-                    }
-                }
+
             }
         });
-
-        /**
-         * mSearchIcon
-         */
         ImageView searchIcon = (ImageView) view.findViewById(R.id.menu_search_icon);
         searchIcon.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(getActivity(), "Spare time for you",
+                Toast.makeText(getActivity(), "Spare time for you!",
                         Toast.LENGTH_SHORT)
                         .show();
             }
         });
+
+
+        mMainFragmentLayout = (FrameLayout) view.findViewById(R.id.main_fragment);
+        initAddLayout(R.layout.fragment_errand);
+
+
+        /**
+         * setup bottom navigation
+         */
+        mBottomNavigationView =
+                (BottomNavigationView) view.findViewById(R.id.bottom_navigation);
+        mBottomNavigationView.setOnNavigationItemSelectedListener(
+                new BottomNavigationView.OnNavigationItemSelectedListener() {
+                    @Override
+                    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+
+                        switch (item.getItemId()) {
+                            case R.id.navigation_errand:
+                                Toast.makeText(getActivity(), item.getTitle(), Toast.LENGTH_SHORT)
+                                        .show();
+                                return true;
+                            case R.id.navigation_second_hand:
+                                Toast.makeText(getActivity(), item.getTitle(), Toast.LENGTH_SHORT)
+                                        .show();
+                                return true;
+                            case R.id.navigation_study:
+                                Toast.makeText(getActivity(), item.getTitle(), Toast.LENGTH_SHORT)
+                                        .show();
+                                return true;
+                            case R.id.navigation_search:
+                                Toast.makeText(getActivity(), item.getTitle(), Toast.LENGTH_SHORT)
+                                        .show();
+                                return true;
+                        }
+                        return false;
+
+                    }
+                });
+
+        /**
+         * setup slider_menu navigation
+         */
+
+
 
 
         return view;
@@ -99,7 +121,6 @@ public class STFUFragment extends Fragment {
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-
         loadErrandFragment();
     }
 
@@ -115,38 +136,6 @@ public class STFUFragment extends Fragment {
         mMainFragmentLayout.addView(view);
     }
 
-
-    /**
-     * load the slider
-     */
-    public void loadMenuFragment() {
-        FragmentManager fm = getActivity().getSupportFragmentManager();
-        mMenuFragment = fm.findFragmentById(R.id.slider_container);//find the container
-        mSlideIcon.setImageResource(R.drawable.ic_up_arrow);
-        if (mMenuFragment == null) {
-            mMenuFragment = new MenuFragment();//make the fragment
-            FragmentTransaction fragmentTransaction = fm.beginTransaction();
-            fragmentTransaction.setCustomAnimations(R.anim.slide_down, R.anim.slide_up);
-            fragmentTransaction.add(R.id.slider_container, mMenuFragment);
-            fragmentTransaction.commit();
-        }
-        isFragmentLoaded = true;
-    }
-
-    /**
-     * hide the slider
-     */
-    public void hideMenuFragment() {
-        FragmentTransaction fragmentTransaction = getActivity()
-                .getSupportFragmentManager().beginTransaction();
-        fragmentTransaction.setCustomAnimations(R.anim.slide_down, R.anim.slide_up);
-        fragmentTransaction.remove(mMenuFragment);
-        fragmentTransaction.commit();
-        mSlideIcon.setImageResource(R.drawable.ic_menu_slide);
-        isFragmentLoaded = false;
-        mTitle.setText("汕大顺手邦");
-
-    }
 
     public void loadErrandFragment() {
         FragmentManager fm = getActivity().getSupportFragmentManager();
