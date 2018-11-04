@@ -242,9 +242,9 @@
                         android:layout_width="match_parent"
                         android:layout_height="0dp"
                         android:layout_weight="1.2"
-                        android:textSize="8sp"
                         android:gravity="center"
-                        android:text="999" />
+                        android:text="999"
+                        android:textSize="8sp" />
 
                 </LinearLayout>
 
