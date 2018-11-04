@@ -8,6 +8,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -25,6 +26,7 @@ public class STFUFragment extends Fragment {
     private TextView mTitle;
     private ImageView mSlideIcon;
     private Fragment mMenuFragment;
+    private Fragment mErrandFragment;
     private FrameLayout mMainFragmentLayout;
 
     private boolean isFragmentLoaded;
@@ -50,7 +52,6 @@ public class STFUFragment extends Fragment {
         Toolbar toolbar = (Toolbar) view.findViewById(R.id.toolbar);
         ((AppCompatActivity) getActivity()).setSupportActionBar(toolbar);
         mMainFragmentLayout = (FrameLayout) view.findViewById(R.id.main_fragment);
-
         initAddLayout(R.layout.fragment_errand);
 
 
@@ -94,6 +95,13 @@ public class STFUFragment extends Fragment {
         return view;
     }
 
+
+    @Override
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+
+        loadErrandFragment();
+    }
 
     /**
      * add layout to main_fragment
@@ -142,10 +150,12 @@ public class STFUFragment extends Fragment {
 
     public void loadErrandFragment() {
         FragmentManager fm = getActivity().getSupportFragmentManager();
-        Fragment errandFragment = fm.findFragmentById(R.id.errand_container);
-        if (errandFragment == null) {
-            errandFragment = new ErrandFragment();
-        }
+        mErrandFragment = fm.findFragmentById(R.id.errand_container);
+        mErrandFragment = new ErrandFragment();
+        fm.beginTransaction()
+                .add(R.id.errand_container, mErrandFragment)
+                .commit();
+        Log.d("Errand", "-----It is time to load the Errand Fragment");
 
     }
 
