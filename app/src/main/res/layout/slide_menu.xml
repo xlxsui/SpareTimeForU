@@ -86,7 +86,7 @@
                     android:layout_gravity="center"
                     android:layout_weight="1"
                     android:gravity="center"
-                    android:text="Inbox"
+                    android:text="任务"
                     android:textColor="#fff"
                     android:textSize="12sp" />
 
@@ -115,7 +115,7 @@
                     android:layout_gravity="center"
                     android:layout_weight="1"
                     android:gravity="center"
-                    android:text="Settings"
+                    android:text="私信"
                     android:textColor="#fff"
                     android:textSize="12sp" />
 
@@ -155,7 +155,7 @@
                     android:layout_gravity="center"
                     android:layout_weight="1"
                     android:gravity="center"
-                    android:text="WishList"
+                    android:text="小姐姐"
                     android:textColor="#fff"
                     android:textSize="12sp" />
 
@@ -184,7 +184,7 @@
                     android:layout_gravity="center"
                     android:layout_weight="1"
                     android:gravity="center"
-                    android:text="Location"
+                    android:text="设置"
                     android:textColor="#fff"
                     android:textSize="12sp" />
 

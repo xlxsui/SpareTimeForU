@@ -52,9 +52,7 @@ public class ErrandFragment extends Fragment {
             Errand errand = new Errand();
             errands.add(errand);
         }
-
         mAdapter = new ErrandAdapter(errands);
-
         Log.d("Errand", "-----attaching errand adapter.");
         mRecyclerView.setAdapter(mAdapter);
         Log.d("Errand", "-----setup adapter finished.");
@@ -63,7 +61,7 @@ public class ErrandFragment extends Fragment {
 
 
     /**
-     *the errand_item's ViewHolder
+     * the errand_item's ViewHolder
      */
     private class ErrandHolder extends RecyclerView.ViewHolder {
 
@@ -74,19 +72,19 @@ public class ErrandFragment extends Fragment {
         public ErrandHolder(LayoutInflater inflater, ViewGroup parent) {
             super(inflater.inflate(R.layout.errand_item, parent, false));
             Log.d("Errand", "-----Creating ViewHolder now");
-            mErrandCaption = (TextView) itemView.findViewById(R.id.errand_caption);
+//            mErrandCaption = (TextView) itemView.findViewById(R.id.errand_caption);
         }
 
         public void bind(Errand errand) {
             mErrand = errand;
-            mErrandCaption.setText(mErrand.getUUID().toString());
+//            mErrandCaption.setText(mErrand.getUUID().toString());
 
         }
 
     }
 
     /**
-     *errand_recycler_view adapter
+     * errand_recycler_view adapter
      */
     private class ErrandAdapter extends RecyclerView.Adapter<ErrandHolder> {
 

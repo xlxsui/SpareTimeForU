@@ -1,5 +1,7 @@
 package com.sparetimeforu.android.sparetimeforu.recycler.view.item;
 
+import com.sparetimeforu.android.sparetimeforu.user.User;
+
 import java.util.Date;
 import java.util.UUID;
 
@@ -9,16 +11,43 @@ import java.util.UUID;
 
 public class Errand {
     private UUID mUUID;
-    private String mName;
+    private User mUser;
     private double mReward;
     private String mOrigin;
     private String mDestination;
-    private Date mDeadline;
+    private String mCaption;
+    private String[] mPictureURLs;
 
     public Errand() {
         mUUID = UUID.randomUUID();
     }
 
+    public String getCaption() {
+        return mCaption;
+    }
+
+    public void setCaption(String caption) {
+        mCaption = caption;
+    }
+
+    public String[] getPictureURLs() {
+        return mPictureURLs;
+    }
+
+    public void setPictureURLs(String[] pictureURLs) {
+        mPictureURLs = pictureURLs;
+    }
+
+    private Date mDeadline;
+
+
+    public User getUser() {
+        return mUser;
+    }
+
+    public void setUser(User user) {
+        mUser = user;
+    }
 
     public UUID getUUID() {
         return mUUID;
@@ -28,13 +57,6 @@ public class Errand {
         mUUID = UUID;
     }
 
-    public String getName() {
-        return mName;
-    }
-
-    public void setName(String name) {
-        mName = name;
-    }
 
     public double getReward() {
         return mReward;
