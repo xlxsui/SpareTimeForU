@@ -16,7 +16,6 @@ public class Errand {
     private Date mDeadline;
 
     public Errand() {
-        //nothing to do now
         mUUID = UUID.randomUUID();
     }
 

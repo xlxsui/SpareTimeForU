@@ -12,7 +12,7 @@
         android:layout_weight="2"
         android:background="#fff"
         android:orientation="vertical"
-        android:weightSum="10">
+        android:weightSum="12">
 
         <RelativeLayout
             android:layout_width="match_parent"
@@ -29,7 +29,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="0dp"
                     android:layout_weight="1"
-                    android:background="#2a737b" />
+                    android:background="@color/colorPrimary" />
 
                 <TextView
                     android:layout_width="match_parent"
@@ -38,7 +38,8 @@
                     android:layout_weight="1"
                     android:gravity="bottom|center"
                     android:text="SpareTimeForU"
-                    android:textColor="#2a737b"
+                    android:textColor="#fff"
+                    android:background="@color/colorPrimary"
                     android:textStyle="bold" />
 
 
@@ -58,7 +59,7 @@
             android:layout_marginLeft="20dp"
             android:layout_marginRight="20dp"
             android:layout_marginTop="40dp"
-            android:layout_weight="1.5"
+            android:layout_weight="4"
             android:orientation="horizontal"
             android:weightSum="2">
 
@@ -127,7 +128,7 @@
             android:layout_marginLeft="20dp"
             android:layout_marginRight="20dp"
             android:layout_marginTop="40dp"
-            android:layout_weight="1.5"
+            android:layout_weight="4"
             android:orientation="horizontal"
             android:weightSum="2">
 
@@ -190,79 +191,12 @@
             </LinearLayout>
         </LinearLayout>
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_marginLeft="20dp"
-            android:layout_marginRight="20dp"
-            android:layout_marginTop="40dp"
-            android:layout_weight="1.5"
-            android:orientation="horizontal"
-            android:weightSum="2">
 
-            <LinearLayout
-                android:layout_width="0dp"
-                android:layout_margin="4dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:background="#728a74"
-                android:orientation="vertical"
-                android:weightSum="3">
-
-                <ImageView
-                    android:layout_width="25dp"
-                    android:layout_height="0dp"
-                    android:layout_gravity="center"
-                    android:layout_marginTop="8dp"
-                    android:layout_weight="1.5"
-                    android:src="@mipmap/ic_launcher" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="0dp"
-                    android:layout_gravity="center"
-                    android:layout_weight="1"
-                    android:gravity="center"
-                    android:text="Search"
-                    android:textColor="#fff"
-                    android:textSize="12sp" />
-
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="0dp"
-                android:layout_margin="4dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:background="#728a74"
-                android:orientation="vertical"
-                android:weightSum="3">
-
-                <ImageView
-                    android:layout_width="25dp"
-                    android:layout_height="0dp"
-                    android:layout_gravity="center"
-                    android:layout_marginTop="8dp"
-                    android:layout_weight="1.5"
-                    android:src="@mipmap/ic_launcher" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="0dp"
-                    android:layout_gravity="center"
-                    android:layout_weight="1"
-                    android:gravity="center"
-                    android:text="Share"
-                    android:textColor="#fff"
-                    android:textSize="12sp" />
-
-            </LinearLayout>
-        </LinearLayout>
 
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_weight="2.6">
+            android:layout_weight="1">
 
             <TextView
                 android:layout_width="wrap_content"
