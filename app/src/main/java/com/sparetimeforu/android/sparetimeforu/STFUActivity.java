@@ -11,4 +11,5 @@ public class STFUActivity extends SingleFragmentActivity {
     protected Fragment createFragment() {
         return STFUFragment.newInstance();
     }
+
 }

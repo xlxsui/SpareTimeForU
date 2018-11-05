@@ -107,22 +107,22 @@
                 android:id="@+id/errand_origin"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_weight="0.8"
-                android:gravity="bottom|center"
+                android:layout_weight="3.3"
+                android:gravity="center"
                 android:text="东门" />
 
             <ImageView
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
-                android:layout_weight="7"
+                android:layout_weight="2"
                 android:src="@drawable/ic_long_arrow_down" />
 
             <TextView
                 android:id="@+id/errand_destination"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_weight="0.8"
-                android:gravity="top|center"
+                android:layout_weight="3.3"
+                android:gravity="center"
                 android:text="修远" />
 
             <TextView

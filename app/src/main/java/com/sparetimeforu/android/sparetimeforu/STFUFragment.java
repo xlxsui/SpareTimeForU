@@ -15,6 +15,7 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -36,6 +37,8 @@ public class STFUFragment extends Fragment {
     private DrawerLayout mDrawerLayout;
     private NavigationView mDrawerNavigationView;
 
+    private static final String TAG = "STFUFragment";
+
 
     public static STFUFragment newInstance() {
         return new STFUFragment();
@@ -51,6 +54,9 @@ public class STFUFragment extends Fragment {
         final View view = inflater.inflate(R.layout.fragment_stfu, container, false);
 
 
+        /**
+         * toolbar and its component
+         */
         mToolbar = (Toolbar) view.findViewById(R.id.toolbar);
         ((AppCompatActivity) getActivity()).setSupportActionBar(mToolbar);
         TextView title = (TextView) view.findViewById(R.id.title_top);
@@ -73,7 +79,9 @@ public class STFUFragment extends Fragment {
             }
         });
 
-
+        /**
+         * main fragment and its layout
+         */
         mMainFragmentLayout = (FrameLayout) view.findViewById(R.id.main_fragment);
         initAddLayout(R.layout.fragment_errand);
         loadErrandFragment();
@@ -124,6 +132,16 @@ public class STFUFragment extends Fragment {
         toggle.syncState();
 
         mDrawerNavigationView = (NavigationView) view.findViewById(R.id.slider_menu);
+        View mDrawerHeaderView = mDrawerNavigationView.getHeaderView(0);
+
+        final ImageView mAvatar = (ImageView) mDrawerHeaderView.findViewById(R.id.slider_menu_avatar);
+        mAvatar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Toast.makeText(getActivity(), "Avatar", Toast.LENGTH_SHORT)
+                        .show();
+            }
+        });
         mDrawerNavigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
@@ -142,6 +160,8 @@ public class STFUFragment extends Fragment {
                         break;
                     case R.id.slider_menu_exit:
                         getActivity().finish();
+                        getActivity().moveTaskToBack(true);
+                        System.exit(0);
                 }
 
                 mDrawerLayout.closeDrawer(GravityCompat.START);
@@ -149,10 +169,38 @@ public class STFUFragment extends Fragment {
             }
         });
 
+
         return view;
     }
 
-    
+    @Override
+    public void onResume() {
+        super.onResume();
+
+
+        mErrandFragment.getView().setFocusableInTouchMode(true);
+        mErrandFragment.getView().requestFocus();
+        mErrandFragment.getView().setOnKeyListener(new View.OnKeyListener() {
+            @Override
+            public boolean onKey(View v, int keyCode, KeyEvent event) {
+
+                /**
+                 * deal with back press
+                 */
+                if (event.getAction() == KeyEvent.ACTION_UP && keyCode == KeyEvent.KEYCODE_BACK) {
+                    Log.d(TAG, "-----Back pressed");
+                    if (mDrawerLayout.isDrawerOpen(GravityCompat.START)) {
+                        mDrawerLayout.closeDrawer(GravityCompat.START);
+                        return true;
+                    } else {
+                        return false;
+                    }
+                }
+
+                return false;
+            }
+        });
+    }
 
     /**
      * add layout to main_fragment
