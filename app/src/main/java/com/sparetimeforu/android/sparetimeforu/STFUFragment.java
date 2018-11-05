@@ -9,6 +9,9 @@ import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.view.GravityCompat;
+import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -30,8 +33,8 @@ public class STFUFragment extends Fragment {
     private FrameLayout mMainFragmentLayout;
     private Fragment mErrandFragment;
     private BottomNavigationView mBottomNavigationView;
-    private NavigationView mNavigationView;
-
+    private DrawerLayout mDrawerLayout;
+    private NavigationView mDrawerNavigationView;
 
 
     public static STFUFragment newInstance() {
@@ -56,6 +59,7 @@ public class STFUFragment extends Fragment {
         slideIcon.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                mDrawerLayout.openDrawer(GravityCompat.START);
 
             }
         });
@@ -72,6 +76,7 @@ public class STFUFragment extends Fragment {
 
         mMainFragmentLayout = (FrameLayout) view.findViewById(R.id.main_fragment);
         initAddLayout(R.layout.fragment_errand);
+        loadErrandFragment();
 
 
         /**
@@ -107,22 +112,47 @@ public class STFUFragment extends Fragment {
                     }
                 });
 
+
         /**
-         * setup slider_menu navigation
+         * setup slider_menu navigation drawer
          */
+        mDrawerLayout = (DrawerLayout) view.findViewById(R.id.drawer_layout);
+        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
+                getActivity(), mDrawerLayout, mToolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close
+        );
+        mDrawerLayout.addDrawerListener(toggle);
+        toggle.syncState();
 
+        mDrawerNavigationView = (NavigationView) view.findViewById(R.id.slider_menu);
+        mDrawerNavigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
+            @Override
+            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+                switch (item.getItemId()) {
+                    case R.id.slider_menu_task:
+                        Toast.makeText(getActivity(), item.getTitle(), Toast.LENGTH_SHORT)
+                                .show();
+                        break;
+                    case R.id.slider_menu_personal_letter:
+                        Toast.makeText(getActivity(), item.getTitle(), Toast.LENGTH_SHORT)
+                                .show();
+                        break;
+                    case R.id.slider_menu_login:
+                        Toast.makeText(getActivity(), item.getTitle(), Toast.LENGTH_SHORT)
+                                .show();
+                        break;
+                    case R.id.slider_menu_exit:
+                        getActivity().finish();
+                }
 
-
+                mDrawerLayout.closeDrawer(GravityCompat.START);
+                return true;
+            }
+        });
 
         return view;
     }
 
-
-    @Override
-    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-        loadErrandFragment();
-    }
+    
 
     /**
      * add layout to main_fragment

@@ -16,7 +16,7 @@
     </group>
 
     <item
-        android:id="@+id/slider_menu_logout"
+        android:id="@+id/slider_menu_login"
         android:icon="@drawable/ic_login"
         android:title="@string/login" />
 
