@@ -1,15 +1,20 @@
 package com.sparetimeforu.android.sparetimeforu;
 
+import android.graphics.Color;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.sparetimeforu.android.sparetimeforu.recycler.view.item.Errand;
 
@@ -30,6 +35,7 @@ public class ErrandFragment extends Fragment {
     private RecyclerView mRecyclerView;
     private ErrandAdapter mAdapter;
     private List<Errand> mErrands;
+    private SwipeRefreshLayout errand_flashlayout;
 
 
     @Nullable
@@ -41,6 +47,28 @@ public class ErrandFragment extends Fragment {
         mRecyclerView = (RecyclerView) view.findViewById(R.id.fragment_errand_main_recycler_view);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         setupAdapter();
+
+        /*
+        ** reflashLayout
+         */
+        errand_flashlayout=(SwipeRefreshLayout)view.findViewById(R.id.errand_reflash_layout);
+        errand_flashlayout.setColorSchemeResources(R.color.colorAccent, R.color.colorPrimary, R.color.colorPrimaryDark);
+
+
+        errand_flashlayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                //get data reflash UI
+
+
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        errand_flashlayout.setRefreshing(false);
+                    }
+                }, 1000);
+            }
+        });
 
         return view;
     }
