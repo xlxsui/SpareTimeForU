@@ -5,4 +5,5 @@ package com.sparetimeforu.android.sparetimeforu.user;
  */
 
 public class User {
+
 }

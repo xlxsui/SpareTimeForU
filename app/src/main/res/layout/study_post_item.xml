@@ -8,7 +8,7 @@
     android:weightSum="7">
 
     <LinearLayout
-        android:id="@+id/errand_header"
+        android:id="@+id/study_post_header"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
@@ -18,14 +18,13 @@
         <LinearLayout
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:layout_margin="0.5dp"
+            android:layout_margin="5dp"
             android:layout_weight="0.8">
 
             <ImageView
-                android:id="@+id/errand_avatar"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
+                android:id="@+id/study_post_avatar"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
                 android:src="@mipmap/ic_launcher" />
         </LinearLayout>
 
@@ -43,7 +42,7 @@
                 android:orientation="horizontal">
 
                 <TextView
-                    android:id="@+id/errand_nick_name"
+                    android:id="@+id/study_post_nick_name"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
                     android:layout_marginEnd="20dp"
@@ -51,19 +50,19 @@
                     android:text="心兰相随" />
 
                 <TextView
-                    android:id="@+id/errand_grade"
+                    android:id="@+id/study_post_grade"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
                     android:layout_margin="1dp"
                     android:gravity="center"
-                    android:text="L6"
+                    android:text="lv6"
                     android:textSize="14sp"
                     android:textStyle="bold" />
 
             </LinearLayout>
 
             <TextView
-                android:id="@+id/errand_date"
+                android:id="@+id/study_post_date"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
                 android:layout_weight="1"
@@ -78,12 +77,12 @@
             android:layout_weight="0.8">
 
             <TextView
-                android:id="@+id/errand_reward"
+                android:id="@+id/study_post_status"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_margin="10dp"
                 android:gravity="center"
-                android:text="￥2" />
+                android:text="￥50" />
         </LinearLayout>
 
     </LinearLayout>
@@ -97,62 +96,14 @@
         android:weightSum="5">
 
         <LinearLayout
-            android:id="@+id/errand_border_side"
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:layout_weight="0.9"
-            android:orientation="vertical"
-            android:weightSum="10">
-
-            <TextView
-                android:id="@+id/errand_origin"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_weight="3.3"
-                android:gravity="center"
-                android:text="至诚" />
-
-            <ImageView
-                android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_weight="2"
-                android:src="@drawable/ic_long_arrow_down" />
-
-            <TextView
-                android:id="@+id/errand_destination"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_weight="3.3"
-                android:gravity="center"
-                android:text="修远" />
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_weight="0.7"
-                android:gravity="center"
-                android:text="Deadline:" />
-
-            <TextView
-                android:id="@+id/errand_deadline"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_weight="0.7"
-                android:gravity="center"
-                android:text="18:30" />
-
-
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="4"
+            android:layout_weight="5"
             android:orientation="vertical"
             android:weightSum="10">
 
             <LinearLayout
-                android:id="@+id/errand_main_content"
+                android:id="@+id/study_post_main_content"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
                 android:layout_weight="9"
@@ -160,7 +111,7 @@
                 android:weightSum="5">
 
                 <TextView
-                    android:id="@+id/errand_caption"
+                    android:id="@+id/study_post_caption"
                     android:layout_width="match_parent"
                     android:layout_height="0dp"
                     android:layout_weight="1"
@@ -170,7 +121,7 @@
                     android:textStyle="bold" />
 
                 <LinearLayout
-                    android:id="@+id/errand_pictures"
+                    android:id="@+id/study_post_pictures"
                     android:layout_width="match_parent"
                     android:layout_height="0dp"
                     android:layout_weight="3.9"
@@ -178,21 +129,21 @@
                     android:weightSum="3.01">
 
                     <ImageView
-                        android:id="@+id/errand_picture1"
+                        android:id="@+id/study_post_picture1"
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
                         android:layout_margin="2dp"
                         android:layout_weight="1" />
 
                     <ImageView
-                        android:id="@+id/errand_picture2"
+                        android:id="@+id/study_post_picture2"
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
                         android:layout_margin="2dp"
                         android:layout_weight="1" />
 
                     <ImageView
-                        android:id="@+id/errand_picture3"
+                        android:id="@+id/study_post_picture3"
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
                         android:layout_margin="2dp"
@@ -205,7 +156,7 @@
             </LinearLayout>
 
             <LinearLayout
-                android:id="@+id/errand_footer"
+                android:id="@+id/study_post_footer"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
                 android:layout_weight="1"
@@ -213,7 +164,7 @@
                 android:weightSum="3">
 
                 <ImageView
-                    android:id="@+id/errand_share"
+                    android:id="@+id/study_post_share"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_margin="2dp"
@@ -221,7 +172,7 @@
                     android:src="@drawable/ic_share" />
 
                 <ImageView
-                    android:id="@+id/errand_like"
+                    android:id="@+id/study_post_like"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_margin="2dp"
@@ -229,7 +180,7 @@
                     android:src="@drawable/ic_like_before" />
 
                 <LinearLayout
-                    android:id="@+id/errand_comment"
+                    android:id="@+id/study_post_comment"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_margin="1dp"
@@ -263,3 +214,24 @@
     </LinearLayout>
 
 </LinearLayout>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -1,6 +1,7 @@
 package com.sparetimeforu.android.sparetimeforu;
 
 import android.graphics.Color;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.Nullable;
@@ -12,14 +13,18 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.sparetimeforu.android.sparetimeforu.recycler.view.item.Errand;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 /**
  * Created by Jin on 2018/11/3.
@@ -48,17 +53,17 @@ public class ErrandFragment extends Fragment {
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         setupAdapter();
 
-        /*
-        ** reflashLayout
+        /**
+         *refresh Layout
          */
-        errand_flashlayout=(SwipeRefreshLayout)view.findViewById(R.id.errand_reflash_layout);
+        errand_flashlayout = (SwipeRefreshLayout) view.findViewById(R.id.errand_reflash_layout);
         errand_flashlayout.setColorSchemeResources(R.color.colorAccent, R.color.colorPrimary, R.color.colorPrimaryDark);
 
 
         errand_flashlayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                //get data reflash UI
+                //get data refresh UI
 
 
                 new Handler().postDelayed(new Runnable() {
@@ -76,7 +81,7 @@ public class ErrandFragment extends Fragment {
     private void setupAdapter() {
 
         List<Errand> errands = new ArrayList<>();
-        for (int i = 0; i <= 100; i++) {
+        for (int i = 0; i <= 20; i++) {
             Errand errand = new Errand();
             errands.add(errand);
         }
@@ -92,20 +97,35 @@ public class ErrandFragment extends Fragment {
      * the errand_item's ViewHolder
      */
     private class ErrandHolder extends RecyclerView.ViewHolder {
+        private static final String TAG = "ErrandHolder";
 
         private Errand mErrand;
         private TextView mErrandCaption;
+        private ImageView mAvatar;
 
 
         public ErrandHolder(LayoutInflater inflater, ViewGroup parent) {
             super(inflater.inflate(R.layout.errand_item, parent, false));
             Log.d("Errand", "-----Creating ViewHolder now");
-//            mErrandCaption = (TextView) itemView.findViewById(R.id.errand_caption);
+            mErrandCaption = (TextView) itemView.findViewById(R.id.errand_caption);
+            mAvatar = (ImageView) itemView.findViewById(R.id.errand_avatar);
         }
 
         public void bind(Errand errand) {
             mErrand = errand;
-//            mErrandCaption.setText(mErrand.getUUID().toString());
+            mErrandCaption.setText(mErrand.getUUID().toString());
+
+            try {
+                Random random = new Random();
+                int i = random.nextInt(11) + 1;
+                InputStream ims = getActivity().getAssets().open("avatar/ic_avatar" + i + ".jpg");
+                Drawable avatar = Drawable.createFromStream(ims, null);
+                mAvatar.setImageDrawable(avatar);
+
+            } catch (IOException e) {
+                Log.e(TAG, "bind: ", e);
+            }
+
 
         }
 

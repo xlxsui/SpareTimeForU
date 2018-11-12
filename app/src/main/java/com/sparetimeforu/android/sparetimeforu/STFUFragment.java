@@ -84,7 +84,6 @@ public class STFUFragment extends Fragment {
          */
         mMainFragmentLayout = (FrameLayout) view.findViewById(R.id.main_fragment);
         initAddLayout(R.layout.fragment_errand);
-        loadErrandFragment();
 
 
         /**
@@ -142,6 +141,8 @@ public class STFUFragment extends Fragment {
                         .show();
             }
         });
+
+
         mDrawerNavigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
@@ -204,7 +205,6 @@ public class STFUFragment extends Fragment {
 
     /**
      * add layout to main_fragment
-     *
      * @param layout
      */
     protected void initAddLayout(int layout) {
@@ -212,13 +212,22 @@ public class STFUFragment extends Fragment {
                 .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         View view = inflater.inflate(layout, null);
         mMainFragmentLayout.addView(view);
+        switch (layout) {
+            case R.layout.fragment_errand:
+                loadErrandFragment();
+                break;
+            default:
+                return;
+        }
     }
 
 
     public void loadErrandFragment() {
         FragmentManager fm = getActivity().getSupportFragmentManager();
         mErrandFragment = fm.findFragmentById(R.id.errand_container);
-        mErrandFragment = new ErrandFragment();
+        if (mErrandFragment == null) {
+            mErrandFragment = new ErrandFragment();
+        }
         fm.beginTransaction()
                 .add(R.id.errand_container, mErrandFragment)
                 .commit();
