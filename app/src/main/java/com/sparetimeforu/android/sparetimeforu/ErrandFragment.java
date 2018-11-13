@@ -1,6 +1,5 @@
 package com.sparetimeforu.android.sparetimeforu;
 
-import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.Handler;
@@ -14,10 +13,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
 
+import com.chad.library.adapter.base.BaseQuickAdapter;
+import com.sparetimeforu.android.sparetimeforu.adapter.ErrandAdapter;
 import com.sparetimeforu.android.sparetimeforu.recycler.view.item.Errand;
 
 import java.io.IOException;
@@ -40,7 +39,7 @@ public class ErrandFragment extends Fragment {
     private RecyclerView mRecyclerView;
     private ErrandAdapter mAdapter;
     private List<Errand> mErrands;
-    private SwipeRefreshLayout errand_flashlayout;
+    private SwipeRefreshLayout mErrandRefreshLayout;
 
 
     @Nullable
@@ -56,20 +55,16 @@ public class ErrandFragment extends Fragment {
         /**
          *refresh Layout
          */
-        errand_flashlayout = (SwipeRefreshLayout) view.findViewById(R.id.errand_reflash_layout);
-        errand_flashlayout.setColorSchemeResources(R.color.colorAccent, R.color.colorPrimary, R.color.colorPrimaryDark);
-
-
-        errand_flashlayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+        mErrandRefreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.errand_reflash_layout);
+        mErrandRefreshLayout.setColorSchemeResources(R.color.colorAccent, R.color.colorPrimary, R.color.colorPrimaryDark);
+        mErrandRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
                 //get data refresh UI
-
-
                 new Handler().postDelayed(new Runnable() {
                     @Override
                     public void run() {
-                        errand_flashlayout.setRefreshing(false);
+                        mErrandRefreshLayout.setRefreshing(false);
                     }
                 }, 1000);
             }
@@ -80,94 +75,11 @@ public class ErrandFragment extends Fragment {
 
     private void setupAdapter() {
 
-        List<Errand> errands = new ArrayList<>();
-        for (int i = 0; i <= 20; i++) {
-            Errand errand = new Errand();
-            errands.add(errand);
-        }
-        mAdapter = new ErrandAdapter(errands);
-        Log.d("Errand", "-----attaching errand adapter.");
+        mAdapter = new ErrandAdapter();
+        mAdapter.openLoadAnimation(BaseQuickAdapter.SLIDEIN_LEFT);
+        mAdapter.isFirstOnly(false);
         mRecyclerView.setAdapter(mAdapter);
-        Log.d("Errand", "-----setup adapter finished.");
-
     }
-
-
-    /**
-     * the errand_item's ViewHolder
-     */
-    private class ErrandHolder extends RecyclerView.ViewHolder {
-        private static final String TAG = "ErrandHolder";
-
-        private Errand mErrand;
-        private TextView mErrandCaption;
-        private ImageView mAvatar;
-
-
-        public ErrandHolder(LayoutInflater inflater, ViewGroup parent) {
-            super(inflater.inflate(R.layout.errand_item, parent, false));
-            Log.d("Errand", "-----Creating ViewHolder now");
-            mErrandCaption = (TextView) itemView.findViewById(R.id.errand_caption);
-            mAvatar = (ImageView) itemView.findViewById(R.id.errand_avatar);
-        }
-
-        public void bind(Errand errand) {
-            mErrand = errand;
-            mErrandCaption.setText(mErrand.getUUID().toString());
-
-            try {
-                Random random = new Random();
-                int i = random.nextInt(11) + 1;
-                InputStream ims = getActivity().getAssets().open("avatar/ic_avatar" + i + ".jpg");
-                Drawable avatar = Drawable.createFromStream(ims, null);
-                mAvatar.setImageDrawable(avatar);
-
-            } catch (IOException e) {
-                Log.e(TAG, "bind: ", e);
-            }
-
-
-        }
-
-    }
-
-    /**
-     * errand_recycler_view adapter
-     */
-    private class ErrandAdapter extends RecyclerView.Adapter<ErrandHolder> {
-
-        public ErrandAdapter(List<Errand> errands) {
-            mErrands = errands;
-            Log.d("Errand", "-----Creating errand adapter");
-        }
-
-
-        @Override
-        public ErrandHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-
-            Log.d("Errand", "-----Would like to create ViewHolder");
-            LayoutInflater layoutInflater = LayoutInflater.from(getActivity());
-            return new ErrandHolder(layoutInflater, parent);
-        }
-
-        /**
-         * @param holder   current holder
-         * @param position ViewHolder's position
-         */
-        @Override
-        public void onBindViewHolder(ErrandHolder holder, int position) {
-            Errand errand = mErrands.get(position);
-            holder.bind(errand);
-
-        }
-
-        @Override
-        public int getItemCount() {
-            return mErrands.size();
-        }
-
-    }
-
 
 }
 

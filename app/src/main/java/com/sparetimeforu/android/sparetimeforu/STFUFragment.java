@@ -1,6 +1,7 @@
 package com.sparetimeforu.android.sparetimeforu;
 
 import android.content.Context;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -24,6 +25,11 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.Random;
 
 /**
  * Created by Jin on 2018/11/2.
@@ -134,6 +140,15 @@ public class STFUFragment extends Fragment {
         View mDrawerHeaderView = mDrawerNavigationView.getHeaderView(0);
 
         final ImageView mAvatar = (ImageView) mDrawerHeaderView.findViewById(R.id.slider_menu_avatar);
+        try {
+            Random random = new Random();
+            int i = random.nextInt(11) + 1;
+            InputStream ims = getActivity().getAssets().open("avatar/ic_avatar" + i + ".jpg");
+            Drawable avatar = Drawable.createFromStream(ims, null);
+            mAvatar.setImageDrawable(avatar);
+        } catch (IOException e) {
+            Log.e(TAG, "onCreateView: ", e);
+        }
         mAvatar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -205,6 +220,7 @@ public class STFUFragment extends Fragment {
 
     /**
      * add layout to main_fragment
+     *
      * @param layout
      */
     protected void initAddLayout(int layout) {

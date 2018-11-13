@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="300dp"
+    android:layout_height="250dp"
     android:layout_marginBottom="1dp"
-    android:background="@drawable/black_line_bottom_border"
+    android:background="@drawable/pink_background"
     android:orientation="vertical"
     android:weightSum="7">
 
@@ -19,12 +19,14 @@
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_margin="0.5dp"
-            android:layout_weight="0.8">
+            android:layout_weight="0.8"
+            android:gravity="center">
 
             <ImageView
                 android:id="@+id/errand_avatar"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:foreground="@drawable/rounded_fg"
                 android:layout_gravity="center"
                 android:src="@mipmap/ic_launcher" />
         </LinearLayout>
