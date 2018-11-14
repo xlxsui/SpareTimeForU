@@ -12,6 +12,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -50,11 +51,10 @@ public class STFUFragment extends Fragment {
         return new STFUFragment();
     }
 
-    @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater,
-                             @Nullable ViewGroup container,
-                             @Nullable Bundle savedInstanceState) {
+                              ViewGroup container,
+                         Bundle savedInstanceState) {
 
 
         final View view = inflater.inflate(R.layout.fragment_stfu, container, false);
@@ -90,6 +90,8 @@ public class STFUFragment extends Fragment {
          */
         mMainFragmentLayout = (FrameLayout) view.findViewById(R.id.main_fragment);
         initAddLayout(R.layout.fragment_errand);
+
+
 
 
         /**
@@ -184,6 +186,9 @@ public class STFUFragment extends Fragment {
                 return true;
             }
         });
+
+
+
 
 
         return view;
