@@ -199,9 +199,8 @@ public class STFUFragment extends Fragment {
         mErrandFragment.getView().setOnKeyListener(new View.OnKeyListener() {
             @Override
             public boolean onKey(View v, int keyCode, KeyEvent event) {
-
                 /**
-                 * deal with back press
+                 * deal with back press in drawer navigation
                  */
                 if (event.getAction() == KeyEvent.ACTION_UP && keyCode == KeyEvent.KEYCODE_BACK) {
                     Log.d(TAG, "-----Back pressed");
@@ -237,18 +236,17 @@ public class STFUFragment extends Fragment {
         }
     }
 
-
     public void loadErrandFragment() {
         FragmentManager fm = getActivity().getSupportFragmentManager();
         mErrandFragment = fm.findFragmentById(R.id.errand_container);
         if (mErrandFragment == null) {
+            //假如errand fragment为空，这时才重新创建一个，并且提交显示
             mErrandFragment = new ErrandFragment();
+            fm.beginTransaction()
+                    .add(R.id.errand_container, mErrandFragment)
+                    .commit();
+            Log.d("Errand", "-----It is time to load the Errand Fragment");
         }
-        fm.beginTransaction()
-                .add(R.id.errand_container, mErrandFragment)
-                .commit();
-        Log.d("Errand", "-----It is time to load the Errand Fragment");
-
     }
 
 }

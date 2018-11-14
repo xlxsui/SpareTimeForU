@@ -41,6 +41,10 @@ public class ErrandFragment extends Fragment {
     private List<Errand> mErrands;
     private SwipeRefreshLayout mErrandRefreshLayout;
 
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+    }
 
     @Nullable
     @Override

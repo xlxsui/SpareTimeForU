@@ -3,12 +3,9 @@ package com.sparetimeforu.android.sparetimeforu.util;
 import android.content.Context;
 
 /**
- * <pre>
- *     author: Blankj
- *     blog  : http://blankj.com
- *     time  : 16/12/08
- *     desc  : Utils初始化相关
- * </pre>
+ * Created by Jin on 2018/11/3.
+ *
+ * SpareTimeForU
  */
 public class Utils {
 
