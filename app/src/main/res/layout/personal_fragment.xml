@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.widget.LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+    
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="176dip"
+        android:background="@drawable/pink_background"
+        android:id="@+id/data_layout">
+        
+        <ImageView
+            android:id="@+id/personal_avator"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="10dip"
+            android:paddingBottom="30dip"
+            android:src="@mipmap/ic_launcher_round"/>
+        
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="100dip"
+            android:layout_alignParentBottom="true"
+            android:orientation="vertical">
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/personal_edit"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:layout_alignParentRight="true"
+                    android:layout_marginRight="20dip"
+                    android:text="编辑" />
+
+                <TextView
+                    android:id="@+id/personal_nickname"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerHorizontal="true"
+                    android:gravity="center"
+                    android:text="SpareTimeForYou"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Body1"/>
+            </RelativeLayout>
+            <TextView
+                android:id="@+id/personal_signate"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:maxLines="3"
+                android:layout_marginStart="20dp"
+                android:layout_marginEnd="20dp"
+                android:text="@string/spare_time_for_u"
+                android:gravity="center_horizontal"/>
+
+        </LinearLayout>
+    </RelativeLayout>
+
+
+    <TextView
+        android:id="@+id/personal_mission_released"
+        android:layout_width="200dip"
+        android:layout_height="40dip"
+        android:layout_gravity="center"
+        android:gravity="center"
+        android:layout_marginTop="80dip"
+        android:background="@drawable/border_line"
+        android:text="发出的任务"/>
+    <TextView
+        android:id="@+id/personal_mission_received"
+        android:layout_width="200dip"
+        android:layout_height="40dip"
+        android:layout_gravity="center"
+        android:gravity="center"
+        android:layout_marginTop="30dip"
+        android:background="@drawable/border_line"
+        android:text="接收的任务"/>
+
+    <TextView
+        android:id="@+id/personal_favourable_rate"
+        android:layout_width="200dip"
+        android:layout_height="40dip"
+        android:layout_gravity="center"
+        android:gravity="center"
+        android:layout_marginTop="30dip"
+        android:background="@drawable/border_line"
+        android:text="收益"/>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="bottom">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="100dip"
+            android:layout_alignParentBottom="true"
+            android:background="#fb7299">
+
+        </LinearLayout>
+
+    </RelativeLayout>
+
+</android.widget.LinearLayout>
