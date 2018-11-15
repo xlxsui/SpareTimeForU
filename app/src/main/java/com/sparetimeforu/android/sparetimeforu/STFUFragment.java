@@ -40,9 +40,14 @@ public class STFUFragment extends Fragment {
     private Toolbar mToolbar;
     private FrameLayout mMainFragmentLayout;
     private Fragment mErrandFragment;
+    private Fragment mIdleThingFragment;
+    private Fragment mStudyFragment;
+    private Fragment mSearchThingFragment;
     private BottomNavigationView mBottomNavigationView;
     private DrawerLayout mDrawerLayout;
     private NavigationView mDrawerNavigationView;
+    FragmentManager mFm;
+
 
     private static final String TAG = "STFUFragment";
 
@@ -53,11 +58,12 @@ public class STFUFragment extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater,
-                              ViewGroup container,
-                         Bundle savedInstanceState) {
+                             ViewGroup container,
+                             Bundle savedInstanceState) {
 
 
         final View view = inflater.inflate(R.layout.fragment_stfu, container, false);
+        mFm = getActivity().getSupportFragmentManager();
 
 
         /**
@@ -86,16 +92,14 @@ public class STFUFragment extends Fragment {
         });
 
         /**
-         * main fragment and its layout
+         * 主片段及其布局
          */
         mMainFragmentLayout = (FrameLayout) view.findViewById(R.id.main_fragment);
-        initAddLayout(R.layout.fragment_errand);
-
-
+        loadErrandFragment();
 
 
         /**
-         * setup bottom navigation
+         * 设置底部导航
          */
         mBottomNavigationView =
                 (BottomNavigationView) view.findViewById(R.id.bottom_navigation);
@@ -108,10 +112,12 @@ public class STFUFragment extends Fragment {
                             case R.id.navigation_errand:
                                 Toast.makeText(getActivity(), item.getTitle(), Toast.LENGTH_SHORT)
                                         .show();
+                                loadErrandFragment();
                                 return true;
                             case R.id.navigation_second_hand:
                                 Toast.makeText(getActivity(), item.getTitle(), Toast.LENGTH_SHORT)
                                         .show();
+                                loadIdleThingFragment();
                                 return true;
                             case R.id.navigation_study:
                                 Toast.makeText(getActivity(), item.getTitle(), Toast.LENGTH_SHORT)
@@ -129,7 +135,7 @@ public class STFUFragment extends Fragment {
 
 
         /**
-         * setup slider_menu navigation drawer
+         * 设置抽屉导航
          */
         mDrawerLayout = (DrawerLayout) view.findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
@@ -188,9 +194,6 @@ public class STFUFragment extends Fragment {
         });
 
 
-
-
-
         return view;
     }
 
@@ -198,10 +201,16 @@ public class STFUFragment extends Fragment {
     public void onResume() {
         super.onResume();
 
+        Fragment currentFragment = null;
+        if (mErrandFragment != null) {
+            currentFragment = mErrandFragment;
+        } else if (mIdleThingFragment != null) {
+            currentFragment = mIdleThingFragment;
+        }
 
-        mErrandFragment.getView().setFocusableInTouchMode(true);
-        mErrandFragment.getView().requestFocus();
-        mErrandFragment.getView().setOnKeyListener(new View.OnKeyListener() {
+        currentFragment.getView().setFocusableInTouchMode(true);
+        currentFragment.getView().requestFocus();
+        currentFragment.getView().setOnKeyListener(new View.OnKeyListener() {
             @Override
             public boolean onKey(View v, int keyCode, KeyEvent event) {
                 /**
@@ -216,42 +225,52 @@ public class STFUFragment extends Fragment {
                         return false;
                     }
                 }
-
                 return false;
             }
         });
     }
 
+
+
     /**
-     * add layout to main_fragment
-     *
-     * @param layout
+     * 加载Item Fragment到main_fragment布局
      */
-    protected void initAddLayout(int layout) {
+    public void loadErrandFragment() {
         LayoutInflater inflater = (LayoutInflater) ((AppCompatActivity) getActivity())
                 .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        View view = inflater.inflate(layout, null);
-        mMainFragmentLayout.addView(view);
-        switch (layout) {
-            case R.layout.fragment_errand:
-                loadErrandFragment();
-                break;
-            default:
-                return;
+        //把layout生成一个view对象
+        View view = inflater.inflate(R.layout.fragment_errand, mMainFragmentLayout);
+        mErrandFragment = mFm.findFragmentById(R.id.errand_container);
+
+        if (mErrandFragment == null) {
+            //假如fragment为空，这时才重新创建一个，并且提交显示
+            mErrandFragment = new ErrandFragment();
         }
+        mFm.beginTransaction()
+                .replace(R.id.main_fragment, mErrandFragment)
+                .commit();
     }
 
-    public void loadErrandFragment() {
-        FragmentManager fm = getActivity().getSupportFragmentManager();
-        mErrandFragment = fm.findFragmentById(R.id.errand_container);
-        if (mErrandFragment == null) {
-            //假如errand fragment为空，这时才重新创建一个，并且提交显示
-            mErrandFragment = new ErrandFragment();
-            fm.beginTransaction()
-                    .add(R.id.errand_container, mErrandFragment)
-                    .commit();
-            Log.d("Errand", "-----It is time to load the Errand Fragment");
+    public void loadIdleThingFragment() {
+        LayoutInflater inflater = (LayoutInflater) ((AppCompatActivity) getActivity())
+                .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        //把layout生成一个view对象
+        View view = inflater.inflate(R.layout.fragment_idle_thing, mMainFragmentLayout);
+        mIdleThingFragment = mFm.findFragmentById(R.id.idle_thing_container);
+        if (mIdleThingFragment == null) {
+            mIdleThingFragment = new IdleThingFragment();
         }
+        mFm.beginTransaction()
+                .replace(R.id.main_fragment, mIdleThingFragment)
+                .commit();
+    }
+
+    public void loadStudyFragment() {
+
+    }
+
+    public void loadSearchThingFragment() {
+
     }
 
 }

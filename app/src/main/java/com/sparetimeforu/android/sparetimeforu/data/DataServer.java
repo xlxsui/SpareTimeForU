@@ -5,7 +5,9 @@ package com.sparetimeforu.android.sparetimeforu.data;
  */
 
 
-import com.sparetimeforu.android.sparetimeforu.entity.Status;
+import com.sparetimeforu.android.sparetimeforu.entity.Errand;
+import com.sparetimeforu.android.sparetimeforu.entity.IdleThing;
+import com.sparetimeforu.android.sparetimeforu.entity.Study;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,14 +22,35 @@ public class DataServer {
     private DataServer() {
     }
 
-    public static List<Status> getSampleData(int lenth) {
-        List<Status> list = new ArrayList<>();
-        for (int i = 0; i < lenth; i++) {
-            Status status = new Status();
+    public static List<Errand> getErrandData(int length) {
+        List<Errand> list = new ArrayList<>();
+        for (int i = 0; i < length; i++) {
+            Errand errand = new Errand();
 
-            list.add(status);
+            list.add(errand);
         }
         return list;
+    }
+
+    public static List<Study> getStudyData(int length) {
+        List<Study> list = new ArrayList<>();
+        for (int i = 0; i < length; i++) {
+            Study study = new Study();
+
+            list.add(study);
+        }
+        return list;
+    }
+
+    public static List<IdleThing> getIdleThingData(int length) {
+        List<IdleThing> list = new ArrayList<>();
+        for (int i = 0; i < length; i++) {
+            IdleThing idleThing = new IdleThing();
+
+            list.add(idleThing);
+        }
+        return list;
+
     }
 
 }
