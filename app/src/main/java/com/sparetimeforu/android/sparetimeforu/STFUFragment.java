@@ -33,6 +33,7 @@ import java.io.InputStream;
 import java.util.Random;
 
 /**
+ * SpareTimeForU
  * Created by Jin on 2018/11/2.
  */
 
@@ -50,6 +51,7 @@ public class STFUFragment extends Fragment {
 
 
     private static final String TAG = "STFUFragment";
+    private static final String CURRENT_BOTTOM_ITEM = "current_bottom_item";
 
 
     public static STFUFragment newInstance() {
@@ -95,8 +97,6 @@ public class STFUFragment extends Fragment {
          * 主片段及其布局
          */
         mMainFragmentLayout = (FrameLayout) view.findViewById(R.id.main_fragment);
-        loadErrandFragment();
-
 
         /**
          * 设置底部导航
@@ -194,43 +194,34 @@ public class STFUFragment extends Fragment {
         });
 
 
+        //初次加载的界面
+        if (savedInstanceState == null) {
+            loadErrandFragment();
+        } else {
+            switch (savedInstanceState.getInt(CURRENT_BOTTOM_ITEM)) {
+                case R.id.navigation_errand:
+                    loadErrandFragment();
+                    break;
+                case R.id.navigation_second_hand:
+                    loadIdleThingFragment();
+                    break;
+                default:
+                    loadErrandFragment();
+                    break;
+            }
+        }
+
+
+
         return view;
     }
 
     @Override
-    public void onResume() {
-        super.onResume();
-
-        Fragment currentFragment = null;
-        if (mErrandFragment != null) {
-            currentFragment = mErrandFragment;
-        } else if (mIdleThingFragment != null) {
-            currentFragment = mIdleThingFragment;
-        }
-
-        currentFragment.getView().setFocusableInTouchMode(true);
-        currentFragment.getView().requestFocus();
-        currentFragment.getView().setOnKeyListener(new View.OnKeyListener() {
-            @Override
-            public boolean onKey(View v, int keyCode, KeyEvent event) {
-                /**
-                 * deal with back press in drawer navigation
-                 */
-                if (event.getAction() == KeyEvent.ACTION_UP && keyCode == KeyEvent.KEYCODE_BACK) {
-                    Log.d(TAG, "-----Back pressed");
-                    if (mDrawerLayout.isDrawerOpen(GravityCompat.START)) {
-                        mDrawerLayout.closeDrawer(GravityCompat.START);
-                        return true;
-                    } else {
-                        return false;
-                    }
-                }
-                return false;
-            }
-        });
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        //bind the fragment with bottom navigation item
+        outState.putInt(CURRENT_BOTTOM_ITEM,mBottomNavigationView.getSelectedItemId());
     }
-
-
 
     /**
      * 加载Item Fragment到main_fragment布局
