@@ -9,11 +9,13 @@ import android.support.v7.app.AppCompatActivity;
 import com.sparetimeforu.android.sparetimeforu.R;
 import com.sparetimeforu.android.sparetimeforu.fragment.PersonalFragment;
 
+import me.imid.swipebacklayout.lib.app.SwipeBackActivity;
+
 /**
  * Created by HQY on 2018/11/15.
  */
 
-public class PersonalActivity extends AppCompatActivity {
+public class PersonalActivity extends SwipeBackActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

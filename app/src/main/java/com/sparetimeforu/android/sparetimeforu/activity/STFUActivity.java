@@ -31,7 +31,8 @@ public class STFUActivity extends SingleFragmentActivity {
         } else {
             super.onBackPressed();
         }
-
-
     }
+
+
+
 }

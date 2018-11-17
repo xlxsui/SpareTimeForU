@@ -5,12 +5,14 @@ import android.os.Handler;
 import android.os.Looper;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.sparetimeforu.android.sparetimeforu.R;
@@ -85,6 +87,7 @@ class RequestSearchThing extends Thread {
 public class SearchThingFragment extends Fragment {
     private RecyclerView mRecyclerView;
     private SearchThingAdapter mAdapter;
+    private SwipeRefreshLayout mSearchThingRefreshLayout;
     private List<SearchThing> mSearchThings;
 
     @Nullable
@@ -94,6 +97,10 @@ public class SearchThingFragment extends Fragment {
         mRecyclerView = (RecyclerView) view.findViewById(R.id.fragment_search_thing_main_recycler_view);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         setupAdapter(DataServer.getSearchThingData(20));
+
+        mSearchThingRefreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.search_thing_refresh_layout);
+        mSearchThingRefreshLayout.setColorSchemeResources(R.color.colorPrimary);
+        initRefreshLayout();
 
         return view;
     }
@@ -115,6 +122,38 @@ public class SearchThingFragment extends Fragment {
         mAdapter.addHeaderView(view);
 
         mRecyclerView.setAdapter(mAdapter);
+    }
+
+    private void initRefreshLayout() {
+        mSearchThingRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                refresh();
+            }
+        });
+    }
+
+    private void refresh() {
+        mAdapter.setEnableLoadMore(false);//这里的作用是防止下拉刷新的时候还可以上拉加载
+        new RequestSearchThing(new RequestSearchThingCallBack() {
+            @Override
+            public void success(List<SearchThing> data) {
+                Toast.makeText(getActivity(), "Refresh finished! ", Toast.LENGTH_SHORT).show();
+                //do something
+                setupAdapter(data);
+
+                mAdapter.setEnableLoadMore(true);
+                mSearchThingRefreshLayout.setRefreshing(false);
+            }
+
+            @Override
+            public void fail(Exception e) {
+                Toast.makeText(getActivity(), "Network error! ", Toast.LENGTH_SHORT).show();
+
+                mAdapter.setEnableLoadMore(true);
+                mSearchThingRefreshLayout.setRefreshing(false);
+            }
+        }).start();
     }
 }
 
