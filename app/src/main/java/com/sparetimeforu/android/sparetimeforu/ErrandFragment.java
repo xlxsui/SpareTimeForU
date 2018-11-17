@@ -121,11 +121,11 @@ public class ErrandFragment extends Fragment {
         mAdapter.openLoadAnimation(BaseQuickAdapter.SLIDEIN_LEFT);
         mAdapter.isFirstOnly(false);
 
-        //set main fragment header
+        //set main fragment header_errand
         View view = getLayoutInflater().inflate(R.layout.header_main_fragment,
                 (ViewGroup) mRecyclerView.getParent(), false);
         ImageView img = (ImageView) view.findViewById(R.id.header_main_fragment);
-        Picasso.get().load(R.drawable.header)
+        Picasso.get().load(R.drawable.header_errand)
                 .resize(1080, 512)
                 .centerCrop()
                 .into(img);

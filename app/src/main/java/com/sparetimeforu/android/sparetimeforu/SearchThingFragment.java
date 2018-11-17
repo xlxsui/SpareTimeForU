@@ -5,7 +5,6 @@ import android.os.Handler;
 import android.os.Looper;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -14,9 +13,9 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 
 import com.chad.library.adapter.base.BaseQuickAdapter;
-import com.sparetimeforu.android.sparetimeforu.adapter.IdleThingAdapter;
+import com.sparetimeforu.android.sparetimeforu.adapter.SearchThingAdapter;
 import com.sparetimeforu.android.sparetimeforu.data.DataServer;
-import com.sparetimeforu.android.sparetimeforu.entity.IdleThing;
+import com.sparetimeforu.android.sparetimeforu.entity.SearchThing;
 import com.squareup.picasso.Picasso;
 
 import java.util.List;
@@ -24,21 +23,21 @@ import java.util.Random;
 
 /**
  * SpareTimeForU
- * Created by Jin on 2018/11/14.
+ * Created by Jin on 2018/11/17.
  */
 
-interface RequestIdleThingCallBack {
-    void success(List<IdleThing> data);
+interface RequestSearchThingCallBack {
+    void success(List<SearchThing> data);
 
     void fail(Exception e);
 }
 
-class RequestIdleThing extends Thread {
-    private RequestIdleThingCallBack mCallBack;
+class RequestSearchThing extends Thread {
+    private RequestSearchThingCallBack mCallBack;
     private Handler mHandler;
 
 
-    public RequestIdleThing(RequestIdleThingCallBack callBack) {
+    public RequestSearchThing(RequestSearchThingCallBack callBack) {
         mCallBack = callBack;
         mHandler = new Handler(Looper.getMainLooper());
     }
@@ -65,7 +64,7 @@ class RequestIdleThing extends Thread {
                 mHandler.post(new Runnable() {
                     @Override
                     public void run() {
-                        mCallBack.success(DataServer.getIdleThingData(15));
+                        mCallBack.success(DataServer.getSearchThingData(15));
                     }
                 });
                 break;
@@ -73,7 +72,7 @@ class RequestIdleThing extends Thread {
                 mHandler.post(new Runnable() {
                     @Override
                     public void run() {
-                        mCallBack.success(DataServer.getIdleThingData(15));
+                        mCallBack.success(DataServer.getSearchThingData(15));
                     }
                 });
                 break;
@@ -82,27 +81,25 @@ class RequestIdleThing extends Thread {
     }
 }
 
-
-public class IdleThingFragment extends Fragment {
-
+public class SearchThingFragment extends Fragment {
     private RecyclerView mRecyclerView;
-    private IdleThingAdapter mAdapter;
-    private List<IdleThing> mIdleThings;
-    private SwipeRefreshLayout mIdleThingRefreshLayout;
+    private SearchThingAdapter mAdapter;
+    private List<SearchThing> mSearchThings;
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_idle_thing_main, container, false);
-        mRecyclerView = (RecyclerView) view.findViewById(R.id.fragment_idle_thing_main_recycler_view);
+        View view = inflater.inflate(R.layout.fragment_search_thing_main, container, false);
+        mRecyclerView = (RecyclerView) view.findViewById(R.id.fragment_search_thing_main_recycler_view);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-        setupAdapter(DataServer.getIdleThingData(34));
+        setupAdapter(DataServer.getSearchThingData(20));
 
         return view;
     }
 
-    private void setupAdapter(List<IdleThing> idleThingData) {
-        mAdapter = new IdleThingAdapter(idleThingData);
+    private void setupAdapter(List<SearchThing> searchThings) {
+        mAdapter = new SearchThingAdapter(searchThings);
+
         mAdapter.openLoadAnimation(BaseQuickAdapter.SLIDEIN_LEFT);
         mAdapter.isFirstOnly(false);
 
@@ -110,7 +107,7 @@ public class IdleThingFragment extends Fragment {
         View view = getLayoutInflater().inflate(R.layout.header_main_fragment,
                 (ViewGroup) mRecyclerView.getParent(), false);
         ImageView img = (ImageView) view.findViewById(R.id.header_main_fragment);
-        Picasso.get().load(R.drawable.header_idle_thing)
+        Picasso.get().load(R.drawable.header_search_thing)
                 .resize(1080, 512)
                 .centerCrop()
                 .into(img);
@@ -118,6 +115,18 @@ public class IdleThingFragment extends Fragment {
 
         mRecyclerView.setAdapter(mAdapter);
     }
-
-
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+

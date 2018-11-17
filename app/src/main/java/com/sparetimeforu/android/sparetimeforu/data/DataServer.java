@@ -7,6 +7,7 @@ package com.sparetimeforu.android.sparetimeforu.data;
 
 import com.sparetimeforu.android.sparetimeforu.entity.Errand;
 import com.sparetimeforu.android.sparetimeforu.entity.IdleThing;
+import com.sparetimeforu.android.sparetimeforu.entity.SearchThing;
 import com.sparetimeforu.android.sparetimeforu.entity.Study;
 
 import java.util.ArrayList;
@@ -51,6 +52,16 @@ public class DataServer {
         }
         return list;
 
+    }
+
+    public static List<SearchThing> getSearchThingData(int length) {
+        List<SearchThing> list = new ArrayList<>();
+        for (int i = 0; i < length; i++) {
+            SearchThing searchThing = new SearchThing();
+
+            list.add(searchThing);
+        }
+        return list;
     }
 
 }
