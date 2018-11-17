@@ -67,6 +67,7 @@ public class PersonalFragment extends Fragment {
                     @Override
                     public void run() {
                         Toast.makeText(getContext(),"获取数据失败",Toast.LENGTH_SHORT).show();
+
                     }
                 });
             }
@@ -98,7 +99,7 @@ public class PersonalFragment extends Fragment {
 
     private void setUI(){
         personal_nickname.setText(user.getNick_name());
-        personal_favourable_rate.setText(user.getFavourable_rate()+"%");
+        personal_favourable_rate.setText("好评率"+user.getFavourable_rate()+"%");
         personal_signate.setText(user.getSignate());
     }
 
