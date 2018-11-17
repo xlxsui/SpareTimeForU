@@ -1,14 +1,13 @@
-package com.sparetimeforu.android.sparetimeforu;
+package com.sparetimeforu.android.sparetimeforu.activity;
 
-import android.app.Activity;
-import android.content.Context;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
-import android.util.AttributeSet;
-import android.view.View;
+
+import com.sparetimeforu.android.sparetimeforu.R;
+import com.sparetimeforu.android.sparetimeforu.fragment.PersonalFragment;
 
 /**
  * Created by HQY on 2018/11/15.

@@ -1,4 +1,4 @@
-package com.sparetimeforu.android.sparetimeforu;
+package com.sparetimeforu.android.sparetimeforu.fragment;
 
 import android.content.Context;
 import android.content.Intent;
@@ -24,10 +24,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.orhanobut.logger.Logger;
-import com.sparetimeforu.android.sparetimeforu.fragment.ErrandFragment;
-import com.sparetimeforu.android.sparetimeforu.fragment.IdleThingFragment;
-import com.sparetimeforu.android.sparetimeforu.fragment.SearchThingFragment;
-import com.sparetimeforu.android.sparetimeforu.fragment.StudyFragment;
+import com.sparetimeforu.android.sparetimeforu.activity.PersonalActivity;
+import com.sparetimeforu.android.sparetimeforu.R;
 
 import java.io.IOException;
 import java.io.InputStream;

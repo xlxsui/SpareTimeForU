@@ -1,4 +1,4 @@
-package com.sparetimeforu.android.sparetimeforu;
+package com.sparetimeforu.android.sparetimeforu.fragment;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -12,6 +12,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.sparetimeforu.android.sparetimeforu.R;
 import com.sparetimeforu.android.sparetimeforu.ServerConnection.OkHttpUtil;
 import com.sparetimeforu.android.sparetimeforu.user.User;
 import com.sparetimeforu.android.sparetimeforu.util.HandleMessageUtil;
