@@ -25,9 +25,9 @@ public class OkHttpUtil {
     /*
     ** 发送数据到服务器，获取登陆数据
      */
-    public static void sendLoginOkHttpRequest(String adress, Callback callback){
+    public static void sendLoginOkHttpRequest(String address, Callback callback){
         OkHttpClient okHttpClient=new OkHttpClient();
-        Request request=new Request.Builder().url(adress).build();
+        Request request=new Request.Builder().url(address).build();
         okHttpClient.newCall(request).enqueue(callback);
     }
 }

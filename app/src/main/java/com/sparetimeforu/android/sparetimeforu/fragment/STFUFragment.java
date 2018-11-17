@@ -1,4 +1,4 @@
-package com.sparetimeforu.android.sparetimeforu;
+package com.sparetimeforu.android.sparetimeforu.fragment;
 
 import android.content.Context;
 import android.content.Intent;
@@ -23,11 +23,9 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-//import com.orhanobut.logger.Logger;
-import com.sparetimeforu.android.sparetimeforu.fragment.ErrandFragment;
-import com.sparetimeforu.android.sparetimeforu.fragment.IdleThingFragment;
-import com.sparetimeforu.android.sparetimeforu.fragment.SearchThingFragment;
-import com.sparetimeforu.android.sparetimeforu.fragment.StudyFragment;
+import com.orhanobut.logger.Logger;
+import com.sparetimeforu.android.sparetimeforu.activity.PersonalActivity;
+import com.sparetimeforu.android.sparetimeforu.R;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -89,8 +87,6 @@ public class STFUFragment extends Fragment {
                 Toast.makeText(getActivity(), "Spare time for you!",
                         Toast.LENGTH_SHORT)
                         .show();
-                Intent intent=new Intent(getActivity(),PersonalActivity.class);
-                startActivity(intent);
             }
         });
 
@@ -150,16 +146,15 @@ public class STFUFragment extends Fragment {
             Drawable avatar = Drawable.createFromStream(ims, null);
             mAvatar.setImageDrawable(avatar);
         } catch (IOException e) {
-          //  Logger.e("onCreateView: ", e);
+            Logger.e("onCreateView: ", e);
         }
         mAvatar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //进入个人页面
-                Intent intent=new Intent(getContext(),PersonalActivity.class);
+                Toast.makeText(getActivity(), "Avatar", Toast.LENGTH_SHORT)
+                        .show();
+                Intent intent = new Intent(getActivity(), PersonalActivity.class);
                 startActivity(intent);
-
-
             }
         });
 
@@ -243,7 +238,7 @@ public class STFUFragment extends Fragment {
         mFm.beginTransaction()
                 .replace(R.id.main_fragment, mErrandFragment)
                 .commit();
-      //  Logger.d("load errand fragment");
+        Logger.d("load errand fragment");
     }
 
     public void loadIdleThingFragment() {

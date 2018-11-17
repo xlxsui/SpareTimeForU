@@ -4,7 +4,6 @@ import android.text.TextUtils;
 
 import com.sparetimeforu.android.sparetimeforu.user.User;
 
-import org.json.JSONArray;
 import org.json.JSONObject;
 
 /**
@@ -24,7 +23,7 @@ public class HandleMessageUtil {
                 JSONObject userObject=new JSONObject(object1.getString("data"));
                 User user=new User();
                 user.setNick_name(userObject.getString("nickname"));
-                user.setSignate(userObject.getString("personal_signate"));
+                user.setSignature(userObject.getString("personal_signate"));
                 user.setFavourable_rate(userObject.getString("favourable_rate"));
                 user.setPicUrl(userObject.getString("photo_location"));
 

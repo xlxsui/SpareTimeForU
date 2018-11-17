@@ -9,7 +9,7 @@ package com.sparetimeforu.android.sparetimeforu.user;
 public class User {
 
     private String nick_name;
-    private String signate;
+    private String signature;
     private String picUrl;
     private String favourable_rate;
 
@@ -21,12 +21,12 @@ public class User {
         this.nick_name = nick_name;
     }
 
-    public String getSignate() {
-        return signate;
+    public String getSignature() {
+        return signature;
     }
 
-    public void setSignate(String signate) {
-        this.signate = signate;
+    public void setSignature(String signature) {
+        this.signature = signature;
     }
 
     public String getPicUrl() {

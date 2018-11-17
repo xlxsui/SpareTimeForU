@@ -1,4 +1,4 @@
-package com.sparetimeforu.android.sparetimeforu;
+package com.sparetimeforu.android.sparetimeforu.fragment;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -12,6 +12,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.sparetimeforu.android.sparetimeforu.R;
 import com.sparetimeforu.android.sparetimeforu.ServerConnection.OkHttpUtil;
 import com.sparetimeforu.android.sparetimeforu.user.User;
 import com.sparetimeforu.android.sparetimeforu.util.HandleMessageUtil;
@@ -67,7 +68,6 @@ public class PersonalFragment extends Fragment {
                     @Override
                     public void run() {
                         Toast.makeText(getContext(),"获取数据失败",Toast.LENGTH_SHORT).show();
-
                     }
                 });
             }
@@ -99,8 +99,8 @@ public class PersonalFragment extends Fragment {
 
     private void setUI(){
         personal_nickname.setText(user.getNick_name());
-        personal_favourable_rate.setText("好评率"+user.getFavourable_rate()+"%");
-        personal_signate.setText(user.getSignate());
+        personal_favourable_rate.setText(user.getFavourable_rate()+"%");
+        personal_signate.setText(user.getSignature());
     }
 
 
