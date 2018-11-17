@@ -1,6 +1,7 @@
 package com.sparetimeforu.android.sparetimeforu;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -154,6 +155,8 @@ public class STFUFragment extends Fragment {
             public void onClick(View v) {
                 Toast.makeText(getActivity(), "Avatar", Toast.LENGTH_SHORT)
                         .show();
+                Intent intent = new Intent(getActivity(), PersonalActivity.class);
+                startActivity(intent);
             }
         });
 

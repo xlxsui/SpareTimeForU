@@ -99,7 +99,7 @@ public class PersonalFragment extends Fragment {
     private void setUI(){
         personal_nickname.setText(user.getNick_name());
         personal_favourable_rate.setText(user.getFavourable_rate()+"%");
-        personal_signate.setText(user.getSignate());
+        personal_signate.setText(user.getSignature());
     }
 
 
