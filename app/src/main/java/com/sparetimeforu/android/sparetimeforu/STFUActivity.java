@@ -11,11 +11,16 @@ import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 
+import com.orhanobut.logger.AndroidLogAdapter;
+import com.orhanobut.logger.Logger;
+
+
 public class STFUActivity extends SingleFragmentActivity {
 
 
     @Override
     protected Fragment createFragment() {
+        Logger.addLogAdapter(new AndroidLogAdapter());
         return STFUFragment.newInstance();
     }
 

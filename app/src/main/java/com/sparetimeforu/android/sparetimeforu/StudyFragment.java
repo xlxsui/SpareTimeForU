@@ -14,9 +14,9 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 
 import com.chad.library.adapter.base.BaseQuickAdapter;
-import com.sparetimeforu.android.sparetimeforu.adapter.IdleThingAdapter;
+import com.sparetimeforu.android.sparetimeforu.adapter.StudyAdapter;
 import com.sparetimeforu.android.sparetimeforu.data.DataServer;
-import com.sparetimeforu.android.sparetimeforu.entity.IdleThing;
+import com.sparetimeforu.android.sparetimeforu.entity.Study;
 import com.squareup.picasso.Picasso;
 
 import java.util.List;
@@ -24,21 +24,21 @@ import java.util.Random;
 
 /**
  * SpareTimeForU
- * Created by Jin on 2018/11/14.
+ * Created by Jin on 2018/11/17.
  */
 
-interface RequestIdleThingCallBack {
-    void success(List<IdleThing> data);
+interface RequestStudyCallBack {
+    void success(List<Study> data);
 
     void fail(Exception e);
 }
 
-class RequestIdleThing extends Thread {
-    private RequestIdleThingCallBack mCallBack;
+class RequestStudy extends Thread {
+    private RequestStudyCallBack mCallBack;
     private Handler mHandler;
 
 
-    public RequestIdleThing(RequestIdleThingCallBack callBack) {
+    public RequestStudy(RequestStudyCallBack callBack) {
         mCallBack = callBack;
         mHandler = new Handler(Looper.getMainLooper());
     }
@@ -65,7 +65,7 @@ class RequestIdleThing extends Thread {
                 mHandler.post(new Runnable() {
                     @Override
                     public void run() {
-                        mCallBack.success(DataServer.getIdleThingData(15));
+                        mCallBack.success(DataServer.getStudyData(15));
                     }
                 });
                 break;
@@ -73,7 +73,7 @@ class RequestIdleThing extends Thread {
                 mHandler.post(new Runnable() {
                     @Override
                     public void run() {
-                        mCallBack.success(DataServer.getIdleThingData(15));
+                        mCallBack.success(DataServer.getStudyData(15));
                     }
                 });
                 break;
@@ -82,27 +82,26 @@ class RequestIdleThing extends Thread {
     }
 }
 
-
-public class IdleThingFragment extends Fragment {
-
+public class StudyFragment extends Fragment {
     private RecyclerView mRecyclerView;
-    private IdleThingAdapter mAdapter;
-    private List<IdleThing> mIdleThings;
-    private SwipeRefreshLayout mIdleThingRefreshLayout;
+    private StudyAdapter mAdapter;
+    private List<Study> mStudies;
+    private SwipeRefreshLayout mStudyRefreshLayout;
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_idle_thing_main, container, false);
-        mRecyclerView = (RecyclerView) view.findViewById(R.id.fragment_idle_thing_main_recycler_view);
+        View view = inflater.inflate(R.layout.fragment_study_main, container, false);
+        mRecyclerView = (RecyclerView) view.findViewById(R.id.fragment_study_main_recycler_view);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-        setupAdapter(DataServer.getIdleThingData(34));
+        setupAdapter(DataServer.getStudyData(15));
+
 
         return view;
     }
 
-    private void setupAdapter(List<IdleThing> idleThingData) {
-        mAdapter = new IdleThingAdapter(idleThingData);
+    private void setupAdapter(List<Study> studies) {
+        mAdapter = new StudyAdapter(studies);
         mAdapter.openLoadAnimation(BaseQuickAdapter.SLIDEIN_LEFT);
         mAdapter.isFirstOnly(false);
 
@@ -110,7 +109,7 @@ public class IdleThingFragment extends Fragment {
         View view = getLayoutInflater().inflate(R.layout.header_main_fragment,
                 (ViewGroup) mRecyclerView.getParent(), false);
         ImageView img = (ImageView) view.findViewById(R.id.header_main_fragment);
-        Picasso.get().load(R.drawable.header_idle_thing)
+        Picasso.get().load(R.drawable.header_study)
                 .resize(1080, 512)
                 .centerCrop()
                 .into(img);
@@ -121,3 +120,36 @@ public class IdleThingFragment extends Fragment {
 
 
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

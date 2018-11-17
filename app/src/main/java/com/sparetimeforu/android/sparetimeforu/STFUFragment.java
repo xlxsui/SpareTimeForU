@@ -27,6 +27,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.orhanobut.logger.Logger;
+
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -110,22 +112,16 @@ public class STFUFragment extends Fragment {
 
                         switch (item.getItemId()) {
                             case R.id.navigation_errand:
-                                Toast.makeText(getActivity(), item.getTitle(), Toast.LENGTH_SHORT)
-                                        .show();
                                 loadErrandFragment();
                                 return true;
                             case R.id.navigation_second_hand:
-                                Toast.makeText(getActivity(), item.getTitle(), Toast.LENGTH_SHORT)
-                                        .show();
                                 loadIdleThingFragment();
                                 return true;
                             case R.id.navigation_study:
-                                Toast.makeText(getActivity(), item.getTitle(), Toast.LENGTH_SHORT)
-                                        .show();
+                                loadStudyFragment();
                                 return true;
                             case R.id.navigation_search:
-                                Toast.makeText(getActivity(), item.getTitle(), Toast.LENGTH_SHORT)
-                                        .show();
+                                loadSearchThingFragment();
                                 return true;
                         }
                         return false;
@@ -155,7 +151,7 @@ public class STFUFragment extends Fragment {
             Drawable avatar = Drawable.createFromStream(ims, null);
             mAvatar.setImageDrawable(avatar);
         } catch (IOException e) {
-            Log.e(TAG, "onCreateView: ", e);
+            Logger.e("onCreateView: ", e);
         }
         mAvatar.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -205,12 +201,17 @@ public class STFUFragment extends Fragment {
                 case R.id.navigation_second_hand:
                     loadIdleThingFragment();
                     break;
+                case R.id.navigation_study:
+                    loadStudyFragment();
+                    break;
+                case R.id.navigation_search:
+                    loadSearchThingFragment();
+                    break;
                 default:
                     loadErrandFragment();
                     break;
             }
         }
-
 
 
         return view;
@@ -220,7 +221,7 @@ public class STFUFragment extends Fragment {
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         //bind the fragment with bottom navigation item
-        outState.putInt(CURRENT_BOTTOM_ITEM,mBottomNavigationView.getSelectedItemId());
+        outState.putInt(CURRENT_BOTTOM_ITEM, mBottomNavigationView.getSelectedItemId());
     }
 
     /**
@@ -230,7 +231,7 @@ public class STFUFragment extends Fragment {
         LayoutInflater inflater = (LayoutInflater) ((AppCompatActivity) getActivity())
                 .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         //把layout生成一个view对象
-        View view = inflater.inflate(R.layout.fragment_errand, mMainFragmentLayout);
+        inflater.inflate(R.layout.fragment_errand, mMainFragmentLayout);
         mErrandFragment = mFm.findFragmentById(R.id.errand_container);
 
         if (mErrandFragment == null) {
@@ -240,13 +241,14 @@ public class STFUFragment extends Fragment {
         mFm.beginTransaction()
                 .replace(R.id.main_fragment, mErrandFragment)
                 .commit();
+        Logger.d("load errand fragment");
     }
 
     public void loadIdleThingFragment() {
         LayoutInflater inflater = (LayoutInflater) ((AppCompatActivity) getActivity())
                 .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         //把layout生成一个view对象
-        View view = inflater.inflate(R.layout.fragment_idle_thing, mMainFragmentLayout);
+        inflater.inflate(R.layout.fragment_idle_thing, mMainFragmentLayout);
         mIdleThingFragment = mFm.findFragmentById(R.id.idle_thing_container);
         if (mIdleThingFragment == null) {
             mIdleThingFragment = new IdleThingFragment();
@@ -257,10 +259,31 @@ public class STFUFragment extends Fragment {
     }
 
     public void loadStudyFragment() {
+        LayoutInflater inflater = (LayoutInflater) ((AppCompatActivity) getActivity())
+                .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        //把layout生成一个view对象
+        inflater.inflate(R.layout.fragment_study, mMainFragmentLayout);
+        mStudyFragment = mFm.findFragmentById(R.id.study_container);
+        if (mStudyFragment == null) {
+            mStudyFragment = new StudyFragment();
+        }
 
+        mFm.beginTransaction()
+                .replace(R.id.main_fragment, mStudyFragment)
+                .commit();
     }
 
     public void loadSearchThingFragment() {
+        LayoutInflater inflater = (LayoutInflater) ((AppCompatActivity) getActivity())
+                .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        inflater.inflate(R.layout.fragment_search_thing, mMainFragmentLayout);
+        mSearchThingFragment = mFm.findFragmentById(R.id.search_thing_container);
+        if (mSearchThingFragment == null) {
+            mSearchThingFragment = new SearchThingFragment();
+        }
+        mFm.beginTransaction()
+                .replace(R.id.main_fragment, mSearchThingFragment)
+                .commit();
 
     }
 
