@@ -1,7 +1,8 @@
-package com.sparetimeforu.android.sparetimeforu.recycler.view.item;
+package com.sparetimeforu.android.sparetimeforu.entity;
 
 import com.sparetimeforu.android.sparetimeforu.user.User;
 
+import java.util.Arrays;
 import java.util.Date;
 import java.util.UUID;
 
@@ -88,5 +89,19 @@ public class Errand {
 
     public void setDeadline(Date deadline) {
         mDeadline = deadline;
+    }
+
+    @Override
+    public String toString() {
+        return "Errand{" +
+                "mUUID=" + mUUID +
+                ", mUser=" + mUser +
+                ", mReward=" + mReward +
+                ", mOrigin='" + mOrigin + '\'' +
+                ", mDestination='" + mDestination + '\'' +
+                ", mCaption='" + mCaption + '\'' +
+                ", mPictureURLs=" + Arrays.toString(mPictureURLs) +
+                ", mDeadline=" + mDeadline +
+                '}';
     }
 }

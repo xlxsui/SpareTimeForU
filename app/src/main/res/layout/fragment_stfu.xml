@@ -37,7 +37,7 @@
         android:layout_height="match_parent"
         android:layout_gravity="start"
         android:fitsSystemWindows="true"
-        app:headerLayout="@layout/slide_menu_header"
+        app:headerLayout="@layout/header_slide_menu"
         app:menu="@menu/slider_menu"/>
 
 

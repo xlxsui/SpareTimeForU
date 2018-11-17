@@ -1,6 +1,5 @@
 package com.sparetimeforu.android.sparetimeforu.adapter;
 
-import android.content.Context;
 import android.graphics.drawable.Drawable;
 import android.util.Log;
 import android.view.View;
@@ -13,22 +12,24 @@ import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.BaseViewHolder;
 import com.sparetimeforu.android.sparetimeforu.R;
 import com.sparetimeforu.android.sparetimeforu.data.DataServer;
-import com.sparetimeforu.android.sparetimeforu.entity.Status;
+import com.sparetimeforu.android.sparetimeforu.entity.Errand;
 import com.squareup.picasso.Picasso;
 
-import java.io.File;
-import java.io.IOException;
+
 import java.io.InputStream;
+import java.util.List;
 import java.util.Random;
 
 /**
  * Created by Jin on 2018/11/13.
+ * <p>
+ * SpareTimeForU
  */
 
-public class ErrandAdapter extends BaseQuickAdapter<Status, BaseViewHolder> {
+public class ErrandAdapter extends BaseQuickAdapter<Errand, BaseViewHolder> {
 
-    public ErrandAdapter() {
-        super(R.layout.errand_item, DataServer.getSampleData(20));
+    public ErrandAdapter(List<Errand> errands) {
+        super(R.layout.item_errand, errands);
 
         ErrandAdapter.this.setOnItemClickListener(new OnItemClickListener() {
             @Override
@@ -53,8 +54,6 @@ public class ErrandAdapter extends BaseQuickAdapter<Status, BaseViewHolder> {
                     case R.id.errand_comment:
                         Toast.makeText(mContext, "You clicked the comment! ", Toast.LENGTH_SHORT).show();
                         break;
-
-
                 }
             }
         });
@@ -62,7 +61,7 @@ public class ErrandAdapter extends BaseQuickAdapter<Status, BaseViewHolder> {
     }
 
     @Override
-    protected void convert(BaseViewHolder helper, Status item) {
+    protected void convert(BaseViewHolder helper, Errand item) {
         ImageView avatar = (ImageView) helper.getView(R.id.errand_avatar);
         TextView nickName = (TextView) helper.getView(R.id.errand_nick_name);
         TextView grade = ((TextView) helper.getView(R.id.errand_grade));
@@ -83,6 +82,7 @@ public class ErrandAdapter extends BaseQuickAdapter<Status, BaseViewHolder> {
                 .addOnClickListener(R.id.errand_share)
                 .addOnClickListener(R.id.errand_like)
                 .addOnClickListener(R.id.errand_comment);
+
 
         //set avatar img
         InputStream ims;
@@ -119,7 +119,7 @@ public class ErrandAdapter extends BaseQuickAdapter<Status, BaseViewHolder> {
         }
 
         Picasso.get()
-                .load("https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1542139840153&di=1f716977865a2b9ad447528600700bd3&imgtype=0&src=http%3A%2F%2Fimgsrc.baidu.com%2Fimgad%2Fpic%2Fitem%2F35a85edf8db1cb13c2ff03dad754564e93584b60.jpg")
+                .load("file:///android_asset/temp/temp4.png")
                 .resize(200, 200)
                 .centerCrop()
                 .into(p1);
@@ -134,6 +134,5 @@ public class ErrandAdapter extends BaseQuickAdapter<Status, BaseViewHolder> {
                 .centerCrop()
                 .into(p3);
     }
-
 
 }
