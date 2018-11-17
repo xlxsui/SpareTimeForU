@@ -1,4 +1,4 @@
-package com.sparetimeforu.android.sparetimeforu;
+package com.sparetimeforu.android.sparetimeforu.fragment;
 
 import android.os.Bundle;
 import android.os.Handler;
@@ -14,9 +14,10 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 
 import com.chad.library.adapter.base.BaseQuickAdapter;
-import com.sparetimeforu.android.sparetimeforu.adapter.StudyAdapter;
+import com.sparetimeforu.android.sparetimeforu.R;
+import com.sparetimeforu.android.sparetimeforu.adapter.IdleThingAdapter;
 import com.sparetimeforu.android.sparetimeforu.data.DataServer;
-import com.sparetimeforu.android.sparetimeforu.entity.Study;
+import com.sparetimeforu.android.sparetimeforu.entity.IdleThing;
 import com.squareup.picasso.Picasso;
 
 import java.util.List;
@@ -24,21 +25,21 @@ import java.util.Random;
 
 /**
  * SpareTimeForU
- * Created by Jin on 2018/11/17.
+ * Created by Jin on 2018/11/14.
  */
 
-interface RequestStudyCallBack {
-    void success(List<Study> data);
+interface RequestIdleThingCallBack {
+    void success(List<IdleThing> data);
 
     void fail(Exception e);
 }
 
-class RequestStudy extends Thread {
-    private RequestStudyCallBack mCallBack;
+class RequestIdleThing extends Thread {
+    private RequestIdleThingCallBack mCallBack;
     private Handler mHandler;
 
 
-    public RequestStudy(RequestStudyCallBack callBack) {
+    public RequestIdleThing(RequestIdleThingCallBack callBack) {
         mCallBack = callBack;
         mHandler = new Handler(Looper.getMainLooper());
     }
@@ -65,7 +66,7 @@ class RequestStudy extends Thread {
                 mHandler.post(new Runnable() {
                     @Override
                     public void run() {
-                        mCallBack.success(DataServer.getStudyData(15));
+                        mCallBack.success(DataServer.getIdleThingData(15));
                     }
                 });
                 break;
@@ -73,7 +74,7 @@ class RequestStudy extends Thread {
                 mHandler.post(new Runnable() {
                     @Override
                     public void run() {
-                        mCallBack.success(DataServer.getStudyData(15));
+                        mCallBack.success(DataServer.getIdleThingData(15));
                     }
                 });
                 break;
@@ -82,26 +83,27 @@ class RequestStudy extends Thread {
     }
 }
 
-public class StudyFragment extends Fragment {
+
+public class IdleThingFragment extends Fragment {
+
     private RecyclerView mRecyclerView;
-    private StudyAdapter mAdapter;
-    private List<Study> mStudies;
-    private SwipeRefreshLayout mStudyRefreshLayout;
+    private IdleThingAdapter mAdapter;
+    private List<IdleThing> mIdleThings;
+    private SwipeRefreshLayout mIdleThingRefreshLayout;
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_study_main, container, false);
-        mRecyclerView = (RecyclerView) view.findViewById(R.id.fragment_study_main_recycler_view);
+        View view = inflater.inflate(R.layout.fragment_idle_thing_main, container, false);
+        mRecyclerView = (RecyclerView) view.findViewById(R.id.fragment_idle_thing_main_recycler_view);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-        setupAdapter(DataServer.getStudyData(15));
-
+        setupAdapter(DataServer.getIdleThingData(34));
 
         return view;
     }
 
-    private void setupAdapter(List<Study> studies) {
-        mAdapter = new StudyAdapter(studies);
+    private void setupAdapter(List<IdleThing> idleThingData) {
+        mAdapter = new IdleThingAdapter(idleThingData);
         mAdapter.openLoadAnimation(BaseQuickAdapter.SLIDEIN_LEFT);
         mAdapter.isFirstOnly(false);
 
@@ -109,7 +111,7 @@ public class StudyFragment extends Fragment {
         View view = getLayoutInflater().inflate(R.layout.header_main_fragment,
                 (ViewGroup) mRecyclerView.getParent(), false);
         ImageView img = (ImageView) view.findViewById(R.id.header_main_fragment);
-        Picasso.get().load(R.drawable.header_study)
+        Picasso.get().load(R.drawable.header_idle_thing)
                 .resize(1080, 512)
                 .centerCrop()
                 .into(img);
@@ -120,36 +122,3 @@ public class StudyFragment extends Fragment {
 
 
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
