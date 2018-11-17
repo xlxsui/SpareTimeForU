@@ -38,9 +38,7 @@ public class User {
     }
 
     public String getFavourable_rate() {
-        if(true)
         return favourable_rate;
-        else return favourable_rate;
     }
 
     public void setFavourable_rate(String favourable_rate) {
