@@ -4,6 +4,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
+import android.widget.Toast;
 
 import com.orhanobut.logger.AndroidLogAdapter;
 import com.orhanobut.logger.Logger;
@@ -12,6 +13,7 @@ import com.sparetimeforu.android.sparetimeforu.fragment.STFUFragment;
 
 
 public class STFUActivity extends SingleFragmentActivity {
+    private long exitTime;
 
 
     @Override
@@ -29,10 +31,21 @@ public class STFUActivity extends SingleFragmentActivity {
         if (drawerLayout.isDrawerOpen(GravityCompat.START)) {
             drawerLayout.closeDrawer(GravityCompat.START);
         } else {
-            super.onBackPressed();
+            exitApp();
         }
     }
 
+    /**
+     * 双击退出App
+     */
+    private void exitApp() {
+        if (System.currentTimeMillis() - exitTime > 2000) {
+            Toast.makeText(this, "再按一次退出", Toast.LENGTH_SHORT).show();
+            exitTime = System.currentTimeMillis();
+        } else {
+            finish();
+        }
+    }
 
 
 }

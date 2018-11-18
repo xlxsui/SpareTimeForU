@@ -1,0 +1,169 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#EAEAEA"
+    android:fitsSystemWindows="true"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <include layout="@layout/custom_toolbar_back" />
+    </LinearLayout>
+
+    <RelativeLayout
+        android:id="@+id/logo_11"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp">
+
+        <ImageView
+            android:id="@+id/ic_icon_left"
+            android:layout_width="72dp"
+            android:layout_height="72dp"
+            android:layout_alignParentStart="true"
+            android:src="@drawable/ic_22" />
+
+        <ImageView
+            android:id="@+id/iv_icon_centre"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_centerVertical="true"
+            android:src="@drawable/ic_bili_logo" />
+
+        <ImageView
+            android:id="@+id/ic_icon_right"
+            android:layout_width="72dp"
+            android:layout_height="72dp"
+            android:layout_alignBottom="@+id/ic_icon_left"
+            android:layout_alignParentEnd="true"
+            android:src="@drawable/ic_33" />
+    </RelativeLayout>
+
+    <LinearLayout
+        android:id="@+id/login_ll"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="10dp"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:orientation="horizontal"
+            android:weightSum="1">
+
+            <ImageButton
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="0.08"
+                android:background="#fff"
+                android:padding="2dp"
+                android:scaleType="fitCenter"
+                android:src="@drawable/ic_login_username_default" />
+
+            <EditText
+                android:id="@+id/et_email"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_gravity="center_horizontal"
+                android:layout_weight="0.92"
+                android:background="#fff"
+                android:drawablePadding="10dp"
+                android:ellipsize="start"
+                android:hint="请输入您的汕大邮箱"
+                android:paddingStart="8dp"
+                android:singleLine="true"
+                android:textColor="#222222"
+                android:textColorHint="#B3B3B3"
+                android:textSize="16sp" />
+
+
+        </LinearLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="#e6e6e6" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:layout_marginTop="8dp"
+            android:weightSum="1">
+
+            <ImageButton
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="0.08"
+                android:background="#fff"
+                android:padding="2dp"
+                android:scaleType="fitCenter"
+                android:src="@drawable/ic_login_password_default" />
+
+            <EditText
+                android:id="@+id/et_password_login"
+                android:layout_width="0dp"
+                android:layout_height="48dp"
+                android:layout_gravity="center_horizontal"
+                android:layout_weight="0.92"
+                android:background="#fff"
+                android:drawablePadding="10dp"
+                android:hint="请输入您的密码"
+                android:inputType="textPassword"
+                android:maxLines="1"
+                android:paddingStart="8dp"
+                android:textColor="#222222"
+                android:textColorHint="#B3B3B3"
+                android:textSize="16sp"
+                tools:ignore="RtlSymmetry" />
+        </LinearLayout>
+
+    </LinearLayout>
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="16dp"
+        android:orientation="horizontal"
+        android:weightSum="1">
+
+        <Button
+            android:id="@+id/btn_sign_up"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_margin="2dp"
+            android:layout_weight="0.5"
+            android:background="@drawable/touch_bg"
+            android:gravity="center"
+            android:text="注册"
+            android:textColor="#fb7299"
+            android:textSize="16sp" />
+
+        <Button
+            android:id="@+id/btn_login"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_margin="2dp"
+            android:layout_weight="0.5"
+            android:background="@drawable/touch_bg_pink"
+            android:gravity="center"
+            android:text="登录"
+            android:textColor="#fff"
+            android:textSize="16sp" />
+    </LinearLayout>
+
+
+</LinearLayout>
+
