@@ -27,6 +27,7 @@ import com.orhanobut.logger.Logger;
 import com.sparetimeforu.android.sparetimeforu.activity.LoginActivity;
 import com.sparetimeforu.android.sparetimeforu.activity.PersonalActivity;
 import com.sparetimeforu.android.sparetimeforu.R;
+import com.sparetimeforu.android.sparetimeforu.user.User;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -48,6 +49,9 @@ public class STFUFragment extends Fragment {
     private DrawerLayout mDrawerLayout;
     private NavigationView mDrawerNavigationView;
     FragmentManager mFm;
+    private TextView slider_menu_signature,slider_menu_nick_name;
+
+    private User user;
 
     private static final String CURRENT_BOTTOM_ITEM = "current_bottom_item";
 
@@ -64,6 +68,12 @@ public class STFUFragment extends Fragment {
 
         final View view = inflater.inflate(R.layout.fragment_stfu, container, false);
         mFm = getActivity().getSupportFragmentManager();
+
+
+        /**
+         * refresh UI according to the user sent in
+         */
+
 
 
         /**
@@ -155,6 +165,7 @@ public class STFUFragment extends Fragment {
                 Toast.makeText(getActivity(), "Avatar", Toast.LENGTH_SHORT)
                         .show();
                 Intent intent = new Intent(getActivity(), PersonalActivity.class);
+                intent.putExtra("user",user);
                 startActivity(intent);
             }
         });
@@ -212,6 +223,9 @@ public class STFUFragment extends Fragment {
                     break;
             }
         }
+        slider_menu_nick_name=(TextView)mDrawerHeaderView.findViewById(R.id.slider_menu_nick_name);
+        slider_menu_signature=(TextView)mDrawerHeaderView.findViewById(R.id.slider_menu_signature);
+        setUI();
 
 
         return view;
@@ -285,6 +299,16 @@ public class STFUFragment extends Fragment {
                 .replace(R.id.main_fragment, mSearchThingFragment)
                 .commit();
 
+    }
+
+
+    private void setUI(){
+        Intent intent=getActivity().getIntent();
+        user=(User) intent.getSerializableExtra("user");
+        slider_menu_nick_name.setText(user.getNick_name());
+        slider_menu_signature.setText(user.getSignature());
+
+        //slider_menu_nick_name  slider_menu_signature
     }
 
 }

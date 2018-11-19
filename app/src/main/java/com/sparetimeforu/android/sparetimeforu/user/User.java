@@ -1,12 +1,14 @@
 package com.sparetimeforu.android.sparetimeforu.user;
 
+import java.io.Serializable;
+
 /**
  * SpareTimeForU
  * Created by Jin on 2018/11/4.
  *
  */
 
-public class User {
+public class User implements Serializable{
 
     private String nick_name;
     private String signature;
