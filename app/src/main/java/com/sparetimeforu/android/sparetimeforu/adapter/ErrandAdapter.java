@@ -101,7 +101,6 @@ public class ErrandAdapter extends BaseQuickAdapter<Errand, BaseViewHolder> {
 
         String str1 = "帮我去近邻宝拿个小姐姐！谢谢啦";
         String str2 = "去二饭帮忙打包一份猪脚饭！顺便加饭";
-
         String str3 = "有没有小哥哥或者小姐姐帮我去东门买两斤apple！辛苦啦";
         String str4 = "我感冒了，浑身没力，好难受，宿舍又没人。谁能帮我去校医院拿点感冒药，十分感谢";
         String str5 = "求一位小哥哥帮我去近邻宝抬个大包裹回来，谢谢啦";
