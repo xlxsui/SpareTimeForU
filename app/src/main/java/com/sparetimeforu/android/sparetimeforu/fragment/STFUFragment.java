@@ -24,6 +24,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.orhanobut.logger.Logger;
+import com.sparetimeforu.android.sparetimeforu.activity.LoginActivity;
 import com.sparetimeforu.android.sparetimeforu.activity.PersonalActivity;
 import com.sparetimeforu.android.sparetimeforu.R;
 
@@ -174,6 +175,8 @@ public class STFUFragment extends Fragment {
                     case R.id.slider_menu_login:
                         Toast.makeText(getActivity(), item.getTitle(), Toast.LENGTH_SHORT)
                                 .show();
+                        Intent intent = new Intent(getActivity(), LoginActivity.class);
+                        startActivity(intent);
                         break;
                     case R.id.slider_menu_exit:
                         getActivity().finish();

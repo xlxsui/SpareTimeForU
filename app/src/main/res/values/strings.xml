@@ -13,6 +13,7 @@
     <string name="exit">退出</string>
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
+    <string name="sign_up_email_hint">请输入您的汕大邮箱</string>
 
 
 </resources>

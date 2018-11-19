@@ -12,6 +12,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.sparetimeforu.android.sparetimeforu.R;
@@ -97,6 +98,9 @@ public class StudyFragment extends Fragment {
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         setupAdapter(DataServer.getStudyData(15));
 
+        mStudyRefreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.study_refresh_layout);
+        mStudyRefreshLayout.setColorSchemeResources(R.color.colorPrimary);
+        initRefreshLayout();
 
         return view;
     }
@@ -119,6 +123,37 @@ public class StudyFragment extends Fragment {
         mRecyclerView.setAdapter(mAdapter);
     }
 
+    private void initRefreshLayout() {
+        mStudyRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                refresh();
+            }
+        });
+    }
+
+    private void refresh() {
+        mAdapter.setEnableLoadMore(false);//这里的作用是防止下拉刷新的时候还可以上拉加载
+        new RequestStudy(new RequestStudyCallBack() {
+            @Override
+            public void success(List<Study> data) {
+                Toast.makeText(getActivity(), "Refresh finished! ", Toast.LENGTH_SHORT).show();
+                //do something
+                setupAdapter(data);
+
+                mAdapter.setEnableLoadMore(true);
+                mStudyRefreshLayout.setRefreshing(false);
+            }
+
+            @Override
+            public void fail(Exception e) {
+                Toast.makeText(getActivity(), "Network error! ", Toast.LENGTH_SHORT).show();
+
+                mAdapter.setEnableLoadMore(true);
+                mStudyRefreshLayout.setRefreshing(false);
+            }
+        }).start();
+    }
 
 }
 
