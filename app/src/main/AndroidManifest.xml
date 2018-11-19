@@ -19,7 +19,9 @@
             </intent-filter>
         </activity>
 
-        <activity android:name=".activity.PersonalActivity">
+        <activity android:name=".activity.PersonalActivity"
+            android:label="">
+
 
         </activity>
 
