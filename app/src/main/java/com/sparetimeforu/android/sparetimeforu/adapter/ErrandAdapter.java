@@ -1,5 +1,6 @@
 package com.sparetimeforu.android.sparetimeforu.adapter;
 
+import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.util.Log;
 import android.view.View;
@@ -11,6 +12,7 @@ import android.widget.Toast;
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.BaseViewHolder;
 import com.sparetimeforu.android.sparetimeforu.R;
+import com.sparetimeforu.android.sparetimeforu.activity.ErrandPostActivity;
 import com.sparetimeforu.android.sparetimeforu.data.DataServer;
 import com.sparetimeforu.android.sparetimeforu.entity.Errand;
 import com.squareup.picasso.Picasso;
@@ -36,6 +38,9 @@ public class ErrandAdapter extends BaseQuickAdapter<Errand, BaseViewHolder> {
             public void onItemClick(BaseQuickAdapter adapter, View view, int position) {
                 Log.d(TAG, "onItemClick: You clicked me");
                 Toast.makeText(mContext, "You clicked the item: " + position, Toast.LENGTH_SHORT).show();
+                Intent intent = new Intent(mContext, ErrandPostActivity.class);
+                mContext.startActivity(intent);
+
             }
         });
         ErrandAdapter.this.setOnItemChildClickListener(new OnItemChildClickListener() {

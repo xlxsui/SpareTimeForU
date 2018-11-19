@@ -180,6 +180,7 @@
                         android:id="@+id/search_thing_share"
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
+                        android:padding="4dp"
                         android:layout_weight="1"
                         android:background="@drawable/touch_bg"
                         android:src="@drawable/ic_share" />
@@ -187,6 +188,7 @@
                     <ImageView
                         android:id="@+id/search_thing_like"
                         android:layout_width="0dp"
+                        android:padding="4dp"
                         android:layout_height="match_parent"
                         android:layout_weight="1"
                         android:background="@drawable/touch_bg"
@@ -198,6 +200,7 @@
                         android:layout_height="match_parent"
                         android:layout_weight="1"
                         android:background="@drawable/touch_bg"
+                        android:padding="4dp"
                         android:orientation="vertical"
                         android:weightSum="3">
 

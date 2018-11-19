@@ -226,6 +226,7 @@
                     <ImageView
                         android:id="@+id/errand_share"
                         android:layout_width="0dp"
+                        android:padding="6dp"
                         android:layout_height="match_parent"
                         android:layout_weight="1"
                         android:background="@drawable/touch_bg"
@@ -234,6 +235,7 @@
                     <ImageView
                         android:id="@+id/errand_like"
                         android:layout_width="0dp"
+                        android:padding="6dp"
                         android:layout_height="match_parent"
                         android:layout_weight="1"
                         android:background="@drawable/touch_bg"
@@ -244,6 +246,7 @@
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
                         android:layout_weight="1"
+                        android:padding="6dp"
                         android:background="@drawable/touch_bg"
                         android:orientation="vertical"
                         android:weightSum="3">
