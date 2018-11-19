@@ -19,15 +19,23 @@ public class HandleMessageUtil {
     public static User handleLoginMessage(String response){
         if(!TextUtils.isEmpty(response)){
             try{
-                JSONObject object1=new JSONObject(response);
-                JSONObject userObject=new JSONObject(object1.getString("data"));
-                User user=new User();
-                user.setNick_name(userObject.getString("nickname"));
-                user.setSignature(userObject.getString("personal_signate"));
-                user.setFavourable_rate(userObject.getString("favourable_rate"));
-                user.setPicUrl(userObject.getString("photo_location"));
 
-                return user;
+
+
+                JSONObject object1=new JSONObject(response);
+                Boolean success=object1.getBoolean("success");
+                if(success) {
+                    JSONObject userObject = new JSONObject(object1.getString("data"));
+                    User user = new User();
+                    user.setNick_name(userObject.getString("nickname"));
+                    user.setSignature(userObject.getString("personal_signate"));
+                    user.setFavourable_rate(userObject.getString("favourable_rate"));
+                    user.setPicUrl(userObject.getString("photo_location"));
+
+                    return user;
+
+                }else return null;
+
             }catch (Exception e){
                 e.printStackTrace();
             }

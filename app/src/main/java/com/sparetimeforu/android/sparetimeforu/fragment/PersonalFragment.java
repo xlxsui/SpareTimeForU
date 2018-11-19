@@ -1,5 +1,6 @@
 package com.sparetimeforu.android.sparetimeforu.fragment;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -81,40 +82,9 @@ public class PersonalFragment extends Fragment {
      */
     public void initDate(){
         //先用服务器，后续需要使用Activity间的信息传递
-        OkHttpUtil.sendLoginOkHttpRequest(LoginServerUrl, new Callback() {
-            @Override
-            public void onFailure(Call call, IOException e) {
-                getActivity().runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        Toast.makeText(getContext(),"获取数据失败",Toast.LENGTH_SHORT).show();
-                    }
-                });
-            }
-
-            @Override
-            public void onResponse(Call call, Response response) throws IOException {
-
-
-                String responseText=response.body().string();
-                if(!TextUtils.isEmpty(responseText)){
-                    user= HandleMessageUtil.handleLoginMessage(responseText);
-
-                    //更新UI界面
-
-                    if(user!=null)
-                    getActivity().runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            setUI();
-
-                        }
-                    });
-                    else Log.i("test1","获取数据失败");
-                }
-
-            }
-        });
+        Intent intent=getActivity().getIntent();
+        user=(User) intent.getSerializableExtra("user");
+        setUI();
     }
 
     private void setUI(){
