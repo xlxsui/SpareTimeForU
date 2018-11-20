@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.widget.RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/personal_toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+
+        android:background="@color/colorPrimary">
+
+    </android.support.v7.widget.Toolbar>
+
+    <ImageView
+        android:layout_marginLeft="10dp"
+        android:id="@+id/persnal_go_back"
+        android:layout_width="40dp"
+        android:layout_height="?attr/actionBarSize"
+
+        app:srcCompat="@drawable/go_back" />
+    <ImageView
+        android:layout_width="45dp"
+        android:layout_height="?attr/actionBarSize"
+        android:layout_centerHorizontal="true"
+        app:srcCompat="@mipmap/ic_launcher_round" />
+
+</android.widget.RelativeLayout>
