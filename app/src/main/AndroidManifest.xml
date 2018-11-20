@@ -18,11 +18,12 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".activity.PersonalActivity"
-            android:label=""/>
-
+        <activity
+            android:name=".activity.PersonalActivity"
+            android:label="" />
         <activity android:name=".activity.STFUActivity" />
         <activity android:name=".activity.SignUpActivity" />
+        <activity android:name=".activity.ErrandPostActivity" />
 
 
     </application>

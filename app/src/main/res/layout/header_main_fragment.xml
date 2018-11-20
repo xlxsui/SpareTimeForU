@@ -2,12 +2,14 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/material_background"
     android:orientation="vertical">
 
     <ImageView
         android:id="@+id/header_main_fragment"
+        android:layout_margin="8dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@drawable/touch_bg" />
+        android:background="@color/material_background" />
 
 </LinearLayout>
