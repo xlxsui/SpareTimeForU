@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/errand_border_side"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:gravity="center_vertical"
+    android:orientation="horizontal"
+    android:weightSum="10">
+
+    <TextView
+        android:id="@+id/errand_origin"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="3"
+        android:gravity="center"
+        android:text="至诚" />
+
+    <ImageView
+        android:layout_width="0dp"
+        android:layout_height="32dp"
+        android:layout_weight="2.6"
+        android:src="@drawable/ic_long_arrow_right" />
+
+    <TextView
+        android:id="@+id/errand_destination"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="3"
+        android:gravity="center"
+        android:text="修远" />
+
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_weight="1.4"
+        android:orientation="vertical">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="Deadline:"
+            android:textSize="@dimen/sp_12" />
+
+        <TextView
+            android:id="@+id/errand_deadline"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="18:30"
+            android:textSize="@dimen/sp_12" />
+
+    </LinearLayout>
+
+
+</LinearLayout>

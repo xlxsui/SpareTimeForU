@@ -24,6 +24,7 @@
         <activity android:name=".activity.STFUActivity" />
         <activity android:name=".activity.SignUpActivity" />
         <activity android:name=".activity.ErrandPostActivity" />
+        <activity android:name=".activity.PictureActivity" />
 
 
     </application>

@@ -8,36 +8,40 @@
 
     <include layout="@layout/custom_toolbar_back" />
 
-    <FrameLayout
+    <android.support.v4.widget.SwipeRefreshLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <FrameLayout
-            android:id="@+id/errand_post_main"
-            android:layout_width="@dimen/card_activity_width"
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_gravity="center_horizontal"
-            android:layout_marginBottom="@dimen/toolbar_height"
-            android:layout_marginEnd="@dimen/card_activity_horizontal_margin"
-            android:layout_marginStart="@dimen/card_activity_horizontal_margin"
-            android:layout_marginTop="@dimen/toolbar_height"
-            android:background="@color/material_background">
+            android:orientation="vertical"
+            android:paddingBottom="56dp"
+            android:paddingTop="56dp">
 
-            <android.support.v4.widget.SwipeRefreshLayout
-                android:id="@+id/swipe_refresh"
+            <android.support.v4.widget.NestedScrollView
+                android:id="@+id/nestedScrollView"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent">
+                android:layout_height="match_parent"
+                android:overScrollMode="never">
 
-                <android.support.v7.widget.RecyclerView
-                    android:id="@+id/errand_post_list"
+                <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent" />
+                    android:layout_height="match_parent"
+                    android:orientation="vertical">
 
-            </android.support.v4.widget.SwipeRefreshLayout>
+                    <include layout="@layout/post_errand_body" />
 
-        </FrameLayout>
+                    <android.support.v7.widget.RecyclerView
+                        android:id="@+id/comment_list"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent" />
 
-    </FrameLayout>
+                </LinearLayout>
+            </android.support.v4.widget.NestedScrollView>
+        </LinearLayout>
+
+    </android.support.v4.widget.SwipeRefreshLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
