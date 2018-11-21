@@ -4,6 +4,8 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -22,6 +24,9 @@ import com.sparetimeforu.android.sparetimeforu.util.HandleMessageUtil;
 
 import java.io.IOException;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import butterknife.OnClick;
 import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.Response;
@@ -33,7 +38,7 @@ import okhttp3.Response;
  */
 
 public class LoginFragment extends Fragment {
-    private static String LoginServerUrl="https://www.easy-mock.com/mock/5bebc836e0c6d321cade7458/success/LoginServer";
+    private static String LoginServerUrl = "https://www.easy-mock.com/mock/5bebc836e0c6d321cade7458/success/LoginServer";
     private ImageView m22;
     private ImageView m33;
     private EditText mEmail;
@@ -41,6 +46,8 @@ public class LoginFragment extends Fragment {
     private Button mSignUpButton;
     private Button mLoginButton;
 
+    @BindView(R.id.toolbar)
+    Toolbar mToolbar;
 
     public static LoginFragment newInstance() {
         return new LoginFragment();
@@ -50,6 +57,10 @@ public class LoginFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_login, container, false);
+        ButterKnife.bind(this, view);
+
+        ((AppCompatActivity) getActivity()).setSupportActionBar(mToolbar);
+
         m22 = (ImageView) view.findViewById(R.id.ic_icon_left);
         m33 = (ImageView) view.findViewById(R.id.ic_icon_right);
         mEmail = (EditText) view.findViewById(R.id.et_email);
@@ -84,30 +95,34 @@ public class LoginFragment extends Fragment {
         });
 
 
-        mLoginButton=(Button)view.findViewById(R.id.btn_login);
+        mLoginButton = (Button) view.findViewById(R.id.btn_login);
         mLoginButton.setOnClickListener(new MyListener());
 
 
         return view;
     }
 
+    @OnClick(R.id.menu_back_icon)
+    public void back() {
+        getActivity().finish();
+    }
 
 
-    class MyListener implements View.OnClickListener{
+    class MyListener implements View.OnClickListener {
         @Override
         public void onClick(View view) {
-            switch (view.getId()){
+            switch (view.getId()) {
                 case R.id.btn_login:
 
-                    Log.i("test1",LoginServerUrl + "#!email=" + mEmail.getText().toString() + "&password" + mPassword.getText().toString());
-                    OkHttpUtil.sendLoginOkHttpRequest(LoginServerUrl+"?email="+ mEmail.getText().toString()+"&password=" + mPassword.getText().toString(),
+                    Log.i("test1", LoginServerUrl + "#!email=" + mEmail.getText().toString() + "&password" + mPassword.getText().toString());
+                    OkHttpUtil.sendLoginOkHttpRequest(LoginServerUrl + "?email=" + mEmail.getText().toString() + "&password=" + mPassword.getText().toString(),
                             new Callback() {
                                 @Override
                                 public void onFailure(Call call, IOException e) {
                                     getActivity().runOnUiThread(new Runnable() {
                                         @Override
                                         public void run() {
-                                            Toast.makeText(LoginFragment.this.getActivity(),"无法获取用户信息，请检查网络是否正常",Toast.LENGTH_SHORT).show();
+                                            Toast.makeText(LoginFragment.this.getActivity(), "无法获取用户信息，请检查网络是否正常", Toast.LENGTH_SHORT).show();
                                         }
                                     });
 
@@ -115,22 +130,22 @@ public class LoginFragment extends Fragment {
 
                                 @Override
                                 public void onResponse(Call call, Response response) throws IOException {
-                                    final User user=HandleMessageUtil.handleLoginMessage(response.body().string());
-                                    if(user==null){
+                                    final User user = HandleMessageUtil.handleLoginMessage(response.body().string());
+                                    if (user == null) {
                                         getActivity().runOnUiThread(new Runnable() {
                                             @Override
                                             public void run() {
-                                                Toast.makeText(LoginFragment.this.getActivity(),"用户名或者密码错误",Toast.LENGTH_SHORT).show();
+                                                Toast.makeText(LoginFragment.this.getActivity(), "用户名或者密码错误", Toast.LENGTH_SHORT).show();
                                             }
                                         });
-                                    }else{
+                                    } else {
                                         getActivity().runOnUiThread(new Runnable() {
                                             @Override
                                             public void run() {
-                                                Intent intent=new Intent(getActivity(), STFUActivity.class);
-                                                intent.putExtra("user",user);
+                                                Intent intent = new Intent(getActivity(), STFUActivity.class);
+                                                intent.putExtra("user", user);
                                                 startActivity(intent);
-                                                Log.i("test1","获取数据成功");
+                                                Log.i("test1", "获取数据成功");
                                             }
                                         });
                                     }
