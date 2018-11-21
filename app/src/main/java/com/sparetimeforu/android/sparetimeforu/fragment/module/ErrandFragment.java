@@ -1,4 +1,4 @@
-package com.sparetimeforu.android.sparetimeforu.fragment;
+package com.sparetimeforu.android.sparetimeforu.fragment.module;
 
 import android.os.Bundle;
 import android.os.Handler;
@@ -15,10 +15,11 @@ import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.chad.library.adapter.base.BaseQuickAdapter;
+import com.orhanobut.logger.Logger;
 import com.sparetimeforu.android.sparetimeforu.R;
-import com.sparetimeforu.android.sparetimeforu.adapter.IdleThingAdapter;
+import com.sparetimeforu.android.sparetimeforu.adapter.ErrandAdapter;
 import com.sparetimeforu.android.sparetimeforu.data.DataServer;
-import com.sparetimeforu.android.sparetimeforu.entity.IdleThing;
+import com.sparetimeforu.android.sparetimeforu.entity.Errand;
 import com.squareup.picasso.Picasso;
 
 import java.util.List;
@@ -26,21 +27,22 @@ import java.util.Random;
 
 /**
  * SpareTimeForU
- * Created by Jin on 2018/11/14.
+ * Created by Jin on 2018/11/3.
  */
 
-interface RequestIdleThingCallBack {
-    void success(List<IdleThing> data);
+
+interface RequestErrandCallBack {
+    void success(List<Errand> data);
 
     void fail(Exception e);
 }
 
-class RequestIdleThing extends Thread {
-    private RequestIdleThingCallBack mCallBack;
+class RequestErrand extends Thread {
+    private RequestErrandCallBack mCallBack;
     private Handler mHandler;
 
 
-    public RequestIdleThing(RequestIdleThingCallBack callBack) {
+    public RequestErrand(RequestErrandCallBack callBack) {
         mCallBack = callBack;
         mHandler = new Handler(Looper.getMainLooper());
     }
@@ -67,7 +69,7 @@ class RequestIdleThing extends Thread {
                 mHandler.post(new Runnable() {
                     @Override
                     public void run() {
-                        mCallBack.success(DataServer.getIdleThingData(15));
+                        mCallBack.success(DataServer.getErrandData(15));
                     }
                 });
                 break;
@@ -75,7 +77,7 @@ class RequestIdleThing extends Thread {
                 mHandler.post(new Runnable() {
                     @Override
                     public void run() {
-                        mCallBack.success(DataServer.getIdleThingData(15));
+                        mCallBack.success(DataServer.getErrandData(15));
                     }
                 });
                 break;
@@ -85,30 +87,38 @@ class RequestIdleThing extends Thread {
 }
 
 
-public class IdleThingFragment extends Fragment {
+/**
+ * 跑腿的Fragment
+ */
+public class ErrandFragment extends Fragment {
+    //have what, do what
 
     private RecyclerView mRecyclerView;
-    private IdleThingAdapter mAdapter;
-    private List<IdleThing> mIdleThings;
-    private SwipeRefreshLayout mIdleThingRefreshLayout;
+    private ErrandAdapter mAdapter;
+    private List<Errand> mErrands;
+    private SwipeRefreshLayout mErrandRefreshLayout;
+
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_idle_thing_main, container, false);
-        mRecyclerView = (RecyclerView) view.findViewById(R.id.fragment_idle_thing_main_recycler_view);
-        mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-        setupAdapter(DataServer.getIdleThingData(34));
 
-        mIdleThingRefreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.idle_thing_refresh_layout);
-        mIdleThingRefreshLayout.setColorSchemeResources(R.color.colorPrimary, R.color.colorAccent, R.color.colorPrimaryDark);
+        Logger.d("Create the errand fragment View.");
+        View view = inflater.inflate(R.layout.fragment_errand_main, container, false);
+        mRecyclerView = (RecyclerView) view.findViewById(R.id.fragment_errand_main_recycler_view);
+        mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+        setupAdapter(DataServer.getErrandData(10));
+
+        mErrandRefreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.errand_refresh_layout);
+        mErrandRefreshLayout.setColorSchemeResources(R.color.colorPrimary, R.color.colorAccent, R.color.colorPrimaryDark);
         initRefreshLayout();
 
         return view;
     }
 
-    private void setupAdapter(List<IdleThing> idleThingData) {
-        mAdapter = new IdleThingAdapter(idleThingData);
+    private void setupAdapter(List<Errand> errands) {
+
+        mAdapter = new ErrandAdapter(errands);
         mAdapter.openLoadAnimation(BaseQuickAdapter.SLIDEIN_LEFT);
         mAdapter.isFirstOnly(false);
 
@@ -116,7 +126,7 @@ public class IdleThingFragment extends Fragment {
         View view = getLayoutInflater().inflate(R.layout.header_main_fragment,
                 (ViewGroup) mRecyclerView.getParent(), false);
         ImageView img = (ImageView) view.findViewById(R.id.header_main_fragment);
-        Picasso.get().load(R.drawable.header_idle_thing)
+        Picasso.get().load(R.drawable.header_errand)
                 .resize(1080, 512)
                 .centerCrop()
                 .into(img);
@@ -125,27 +135,21 @@ public class IdleThingFragment extends Fragment {
         mRecyclerView.setAdapter(mAdapter);
     }
 
-
     private void initRefreshLayout() {
-        mIdleThingRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-            @Override
-            public void onRefresh() {
-                refresh();
-            }
-        });
+        mErrandRefreshLayout.setOnRefreshListener(() -> refresh());
     }
 
     private void refresh() {
         mAdapter.setEnableLoadMore(false);//这里的作用是防止下拉刷新的时候还可以上拉加载
-        new RequestIdleThing(new RequestIdleThingCallBack() {
+        new RequestErrand(new RequestErrandCallBack() {
             @Override
-            public void success(List<IdleThing> data) {
+            public void success(List<Errand> data) {
                 Toast.makeText(getActivity(), "Refresh finished! ", Toast.LENGTH_SHORT).show();
                 //do something
                 setupAdapter(data);
 
                 mAdapter.setEnableLoadMore(true);
-                mIdleThingRefreshLayout.setRefreshing(false);
+                mErrandRefreshLayout.setRefreshing(false);
             }
 
             @Override
@@ -153,10 +157,31 @@ public class IdleThingFragment extends Fragment {
                 Toast.makeText(getActivity(), "Network error! ", Toast.LENGTH_SHORT).show();
 
                 mAdapter.setEnableLoadMore(true);
-                mIdleThingRefreshLayout.setRefreshing(false);
+                mErrandRefreshLayout.setRefreshing(false);
             }
         }).start();
     }
 
 
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

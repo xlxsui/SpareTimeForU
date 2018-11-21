@@ -12,8 +12,7 @@ import android.widget.Toast;
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.BaseViewHolder;
 import com.sparetimeforu.android.sparetimeforu.R;
-import com.sparetimeforu.android.sparetimeforu.activity.ErrandPostActivity;
-import com.sparetimeforu.android.sparetimeforu.data.DataServer;
+import com.sparetimeforu.android.sparetimeforu.activity.post.ErrandPostActivity;
 import com.sparetimeforu.android.sparetimeforu.entity.Errand;
 import com.squareup.picasso.Picasso;
 
@@ -33,33 +32,27 @@ public class ErrandAdapter extends BaseQuickAdapter<Errand, BaseViewHolder> {
     public ErrandAdapter(List<Errand> errands) {
         super(R.layout.item_errand, errands);
 
-        ErrandAdapter.this.setOnItemClickListener(new OnItemClickListener() {
-            @Override
-            public void onItemClick(BaseQuickAdapter adapter, View view, int position) {
-                Log.d(TAG, "onItemClick: You clicked me");
-                Toast.makeText(mContext, "You clicked the item: " + position, Toast.LENGTH_SHORT).show();
-                Intent intent = new Intent(mContext, ErrandPostActivity.class);
-                mContext.startActivity(intent);
-
-            }
+        ErrandAdapter.this.setOnItemClickListener((adapter, view, position) -> {
+            Log.d(TAG, "onItemClick: You clicked me");
+            Toast.makeText(mContext, "You clicked the item: " + position, Toast.LENGTH_SHORT).show();
+            Intent intent = new Intent(mContext, ErrandPostActivity.class);
+            mContext.startActivity(intent);
         });
-        ErrandAdapter.this.setOnItemChildClickListener(new OnItemChildClickListener() {
-            @Override
-            public void onItemChildClick(BaseQuickAdapter adapter, View view, int position) {
-                switch (view.getId()) {
-                    case R.id.errand_avatar:
-                        Toast.makeText(mContext, "You clicked the avatar! ", Toast.LENGTH_SHORT).show();
-                        break;
-                    case R.id.errand_share:
-                        Toast.makeText(mContext, "You clicked the share! ", Toast.LENGTH_SHORT).show();
-                        break;
-                    case R.id.errand_like:
-                        Toast.makeText(mContext, "You clicked the like! ", Toast.LENGTH_SHORT).show();
-                        break;
-                    case R.id.errand_comment:
-                        Toast.makeText(mContext, "You clicked the comment! ", Toast.LENGTH_SHORT).show();
-                        break;
-                }
+
+        ErrandAdapter.this.setOnItemChildClickListener((adapter, view, position) -> {
+            switch (view.getId()) {
+                case R.id.errand_avatar:
+                    Toast.makeText(mContext, "You clicked the avatar! ", Toast.LENGTH_SHORT).show();
+                    break;
+                case R.id.errand_share:
+                    Toast.makeText(mContext, "You clicked the share! ", Toast.LENGTH_SHORT).show();
+                    break;
+                case R.id.errand_like:
+                    Toast.makeText(mContext, "You clicked the like! ", Toast.LENGTH_SHORT).show();
+                    break;
+                case R.id.errand_comment:
+                    Toast.makeText(mContext, "You clicked the comment! ", Toast.LENGTH_SHORT).show();
+                    break;
             }
         });
 

@@ -1,8 +1,9 @@
-package com.sparetimeforu.android.sparetimeforu.activity;
+package com.sparetimeforu.android.sparetimeforu.activity.post;
 
 import android.support.v4.app.Fragment;
 
-import com.sparetimeforu.android.sparetimeforu.fragment.ErrandPostFragment;
+import com.sparetimeforu.android.sparetimeforu.activity.SingleSwipeBackFragmentActivity;
+import com.sparetimeforu.android.sparetimeforu.fragment.post.ErrandPostFragment;
 
 /**
  * SpareTimeForU

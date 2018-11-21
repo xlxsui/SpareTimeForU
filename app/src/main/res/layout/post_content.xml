@@ -8,8 +8,7 @@
         android:id="@+id/post_caption"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginBottom="8dp"
-        android:layout_marginTop="8dp"
+        android:layout_margin="8dp"
         android:text="人一到群体中，智商就严重降低，为了获得认同，个体愿意抛弃是非，用智商去换取那份让人备感安全的归属感。"
         android:textSize="16sp" />
 

@@ -27,6 +27,10 @@ import com.orhanobut.logger.Logger;
 import com.sparetimeforu.android.sparetimeforu.activity.LoginActivity;
 import com.sparetimeforu.android.sparetimeforu.activity.PersonalActivity;
 import com.sparetimeforu.android.sparetimeforu.R;
+import com.sparetimeforu.android.sparetimeforu.fragment.module.ErrandFragment;
+import com.sparetimeforu.android.sparetimeforu.fragment.module.IdleThingFragment;
+import com.sparetimeforu.android.sparetimeforu.fragment.module.SearchThingFragment;
+import com.sparetimeforu.android.sparetimeforu.fragment.module.StudyFragment;
 import com.sparetimeforu.android.sparetimeforu.user.User;
 
 import java.io.IOException;
@@ -49,7 +53,7 @@ public class STFUFragment extends Fragment {
     private DrawerLayout mDrawerLayout;
     private NavigationView mDrawerNavigationView;
     FragmentManager mFm;
-    private TextView slider_menu_signature,slider_menu_nick_name;
+    private TextView slider_menu_signature, slider_menu_nick_name;
 
     private User user;
 
@@ -73,8 +77,6 @@ public class STFUFragment extends Fragment {
         /**
          * refresh UI according to the user sent in
          */
-
-
 
         /**
          * toolbar and its component
@@ -165,7 +167,7 @@ public class STFUFragment extends Fragment {
                 Toast.makeText(getActivity(), "Avatar", Toast.LENGTH_SHORT)
                         .show();
                 Intent intent = new Intent(getActivity(), PersonalActivity.class);
-                intent.putExtra("user",user);
+                intent.putExtra("user", user);
                 startActivity(intent);
             }
         });
@@ -223,8 +225,10 @@ public class STFUFragment extends Fragment {
                     break;
             }
         }
-        slider_menu_nick_name=(TextView)mDrawerHeaderView.findViewById(R.id.slider_menu_nick_name);
-        slider_menu_signature=(TextView)mDrawerHeaderView.findViewById(R.id.slider_menu_signature);
+
+
+        slider_menu_nick_name = (TextView) mDrawerHeaderView.findViewById(R.id.slider_menu_nick_name);
+        slider_menu_signature = (TextView) mDrawerHeaderView.findViewById(R.id.slider_menu_signature);
         setUI();
 
 
@@ -302,11 +306,13 @@ public class STFUFragment extends Fragment {
     }
 
 
-    private void setUI(){
-        Intent intent=getActivity().getIntent();
-        user=(User) intent.getSerializableExtra("user");
-        slider_menu_nick_name.setText(user.getNick_name());
-        slider_menu_signature.setText(user.getSignature());
+    private void setUI() {
+        Intent intent = getActivity().getIntent();
+        user = (User) intent.getSerializableExtra("user");
+        if (user != null) {
+            slider_menu_nick_name.setText(user.getNick_name());
+            slider_menu_signature.setText(user.getSignature());
+        }
 
         //slider_menu_nick_name  slider_menu_signature
     }

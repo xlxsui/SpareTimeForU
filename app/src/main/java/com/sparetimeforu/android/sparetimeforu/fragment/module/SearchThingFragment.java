@@ -1,4 +1,4 @@
-package com.sparetimeforu.android.sparetimeforu.fragment;
+package com.sparetimeforu.android.sparetimeforu.fragment.module;
 
 import android.os.Bundle;
 import android.os.Handler;
@@ -16,7 +16,7 @@ import android.widget.Toast;
 
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.sparetimeforu.android.sparetimeforu.R;
-import com.sparetimeforu.android.sparetimeforu.adapter.SearchThingAdapter;
+import com.sparetimeforu.android.sparetimeforu.adapter.LostAndFoundAdapter;
 import com.sparetimeforu.android.sparetimeforu.data.DataServer;
 import com.sparetimeforu.android.sparetimeforu.entity.SearchThing;
 import com.squareup.picasso.Picasso;
@@ -86,7 +86,7 @@ class RequestSearchThing extends Thread {
 
 public class SearchThingFragment extends Fragment {
     private RecyclerView mRecyclerView;
-    private SearchThingAdapter mAdapter;
+    private LostAndFoundAdapter mAdapter;
     private SwipeRefreshLayout mSearchThingRefreshLayout;
     private List<SearchThing> mSearchThings;
 
@@ -106,7 +106,7 @@ public class SearchThingFragment extends Fragment {
     }
 
     private void setupAdapter(List<SearchThing> searchThings) {
-        mAdapter = new SearchThingAdapter(searchThings);
+        mAdapter = new LostAndFoundAdapter(searchThings);
 
         mAdapter.openLoadAnimation(BaseQuickAdapter.SLIDEIN_LEFT);
         mAdapter.isFirstOnly(false);

@@ -31,7 +31,7 @@
                     android:layout_height="match_parent"
                     android:orientation="vertical">
 
-                    <include layout="@layout/post_errand_body" />
+                    <include layout="@layout/post_body" />
 
                     <android.support.v7.widget.RecyclerView
                         android:id="@+id/comment_list"

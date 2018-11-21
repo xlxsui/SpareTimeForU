@@ -19,7 +19,10 @@ public class PictureActivity extends SingleSwipeBackFragmentActivity {
         String photoUrl = intent.getStringExtra("photo_url");
 
         Bundle bundle = new Bundle();
-        bundle.putString("photo_url", photoUrl);
+        if (photoUrl != null) {
+            bundle.putString("photo_url", photoUrl);
+        }
+
 
         return PictureFragment.newInstance(bundle);
     }

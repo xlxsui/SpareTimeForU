@@ -12,18 +12,22 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity android:name=".activity.LoginActivity">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
 
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
         </activity>
         <activity
             android:name=".activity.PersonalActivity"
             android:label="" />
-        <activity android:name=".activity.STFUActivity" />
+        <activity android:name=".activity.STFUActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
         <activity android:name=".activity.SignUpActivity" />
-        <activity android:name=".activity.ErrandPostActivity" />
+        <activity android:name=".activity.post.ErrandPostActivity" />
+        <activity android:name=".activity.post.IdleThingPostActivity" />
+        <activity android:name=".activity.post.StudyPostActivity" />
+        <activity android:name=".activity.post.LostAndFoundPostActivity" />
         <activity android:name=".activity.PictureActivity" />
 
 
