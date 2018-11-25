@@ -112,19 +112,27 @@ public class EditFragment extends Fragment {
                 case R.id.edit_Sex:
                     //弹出对话框修改性别
                     AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+                    int defaultChoice=1;
                     builder.setIcon(R.mipmap.ic_launcher_round);
                     builder.setTitle("请选择性别");
                     final String[] sex = {"男", "女"};
-                    builder.setSingleChoiceItems(sex, 1, new DialogInterface.OnClickListener() {
+
+                    if(user!=null&&user.getSex().equals("男"))
+                        defaultChoice=0;
+                    builder.setSingleChoiceItems(sex, defaultChoice, new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
                             Toast.makeText(getActivity(), "性别为：" + sex[which], Toast.LENGTH_SHORT).show();
+
+                            if(user!=null){
+                                user.setSex(sex[which]);
+                            }
                         }
                     });
                     builder.setPositiveButton("确定", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
-
+                            changUI();
                         }
                     });
                     builder.setNegativeButton("取消", new DialogInterface.OnClickListener() {
@@ -178,20 +186,22 @@ public class EditFragment extends Fragment {
                 if (input != null) {
 
                     //根据要修改的信息类型修改用户信息
-                    switch (changeType) {
-                        case changeNickName:
-                            user.setNick_name(input);
-                            break;
-                        case changePhonecall:
+                    if(user!=null){
+                        switch (changeType) {
+                            case changeNickName:
+                                user.setNick_name(input);
+                                break;
+                            case changePhonecall:
 
-                            if (isInteger(input))
-                                user.setPhone(input);
-                            else
-                                Toast.makeText(getActivity(), "修改电话时必须输入数字", Toast.LENGTH_SHORT).show();
-                            break;
-                        case changeSignature:
-                            user.setSignature(input);
-                            break;
+                                if (isInteger(input))
+                                    user.setPhone(input);
+                                else
+                                    Toast.makeText(getActivity(), "修改电话时必须输入数字", Toast.LENGTH_SHORT).show();
+                                break;
+                            case changeSignature:
+                                user.setSignature(input);
+                                break;
+                        }
                     }
                     //发送信息到服务器修改个人信息
                     sendMessageToServer(changingUserAttr + "=" + input, changeType);

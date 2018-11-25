@@ -28,9 +28,11 @@ public class HandleMessageUtil {
                     JSONObject userObject = new JSONObject(object1.getString("data"));
                     User user = new User();
                     user.setNick_name(userObject.getString("nickname"));
-                    user.setSignature(userObject.getString("personal_signate"));
+                    user.setSignature(userObject.getString("personal_signature"));
                     user.setFavourable_rate(userObject.getString("favourable_rate"));
                     user.setPicUrl(userObject.getString("photo_location"));
+                    user.setSex(userObject.getString("Gender"));
+                    user.setPhone(userObject.getString("phone"));
 
                     return user;
 
