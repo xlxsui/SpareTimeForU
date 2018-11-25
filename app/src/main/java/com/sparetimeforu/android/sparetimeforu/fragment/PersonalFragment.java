@@ -5,8 +5,6 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
-import android.text.TextUtils;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,21 +14,14 @@ import android.widget.Toast;
 import android.support.v7.widget.Toolbar;
 
 import com.sparetimeforu.android.sparetimeforu.R;
-import com.sparetimeforu.android.sparetimeforu.ServerConnection.OkHttpUtil;
+import com.sparetimeforu.android.sparetimeforu.activity.EditActivity;
 import com.sparetimeforu.android.sparetimeforu.user.User;
-import com.sparetimeforu.android.sparetimeforu.util.HandleMessageUtil;
-
-import java.io.IOException;
-
-import okhttp3.Call;
-import okhttp3.Callback;
-import okhttp3.Response;
 
 /**
  * Created by HQY on 2018/11/15.
  */
 
-public class PersonalFragment extends Fragment {
+public class PersonalFragment extends Fragment implements View.OnClickListener{
 
     public static String LoginServerUrl = " https://www.easy-mock.com/mock/5bebc836e0c6d321cade7458/success/LoginServer";
 
@@ -44,6 +35,7 @@ public class PersonalFragment extends Fragment {
     private User user;
     private Toolbar toolbar;
     private ImageView personal_go_back;
+    private TextView personal_edit;//点击编辑按钮
 
     @Nullable
     @Override
@@ -57,7 +49,15 @@ public class PersonalFragment extends Fragment {
         personal_mission_received = (TextView) view.findViewById(R.id.personal_mission_received);
         personal_mission_released = (TextView) view.findViewById(R.id.personal_mission_released);
         personal_favourable_rate = (TextView) view.findViewById(R.id.personal_favourable_rate);
+        personal_edit=(TextView)view.findViewById(R.id.personal_edit);
         initDate();
+
+
+        //给TextView添加监听
+
+        personal_edit.setOnClickListener(this);
+        personal_mission_received.setOnClickListener(this);
+        personal_mission_released.setOnClickListener(this);
 
 
         //设置Toolbar
@@ -97,4 +97,24 @@ public class PersonalFragment extends Fragment {
     }
 
 
+    @Override
+    public void onClick(View view) {
+        switch (view.getId()){
+            case R.id.personal_mission_received:
+                Toast.makeText(getActivity(),"You clicked the mission_received",Toast.LENGTH_SHORT).show();
+                break;
+            case R.id.personal_mission_released:
+                Toast.makeText(getActivity(),"You clicked the misson_released",Toast.LENGTH_SHORT).show();
+                break;
+            case R.id.personal_edit:
+
+                Intent intent=new Intent(getActivity(), EditActivity.class);
+                intent.putExtra("user",user);
+
+                //之后要实现获取返回值
+                startActivity(intent);
+
+                break;
+        }
+    }
 }

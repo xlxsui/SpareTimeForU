@@ -14,6 +14,24 @@ public class User implements Serializable{
     private String signature;
     private String picUrl;
     private String favourable_rate;
+    private String phone;
+    private String sex;
+
+    public String getSex() {
+        return sex;
+    }
+
+    public void setSex(String sex) {
+        this.sex = sex;
+    }
+
+    public String getPhone() {
+        return phone;
+    }
+
+    public void setPhone(String phone) {
+        this.phone = phone;
+    }
 
     public String getNick_name() {
         return nick_name;

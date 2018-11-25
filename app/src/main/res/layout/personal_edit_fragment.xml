@@ -1,0 +1,215 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.widget.LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#ccc"
+    android:orientation="vertical">
+
+    <include layout="@layout/personal_toolbar"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:orientation="vertical"
+
+        android:layout_marginTop="15dp"
+        android:background="#fff"
+        android:layout_height="wrap_content">
+
+
+        <RelativeLayout
+            android:id="@+id/edit_Avatar"
+            android:layout_width="match_parent"
+            android:orientation="horizontal"
+            android:background="@drawable/bottom_line"
+            android:padding="20dp"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:textColor="#000"
+                android:textSize="25dip"
+                android:layout_alignParentLeft="true"
+                android:layout_centerVertical="true"
+                android:text="@string/edit_avatar" />
+
+            <ImageView
+                android:id="@+id/iv_edit_avatar"
+                android:layout_toLeftOf="@+id/continue1"
+                android:layout_marginRight="10dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_centerVertical="true"
+                app:srcCompat="@mipmap/ic_launcher_round" />
+
+            <ImageView
+                android:id="@+id/continue1"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:layout_weight="1"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                app:srcCompat="@drawable/ic_logout" />
+        </RelativeLayout>
+        <RelativeLayout
+            android:id="@+id/edit_Nickname"
+            android:layout_width="match_parent"
+            android:orientation="horizontal"
+            android:background="@drawable/bottom_line"
+            android:padding="20dp"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_alignParentLeft="true"
+                android:textColor="#000"
+                android:textSize="25dip"
+                android:layout_centerVertical="true"
+                android:text="@string/edit_nickname" />
+
+            <TextView
+                android:id="@+id/tv_edit_nickname"
+                android:layout_toLeftOf="@+id/continue2"
+                android:layout_marginRight="10dp"
+                android:layout_width="wrap_content"
+                android:textColor="#aaa"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+
+                android:layout_centerVertical="true" />
+
+            <ImageView
+                android:id="@+id/continue2"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:layout_weight="1"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                app:srcCompat="@drawable/ic_logout" />
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/edit_Sex"
+            android:layout_width="match_parent"
+            android:orientation="horizontal"
+            android:background="@drawable/bottom_line"
+            android:padding="20dp"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_alignParentLeft="true"
+                android:layout_centerVertical="true"
+                android:textColor="#000"
+                android:textSize="25dip"
+                android:text="@string/edit_sex" />
+
+            <TextView
+                android:id="@+id/tv_edit_sex"
+                android:layout_toLeftOf="@+id/continue3"
+                android:layout_marginRight="10dp"
+                android:layout_width="wrap_content"
+                android:textColor="#aaa"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+
+                android:layout_centerVertical="true" />
+
+            <ImageView
+                android:id="@+id/continue3"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:layout_weight="1"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                app:srcCompat="@drawable/ic_logout" />
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/edit_Phonecall"
+            android:layout_width="match_parent"
+            android:orientation="horizontal"
+            android:background="@drawable/bottom_line"
+            android:padding="20dp"
+            android:layout_height="wrap_content">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_alignParentLeft="true"
+            android:layout_centerVertical="true"
+            android:textColor="#000"
+            android:textSize="25dip"
+            android:text="@string/edit_phone" />
+
+        <TextView
+            android:id="@+id/tv_edit_phonecall"
+            android:layout_toLeftOf="@+id/continue4"
+            android:layout_marginRight="10dp"
+            android:layout_width="wrap_content"
+            android:textColor="#aaa"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+
+            android:layout_centerVertical="true" />
+
+        <ImageView
+            android:id="@+id/continue4"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:layout_weight="1"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            app:srcCompat="@drawable/ic_logout" />
+    </RelativeLayout>
+        <RelativeLayout
+            android:id="@+id/edit_Signature"
+            android:layout_width="match_parent"
+            android:orientation="horizontal"
+            android:background="@drawable/bottom_line"
+            android:padding="20dp"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_alignParentLeft="true"
+                android:layout_centerVertical="true"
+                android:textColor="#000"
+                android:textSize="25dip"
+                android:text="@string/edit_signature" />
+
+            <TextView
+                android:id="@+id/tv_edit_signature"
+                android:layout_toLeftOf="@+id/continue5"
+                android:layout_marginRight="10dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="#aaa"
+                android:layout_weight="1"
+
+                android:layout_centerVertical="true" />
+
+            <ImageView
+                android:id="@+id/continue5"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:layout_weight="1"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                app:srcCompat="@drawable/ic_logout" />
+        </RelativeLayout>
+    </LinearLayout>
+
+
+</android.widget.LinearLayout>

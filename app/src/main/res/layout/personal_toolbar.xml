@@ -20,7 +20,7 @@
         android:layout_width="40dp"
         android:layout_height="?attr/actionBarSize"
 
-        app:srcCompat="@drawable/go_back" />
+        app:srcCompat="@drawable/ic_back" />
     <ImageView
         android:layout_width="45dp"
         android:layout_height="?attr/actionBarSize"

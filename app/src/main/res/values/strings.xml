@@ -16,6 +16,11 @@
     <string name="sign_up_email_hint">请输入您的汕大邮箱</string>
     <string name="comment_hint">我的回应…</string>
     <string name="comment_send">我也说一句</string>
+    <string name="edit_avatar">头像</string>
+    <string name="edit_nickname">昵称</string>
+    <string name="edit_signature">签名</string>
+    <string name="edit_sex">性别</string>
+    <string name="edit_phone">电话</string>
 
 
 </resources>
