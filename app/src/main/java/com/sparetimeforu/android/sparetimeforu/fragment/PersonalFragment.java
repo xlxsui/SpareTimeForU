@@ -102,19 +102,19 @@ public class PersonalFragment extends Fragment implements View.OnClickListener{
     public void onClick(View view) {
         switch (view.getId()){
             case R.id.personal_mission_received:
-                Intent intent1=new Intent(getActivity(), ErrandReceivedActivity.class);
-                startActivity(intent1);
+                Intent intent=new Intent(getActivity(), ErrandReceivedActivity.class);
+                startActivity(intent);
                 break;
             case R.id.personal_mission_released:
                 Toast.makeText(getActivity(),"You clicked the misson_released",Toast.LENGTH_SHORT).show();
                 break;
             case R.id.personal_edit:
 
-                Intent intent=new Intent(getActivity(), EditActivity.class);
-                intent.putExtra("user",user);
+                Intent intent1=new Intent(getActivity(), EditActivity.class);
+                intent1.putExtra("user",user);
 
                 //之后要实现获取返回值
-                startActivity(intent);
+                startActivity(intent1);
 
                 break;
         }
