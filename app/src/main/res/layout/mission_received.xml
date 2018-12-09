@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.widget.RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+
+    <include layout="@layout/personal_toolbar"
+        android:id="@+id/mission_received_top"/>
+    <android.support.design.widget.BottomNavigationView
+        android:id="@+id/mission_received_select"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:fitsSystemWindows="true"
+        android:layout_below="@+id/mission_received_top"
+        android:background="#eee"
+        app:menu="@menu/mission_received_navigation">
+    </android.support.design.widget.BottomNavigationView>
+
+
+    <android.widget.LinearLayout
+        android:layout_marginTop="20dp"
+
+        android:id="@+id/mission_received_content"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/mission_received_select">
+
+    </android.widget.LinearLayout>
+
+
+</android.widget.RelativeLayout>

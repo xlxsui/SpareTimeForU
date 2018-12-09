@@ -15,6 +15,7 @@ import android.support.v7.widget.Toolbar;
 
 import com.sparetimeforu.android.sparetimeforu.R;
 import com.sparetimeforu.android.sparetimeforu.activity.EditActivity;
+import com.sparetimeforu.android.sparetimeforu.activity.ErrandReceivedActivity;
 import com.sparetimeforu.android.sparetimeforu.user.User;
 
 /**
@@ -101,7 +102,8 @@ public class PersonalFragment extends Fragment implements View.OnClickListener{
     public void onClick(View view) {
         switch (view.getId()){
             case R.id.personal_mission_received:
-                Toast.makeText(getActivity(),"You clicked the mission_received",Toast.LENGTH_SHORT).show();
+                Intent intent1=new Intent(getActivity(), ErrandReceivedActivity.class);
+                startActivity(intent1);
                 break;
             case R.id.personal_mission_released:
                 Toast.makeText(getActivity(),"You clicked the misson_released",Toast.LENGTH_SHORT).show();
