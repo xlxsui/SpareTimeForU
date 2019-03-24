@@ -115,7 +115,8 @@ public class LoginFragment extends Fragment {
                 case R.id.btn_login:
 
                     Log.i("test1", LoginServerUrl + "#!email=" + mEmail.getText().toString() + "&password" + mPassword.getText().toString());
-                    OkHttpUtil.sendLoginOkHttpRequest(LoginServerUrl + "?email=" + mEmail.getText().toString() + "&password=" + mPassword.getText().toString(),
+
+                    OkHttpUtil.sendLoginOkHttpGetRequest(LoginServerUrl + "?email=" + mEmail.getText().toString() + "&password=" + mPassword.getText().toString(),
                             new Callback() {
                                 @Override
                                 public void onFailure(Call call, IOException e) {
