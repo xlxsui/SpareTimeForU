@@ -99,7 +99,7 @@
             android:background="#fff"
             android:drawablePadding="10dp"
             android:hint="请输入您的昵称"
-            android:inputType="textPassword"
+            android:inputType="text"
             android:maxLines="1"
             android:paddingStart="@dimen/sp_16"
             android:textColor="#222222"

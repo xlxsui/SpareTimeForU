@@ -16,6 +16,15 @@ public class User implements Serializable{
     private String favourable_rate;
     private String phone;
     private String sex;
+    private String email;
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
 
     public String getSex() {
         return sex;

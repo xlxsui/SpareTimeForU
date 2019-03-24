@@ -29,6 +29,7 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import okhttp3.Call;
 import okhttp3.Callback;
+import okhttp3.FormBody;
 import okhttp3.Response;
 
 /**
@@ -38,7 +39,7 @@ import okhttp3.Response;
  */
 
 public class LoginFragment extends Fragment {
-    private static String LoginServerUrl = "https://www.easy-mock.com/mock/5bebc836e0c6d321cade7458/success/LoginServer";
+    private static String LoginServerUrl = "http://172.16.92.161:5000/auth/login";
     private ImageView m22;
     private ImageView m33;
     private EditText mEmail;
@@ -114,9 +115,12 @@ public class LoginFragment extends Fragment {
             switch (view.getId()) {
                 case R.id.btn_login:
 
-                    Log.i("test1", LoginServerUrl + "#!email=" + mEmail.getText().toString() + "&password" + mPassword.getText().toString());
-
-                    OkHttpUtil.sendLoginOkHttpGetRequest(LoginServerUrl + "?email=" + mEmail.getText().toString() + "&password=" + mPassword.getText().toString(),
+                    FormBody body=new FormBody.Builder().
+                            add("email",mEmail.getText().toString()).
+                            add("password",mPassword.getText().toString()).
+                            add("request_type","login").
+                            build();
+                    OkHttpUtil.sendLoginOkHttpPostRequest(LoginServerUrl,body,
                             new Callback() {
                                 @Override
                                 public void onFailure(Call call, IOException e) {

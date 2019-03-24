@@ -34,7 +34,7 @@ public class OkHttpUtil {
     }
 
 
-    public static void sendLoginOkHttpPostRequest(String url, RequestBody body,Callback callback){
+    public static void sendLoginOkHttpPostRequest(String url, FormBody body,Callback callback){
         OkHttpClient okHttpClient=new OkHttpClient();
         Request request=new Request.Builder()
                 .url(url)
