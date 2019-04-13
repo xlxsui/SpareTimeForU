@@ -1,6 +1,5 @@
 package com.sparetimeforu.android.sparetimeforu.fragment;
 
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
@@ -17,7 +16,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.sparetimeforu.android.sparetimeforu.R;
-import com.sparetimeforu.android.sparetimeforu.user.User;
+import com.sparetimeforu.android.sparetimeforu.entity.User;
 
 import java.util.regex.Pattern;
 

@@ -1,10 +1,8 @@
 package com.sparetimeforu.android.sparetimeforu.util;
 
 import android.text.TextUtils;
-import android.util.Log;
-import android.widget.Toast;
 
-import com.sparetimeforu.android.sparetimeforu.user.User;
+import com.sparetimeforu.android.sparetimeforu.entity.User;
 
 import org.json.JSONObject;
 

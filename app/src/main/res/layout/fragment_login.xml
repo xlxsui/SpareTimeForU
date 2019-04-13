@@ -66,7 +66,7 @@
                 android:layout_height="match_parent"
                 android:layout_weight="0.08"
                 android:background="#fff"
-                android:padding="2dp"
+                android:padding="5dp"
                 android:scaleType="fitCenter"
                 android:src="@drawable/ic_login_username_default" />
 
@@ -75,7 +75,7 @@
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_gravity="center_horizontal"
-                android:layout_weight="0.92"
+                android:layout_weight="0.52"
                 android:background="#fff"
                 android:drawablePadding="10dp"
                 android:ellipsize="start"
@@ -86,6 +86,22 @@
                 android:textColorHint="#B3B3B3"
                 android:textSize="16sp" />
 
+            <EditText
+                android:id="@+id/et_email_back"
+                android:layout_width="0dp"
+                android:layout_height="48dp"
+                android:layout_gravity="center_vertical"
+                android:layout_weight="0.4"
+                android:background="#fff"
+                android:drawablePadding="10dp"
+                android:ellipsize="start"
+                android:enabled="false"
+                android:hint="\@stu.edu.cn"
+                android:inputType="text"
+                android:singleLine="true"
+                android:textColor="#222222"
+                android:textColorHint="#B3B3B3"
+                android:textSize="16sp" />
 
         </LinearLayout>
 
@@ -105,7 +121,7 @@
                 android:layout_height="match_parent"
                 android:layout_weight="0.08"
                 android:background="#fff"
-                android:padding="2dp"
+                android:padding="5dp"
                 android:scaleType="fitCenter"
                 android:src="@drawable/ic_login_password_default" />
 

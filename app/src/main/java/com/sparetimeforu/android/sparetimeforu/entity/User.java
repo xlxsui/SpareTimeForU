@@ -1,4 +1,4 @@
-package com.sparetimeforu.android.sparetimeforu.user;
+package com.sparetimeforu.android.sparetimeforu.entity;
 
 import java.io.Serializable;
 

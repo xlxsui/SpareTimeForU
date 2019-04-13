@@ -31,7 +31,7 @@ import com.sparetimeforu.android.sparetimeforu.fragment.module.ErrandFragment;
 import com.sparetimeforu.android.sparetimeforu.fragment.module.IdleThingFragment;
 import com.sparetimeforu.android.sparetimeforu.fragment.module.SearchThingFragment;
 import com.sparetimeforu.android.sparetimeforu.fragment.module.StudyFragment;
-import com.sparetimeforu.android.sparetimeforu.user.User;
+import com.sparetimeforu.android.sparetimeforu.entity.User;
 
 import java.io.IOException;
 import java.io.InputStream;

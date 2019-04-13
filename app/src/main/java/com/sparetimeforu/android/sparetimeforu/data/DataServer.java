@@ -15,7 +15,7 @@ import java.util.List;
 
 
 /**
- * https://github.com/CymChad/BaseRecyclerViewAdapterHelper
+ * 拿出对应的实体
  */
 public class DataServer {
 

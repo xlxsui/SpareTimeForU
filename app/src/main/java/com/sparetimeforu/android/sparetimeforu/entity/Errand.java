@@ -1,7 +1,5 @@
 package com.sparetimeforu.android.sparetimeforu.entity;
 
-import com.sparetimeforu.android.sparetimeforu.user.User;
-
 import java.util.Arrays;
 import java.util.Date;
 import java.util.UUID;

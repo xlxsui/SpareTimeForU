@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.support.annotation.Nullable;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
@@ -69,7 +70,7 @@ class RequestErrand extends Thread {
                 mHandler.post(new Runnable() {
                     @Override
                     public void run() {
-                        mCallBack.success(DataServer.getErrandData(15));
+                        mCallBack.success(DataServer.getErrandData(5));
                     }
                 });
                 break;
@@ -77,7 +78,7 @@ class RequestErrand extends Thread {
                 mHandler.post(new Runnable() {
                     @Override
                     public void run() {
-                        mCallBack.success(DataServer.getErrandData(15));
+                        mCallBack.success(DataServer.getErrandData(5));
                     }
                 });
                 break;
@@ -107,7 +108,7 @@ public class ErrandFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_errand_main, container, false);
         mRecyclerView = (RecyclerView) view.findViewById(R.id.fragment_errand_main_recycler_view);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-        setupAdapter(DataServer.getErrandData(10));
+        setupAdapter(DataServer.getErrandData(2));
 
         mErrandRefreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.errand_refresh_layout);
         mErrandRefreshLayout.setColorSchemeResources(R.color.colorPrimary, R.color.colorAccent, R.color.colorPrimaryDark);
@@ -127,7 +128,7 @@ public class ErrandFragment extends Fragment {
                 (ViewGroup) mRecyclerView.getParent(), false);
         ImageView img = (ImageView) view.findViewById(R.id.header_main_fragment);
         Picasso.get().load(R.drawable.header_errand)
-                .resize(1080, 512)
+                .resize(200, 200)
                 .centerCrop()
                 .into(img);
         mAdapter.addHeaderView(view);
@@ -144,7 +145,7 @@ public class ErrandFragment extends Fragment {
         new RequestErrand(new RequestErrandCallBack() {
             @Override
             public void success(List<Errand> data) {
-                Toast.makeText(getActivity(), "Refresh finished! ", Toast.LENGTH_SHORT).show();
+                Snackbar.make(getView(), "Refresh finished! ",Snackbar.LENGTH_SHORT).show();
                 //do something
                 setupAdapter(data);
 
@@ -154,14 +155,12 @@ public class ErrandFragment extends Fragment {
 
             @Override
             public void fail(Exception e) {
-                Toast.makeText(getActivity(), "Network error! ", Toast.LENGTH_SHORT).show();
-
+                Snackbar.make(getView(), "Network error! ",Snackbar.LENGTH_SHORT).show();
                 mAdapter.setEnableLoadMore(true);
                 mErrandRefreshLayout.setRefreshing(false);
             }
         }).start();
     }
-
 
 }
 

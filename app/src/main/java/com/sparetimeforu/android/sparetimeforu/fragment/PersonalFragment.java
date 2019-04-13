@@ -16,7 +16,7 @@ import android.support.v7.widget.Toolbar;
 import com.sparetimeforu.android.sparetimeforu.R;
 import com.sparetimeforu.android.sparetimeforu.activity.EditActivity;
 import com.sparetimeforu.android.sparetimeforu.activity.ErrandReceivedActivity;
-import com.sparetimeforu.android.sparetimeforu.user.User;
+import com.sparetimeforu.android.sparetimeforu.entity.User;
 
 /**
  * Created by HQY on 2018/11/15.

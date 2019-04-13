@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 
-
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -35,113 +34,152 @@
 
     </RelativeLayout>
 
-    <LinearLayout
-        android:id="@+id/login_ll"
+    <android.support.v4.widget.NestedScrollView
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_marginEnd="10dp"
-        android:layout_marginStart="5dp"
-        android:layout_marginTop="10dp"
-        android:layout_weight="6"
-        android:orientation="vertical">
+        android:layout_weight="6">
 
 
         <LinearLayout
+            android:id="@+id/login_ll"
             android:layout_width="match_parent"
-            android:layout_height="48dp"
-            android:layout_margin="8dp"
-            android:weightSum="1">
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="10dp"
+            android:layout_marginStart="5dp"
+            android:layout_marginTop="10dp"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:layout_margin="8dp"
+                android:weightSum="1">
+
+                <EditText
+                    android:id="@+id/et_username"
+                    android:layout_width="0dp"
+                    android:layout_height="48dp"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_weight="0.6"
+                    android:background="#fff"
+                    android:drawablePadding="10dp"
+                    android:ellipsize="start"
+                    android:hint="@string/sign_up_email_hint"
+                    android:inputType="text"
+                    android:paddingStart="@dimen/sp_16"
+                    android:singleLine="true"
+                    android:textColor="#222222"
+                    android:textColorHint="#B3B3B3"
+                    android:textSize="16sp"
+                    tools:ignore="RtlSymmetry" />
+
+                <EditText
+                    android:id="@+id/et_username_back"
+                    android:layout_width="0dp"
+                    android:layout_height="48dp"
+                    android:layout_gravity="center_vertical"
+                    android:layout_weight="0.4"
+                    android:background="#fff"
+                    android:drawablePadding="10dp"
+                    android:ellipsize="start"
+                    android:enabled="false"
+                    android:hint="\@stu.edu.cn"
+                    android:inputType="text"
+                    android:singleLine="true"
+                    android:textColor="#222222"
+                    android:textColorHint="#B3B3B3"
+                    android:textSize="16sp" />
+
+            </LinearLayout>
 
             <EditText
-                android:id="@+id/et_username"
-                android:layout_width="0dp"
+                android:id="@+id/et_nickname"
+                android:layout_width="match_parent"
                 android:layout_height="48dp"
                 android:layout_gravity="center_horizontal"
-                android:layout_weight="0.6"
+                android:layout_margin="8dp"
                 android:background="#fff"
                 android:drawablePadding="10dp"
-                android:ellipsize="start"
-                android:hint="@string/sign_up_email_hint"
+                android:hint="请输入您的昵称"
                 android:inputType="text"
+                android:maxLines="1"
                 android:paddingStart="@dimen/sp_16"
-                android:singleLine="true"
-                android:textColor="#222222"
-                android:textColorHint="#B3B3B3"
-                android:textSize="16sp"
-                tools:ignore="RtlSymmetry" />
-
-            <EditText
-                android:id="@+id/et_username_back"
-                android:layout_width="0dp"
-                android:layout_height="48dp"
-                android:layout_gravity="center_vertical"
-                android:layout_weight="0.4"
-                android:background="#fff"
-                android:drawablePadding="10dp"
-                android:ellipsize="start"
-                android:enabled="false"
-                android:hint="@stu.edu.cn"
-                android:inputType="text"
-                android:singleLine="true"
                 android:textColor="#222222"
                 android:textColorHint="#B3B3B3"
                 android:textSize="16sp" />
 
+            <EditText
+                android:id="@+id/et_password_reg"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:layout_gravity="center_horizontal"
+                android:layout_margin="8dp"
+                android:background="#fff"
+                android:drawablePadding="10dp"
+                android:hint="请输入您的密码"
+                android:inputType="textPassword"
+                android:maxLines="1"
+                android:paddingStart="@dimen/sp_16"
+                android:textColor="#222222"
+                android:textColorHint="#B3B3B3"
+                android:textSize="16sp" />
+
+            <EditText
+                android:id="@+id/et_password2_reg"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:layout_gravity="center_horizontal"
+                android:layout_margin="8dp"
+                android:background="#fff"
+                android:drawablePadding="10dp"
+                android:hint="确认密码"
+                android:inputType="textPassword"
+                android:maxLines="1"
+                android:paddingStart="@dimen/sp_16"
+                android:textColor="#222222"
+                android:textColorHint="#B3B3B3"
+                android:textSize="16sp" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:layout_margin="8dp"
+                android:weightSum="1">
+
+                <EditText
+                    android:id="@+id/et_verification_code"
+                    android:layout_width="0dp"
+                    android:layout_height="48dp"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_weight="0.6"
+                    android:background="#fff"
+                    android:drawablePadding="10dp"
+                    android:ellipsize="start"
+                    android:hint="@string/verification_code"
+                    android:inputType="text"
+                    android:paddingStart="@dimen/sp_16"
+                    android:singleLine="true"
+                    android:textColor="#222222"
+                    android:textColorHint="#B3B3B3"
+                    android:textSize="16sp"
+                    tools:ignore="RtlSymmetry" />
+
+                <Button
+                    android:id="@+id/btn_send_verification_code"
+                    android:layout_width="0dp"
+                    android:layout_height="48dp"
+                    android:layout_gravity="center_vertical"
+                    android:layout_margin="@dimen/sp_12"
+                    android:layout_weight="0.4"
+                    android:background="@drawable/touch_bg_pink"
+                    android:gravity="center"
+                    android:text="@string/send_verification_code"
+                    android:textColor="#fff"
+                    android:textSize="16sp" />
+
+            </LinearLayout>
         </LinearLayout>
-
-
-        <EditText
-            android:id="@+id/et_nickname"
-            android:layout_width="match_parent"
-            android:layout_height="48dp"
-            android:layout_gravity="center_horizontal"
-            android:layout_margin="8dp"
-            android:background="#fff"
-            android:drawablePadding="10dp"
-            android:hint="请输入您的昵称"
-            android:inputType="text"
-            android:maxLines="1"
-            android:paddingStart="@dimen/sp_16"
-            android:textColor="#222222"
-            android:textColorHint="#B3B3B3"
-            android:textSize="16sp" />
-
-
-        <EditText
-            android:id="@+id/et_password_reg"
-            android:layout_width="match_parent"
-            android:layout_height="48dp"
-            android:layout_gravity="center_horizontal"
-            android:layout_margin="8dp"
-            android:background="#fff"
-            android:drawablePadding="10dp"
-            android:hint="请输入您的密码"
-            android:inputType="textPassword"
-            android:maxLines="1"
-            android:paddingStart="@dimen/sp_16"
-            android:textColor="#222222"
-            android:textColorHint="#B3B3B3"
-            android:textSize="16sp" />
-
-
-        <EditText
-            android:id="@+id/et_password2_reg"
-            android:layout_width="match_parent"
-            android:layout_height="48dp"
-            android:layout_gravity="center_horizontal"
-            android:layout_margin="8dp"
-            android:background="#fff"
-            android:drawablePadding="10dp"
-            android:hint="确认密码"
-            android:inputType="textPassword"
-            android:maxLines="1"
-            android:paddingStart="@dimen/sp_16"
-            android:textColor="#222222"
-            android:textColorHint="#B3B3B3"
-            android:textSize="16sp" />
-
-
-    </LinearLayout>
+    </android.support.v4.widget.NestedScrollView>
 
     <Button
         android:id="@+id/btn_signup"
@@ -154,7 +192,7 @@
         android:layout_weight="0.8"
         android:background="@drawable/touch_bg_pink"
         android:gravity="center"
-        android:text="注册"
+        android:text="@string/signup"
         android:textColor="#fff"
         android:textSize="16sp" />
 

@@ -21,6 +21,9 @@
     <string name="edit_signature">签名</string>
     <string name="edit_sex">性别</string>
     <string name="edit_phone">电话</string>
+    <string name="verification_code">验证码</string>
+    <string name="send_verification_code">获取验证码</string>
+    <string name="signup">注册</string>
 
 
 </resources>

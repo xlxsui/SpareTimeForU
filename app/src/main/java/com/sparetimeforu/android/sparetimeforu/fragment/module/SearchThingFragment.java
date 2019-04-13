@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.support.annotation.Nullable;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
@@ -116,7 +117,7 @@ public class SearchThingFragment extends Fragment {
                 (ViewGroup) mRecyclerView.getParent(), false);
         ImageView img = (ImageView) view.findViewById(R.id.header_main_fragment);
         Picasso.get().load(R.drawable.header_search_thing)
-                .resize(1080, 512)
+                .resize(200, 200)
                 .centerCrop()
                 .into(img);
         mAdapter.addHeaderView(view);
@@ -138,7 +139,8 @@ public class SearchThingFragment extends Fragment {
         new RequestSearchThing(new RequestSearchThingCallBack() {
             @Override
             public void success(List<SearchThing> data) {
-                Toast.makeText(getActivity(), "Refresh finished! ", Toast.LENGTH_SHORT).show();
+                Snackbar.make(getView(), "Refresh finished! ", Snackbar.LENGTH_SHORT).show();
+
                 //do something
                 setupAdapter(data);
 
@@ -148,7 +150,7 @@ public class SearchThingFragment extends Fragment {
 
             @Override
             public void fail(Exception e) {
-                Toast.makeText(getActivity(), "Network error! ", Toast.LENGTH_SHORT).show();
+                Snackbar.make(getView(), "Network error! ", Snackbar.LENGTH_SHORT).show();
 
                 mAdapter.setEnableLoadMore(true);
                 mSearchThingRefreshLayout.setRefreshing(false);
