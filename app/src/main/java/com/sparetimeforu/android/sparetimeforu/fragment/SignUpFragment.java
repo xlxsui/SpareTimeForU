@@ -15,6 +15,7 @@ import android.widget.Toast;
 
 import com.orhanobut.logger.Logger;
 import com.sparetimeforu.android.sparetimeforu.R;
+import com.sparetimeforu.android.sparetimeforu.STFUConfig;
 import com.sparetimeforu.android.sparetimeforu.ServerConnection.OkHttpUtil;
 
 import org.json.JSONException;
@@ -39,7 +40,7 @@ import okhttp3.Response;
 
 public class SignUpFragment extends Fragment {
 
-    static String url = "http://172.16.85.249:5000/auth/signup";
+    static String url = STFUConfig.HOST + "/auth/signup";
 
     @BindView(R.id.toolbar)
     Toolbar mToolbar;

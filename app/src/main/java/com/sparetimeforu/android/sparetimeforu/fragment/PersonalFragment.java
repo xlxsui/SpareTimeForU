@@ -14,18 +14,17 @@ import android.widget.Toast;
 import android.support.v7.widget.Toolbar;
 
 import com.sparetimeforu.android.sparetimeforu.R;
+import com.sparetimeforu.android.sparetimeforu.STFUConfig;
 import com.sparetimeforu.android.sparetimeforu.activity.EditActivity;
 import com.sparetimeforu.android.sparetimeforu.activity.ErrandReceivedActivity;
 import com.sparetimeforu.android.sparetimeforu.entity.User;
+import com.squareup.picasso.Picasso;
 
 /**
  * Created by HQY on 2018/11/15.
  */
 
-public class PersonalFragment extends Fragment implements View.OnClickListener{
-
-    public static String LoginServerUrl = " https://www.easy-mock.com/mock/5bebc836e0c6d321cade7458/success/LoginServer";
-
+public class PersonalFragment extends Fragment implements View.OnClickListener {
     //用户个人信息
     private TextView personal_favourable_rate, personal_nickname, personal_signate;
     private ImageView personal_avator;
@@ -33,7 +32,6 @@ public class PersonalFragment extends Fragment implements View.OnClickListener{
     //用户界面需要相应的控件
     private TextView personal_mission_received, personal_mission_released;
 
-    private User user;
     private Toolbar toolbar;
     private ImageView personal_go_back;
     private TextView personal_edit;//点击编辑按钮
@@ -50,7 +48,7 @@ public class PersonalFragment extends Fragment implements View.OnClickListener{
         personal_mission_received = (TextView) view.findViewById(R.id.personal_mission_received);
         personal_mission_released = (TextView) view.findViewById(R.id.personal_mission_released);
         personal_favourable_rate = (TextView) view.findViewById(R.id.personal_favourable_rate);
-        personal_edit=(TextView)view.findViewById(R.id.personal_edit);
+        personal_edit = (TextView) view.findViewById(R.id.personal_edit);
         initDate();
 
 
@@ -84,15 +82,20 @@ public class PersonalFragment extends Fragment implements View.OnClickListener{
     public void initDate() {
         //先用服务器，后续需要使用Activity间的信息传递
         Intent intent = getActivity().getIntent();
-        user = (User) intent.getSerializableExtra("user");
+        STFUConfig.sUser = (User) intent.getSerializableExtra("user");
         setUI();
     }
 
     private void setUI() {
-        if (user != null) {
-            personal_nickname.setText(user.getNick_name());
-            personal_favourable_rate.setText(user.getFavourable_rate() + "%");
-            personal_signate.setText(user.getSignature());
+        if (STFUConfig.sUser != null) {
+            personal_nickname.setText(STFUConfig.sUser.getNickname());
+            personal_favourable_rate.setText(STFUConfig.sUser.getFavourable_rate() + "%");
+            personal_signate.setText(STFUConfig.sUser.getSignature());
+            Picasso.get()
+                    .load(STFUConfig.sUser.getAvatar_url())
+                    .resize(200, 200)
+                    .centerCrop()
+                    .into(personal_avator);
         }
 
     }
@@ -100,18 +103,18 @@ public class PersonalFragment extends Fragment implements View.OnClickListener{
 
     @Override
     public void onClick(View view) {
-        switch (view.getId()){
+        switch (view.getId()) {
             case R.id.personal_mission_received:
-                Intent intent=new Intent(getActivity(), ErrandReceivedActivity.class);
+                Intent intent = new Intent(getActivity(), ErrandReceivedActivity.class);
                 startActivity(intent);
                 break;
             case R.id.personal_mission_released:
-                Toast.makeText(getActivity(),"You clicked the misson_released",Toast.LENGTH_SHORT).show();
+                Toast.makeText(getActivity(), "You clicked the misson_released", Toast.LENGTH_SHORT).show();
                 break;
             case R.id.personal_edit:
 
-                Intent intent1=new Intent(getActivity(), EditActivity.class);
-                intent1.putExtra("user",user);
+                Intent intent1 = new Intent(getActivity(), EditActivity.class);
+                intent1.putExtra("user", STFUConfig.sUser);
 
                 //之后要实现获取返回值
                 startActivity(intent1);

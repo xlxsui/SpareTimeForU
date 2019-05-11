@@ -79,7 +79,7 @@
                 android:background="#fff"
                 android:drawablePadding="10dp"
                 android:ellipsize="start"
-                android:hint="请输入您的汕大邮箱"
+                android:hint="@string/login_email_hint"
                 android:paddingStart="8dp"
                 android:singleLine="true"
                 android:textColor="#222222"
@@ -133,7 +133,7 @@
                 android:layout_weight="0.92"
                 android:background="#fff"
                 android:drawablePadding="10dp"
-                android:hint="请输入您的密码"
+                android:hint="@string/login_pw_hint"
                 android:inputType="textPassword"
                 android:maxLines="1"
                 android:paddingStart="8dp"
@@ -163,7 +163,7 @@
             android:layout_weight="0.5"
             android:background="@drawable/touch_bg"
             android:gravity="center"
-            android:text="注册"
+            android:text="@string/signup"
             android:textColor="#fb7299"
             android:textSize="16sp" />
 
@@ -175,7 +175,7 @@
             android:layout_weight="0.5"
             android:background="@drawable/touch_bg_pink"
             android:gravity="center"
-            android:text="登录"
+            android:text="@string/login"
             android:textColor="#fff"
             android:textSize="16sp" />
     </LinearLayout>

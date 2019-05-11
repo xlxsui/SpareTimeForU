@@ -5,18 +5,26 @@ import java.io.Serializable;
 /**
  * SpareTimeForU
  * Created by Jin on 2018/11/4.
- *
  */
 
-public class User implements Serializable{
+public class User implements Serializable {
 
-    private String nick_name;
+    private String nickname;
     private String signature;
-    private String picUrl;
+    private String avatar_url;
     private String favourable_rate;
     private String phone;
-    private String sex;
+    private String gender;
     private String email;
+    private String auth_token;
+
+    public String getAuth_token() {
+        return auth_token;
+    }
+
+    public void setAuth_token(String auth_token) {
+        this.auth_token = auth_token;
+    }
 
     public String getEmail() {
         return email;
@@ -26,12 +34,12 @@ public class User implements Serializable{
         this.email = email;
     }
 
-    public String getSex() {
-        return sex;
+    public String getGender() {
+        return gender;
     }
 
-    public void setSex(String sex) {
-        this.sex = sex;
+    public void setGender(String gender) {
+        this.gender = gender;
     }
 
     public String getPhone() {
@@ -42,12 +50,12 @@ public class User implements Serializable{
         this.phone = phone;
     }
 
-    public String getNick_name() {
-        return nick_name;
+    public String getNickname() {
+        return nickname;
     }
 
-    public void setNick_name(String nick_name) {
-        this.nick_name = nick_name;
+    public void setNickname(String nickname) {
+        this.nickname = nickname;
     }
 
     public String getSignature() {
@@ -58,19 +66,34 @@ public class User implements Serializable{
         this.signature = signature;
     }
 
-    public String getPicUrl() {
-        return picUrl;
+    public String getAvatar_url() {
+        return avatar_url;
     }
 
-    public void setPicUrl(String picUrl) {
-        this.picUrl = picUrl;
+    public void setAvatar_url(String avatar_url) {
+        this.avatar_url = avatar_url;
     }
 
     public String getFavourable_rate() {
         return favourable_rate;
     }
 
+
     public void setFavourable_rate(String favourable_rate) {
         this.favourable_rate = favourable_rate;
+    }
+
+    @Override
+    public String toString() {
+        return "User{" +
+                "nickname='" + nickname + '\'' +
+                ", signature='" + signature + '\'' +
+                ", avatar_url='" + avatar_url + '\'' +
+                ", favourable_rate='" + favourable_rate + '\'' +
+                ", phone='" + phone + '\'' +
+                ", gender='" + gender + '\'' +
+                ", email='" + email + '\'' +
+                ", auth_token='" + auth_token + '\'' +
+                '}';
     }
 }

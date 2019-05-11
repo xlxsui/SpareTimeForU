@@ -15,20 +15,9 @@ import me.imid.swipebacklayout.lib.app.SwipeBackActivity;
  * Created by HQY on 2018/11/15.
  */
 
-public class PersonalActivity extends SwipeBackActivity {
+public class PersonalActivity extends SingleSwipeBackFragmentActivity {
     @Override
-    protected void onCreate(@Nullable Bundle savedInstanceState) {
-
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.personal_container);
-        FragmentManager fm=(FragmentManager) getSupportFragmentManager();
-
-        Fragment fragment=fm.findFragmentById(R.id.Personal_fragment);
-
-        if(fragment==null){
-            fragment=new PersonalFragment();
-            fm.beginTransaction().add(R.id.Personal_fragment,fragment).commit();
-        }
-
+    protected Fragment createFragment() {
+        return new PersonalFragment();
     }
 }

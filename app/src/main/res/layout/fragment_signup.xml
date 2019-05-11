@@ -100,7 +100,7 @@
                 android:layout_margin="8dp"
                 android:background="#fff"
                 android:drawablePadding="10dp"
-                android:hint="请输入您的昵称"
+                android:hint="@string/signup_nickname_hint"
                 android:inputType="text"
                 android:maxLines="1"
                 android:paddingStart="@dimen/sp_16"
@@ -116,7 +116,7 @@
                 android:layout_margin="8dp"
                 android:background="#fff"
                 android:drawablePadding="10dp"
-                android:hint="请输入您的密码"
+                android:hint="@string/signup_pw1_hint"
                 android:inputType="textPassword"
                 android:maxLines="1"
                 android:paddingStart="@dimen/sp_16"
@@ -132,7 +132,7 @@
                 android:layout_margin="8dp"
                 android:background="#fff"
                 android:drawablePadding="10dp"
-                android:hint="确认密码"
+                android:hint="@string/signup_pw2_hint"
                 android:inputType="textPassword"
                 android:maxLines="1"
                 android:paddingStart="@dimen/sp_16"
@@ -175,7 +175,7 @@
                     android:gravity="center"
                     android:text="@string/send_verification_code"
                     android:textColor="#fff"
-                    android:textSize="16sp" />
+                    android:textSize="12sp" />
 
             </LinearLayout>
         </LinearLayout>

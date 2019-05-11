@@ -1,10 +1,14 @@
 package com.sparetimeforu.android.sparetimeforu.fragment;
 
+import android.accounts.Account;
+import android.accounts.AccountManager;
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
+import android.os.Build;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.design.widget.BottomNavigationView;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
@@ -15,6 +19,7 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
@@ -24,6 +29,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.orhanobut.logger.Logger;
+import com.sparetimeforu.android.sparetimeforu.BuildConfig;
+import com.sparetimeforu.android.sparetimeforu.STFUConfig;
 import com.sparetimeforu.android.sparetimeforu.activity.LoginActivity;
 import com.sparetimeforu.android.sparetimeforu.activity.PersonalActivity;
 import com.sparetimeforu.android.sparetimeforu.R;
@@ -32,6 +39,7 @@ import com.sparetimeforu.android.sparetimeforu.fragment.module.IdleThingFragment
 import com.sparetimeforu.android.sparetimeforu.fragment.module.SearchThingFragment;
 import com.sparetimeforu.android.sparetimeforu.fragment.module.StudyFragment;
 import com.sparetimeforu.android.sparetimeforu.entity.User;
+import com.squareup.picasso.Picasso;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -43,21 +51,24 @@ import java.util.Random;
  */
 
 public class STFUFragment extends Fragment {
-    private Toolbar mToolbar;
-    private FrameLayout mMainFragmentLayout;
+    private Toolbar mToolbar;// 工具栏
+    private FrameLayout mMainFragmentLayout;// 放置四个fragment的布局
     private Fragment mErrandFragment;
     private Fragment mIdleThingFragment;
     private Fragment mStudyFragment;
     private Fragment mSearchThingFragment;
-    private BottomNavigationView mBottomNavigationView;
-    private DrawerLayout mDrawerLayout;
-    private NavigationView mDrawerNavigationView;
-    FragmentManager mFm;
-    private TextView slider_menu_signature, slider_menu_nick_name;
+    private BottomNavigationView mBottomNavigationView;// 底部导航栏
+    private DrawerLayout mDrawerLayout;// 侧滑栏布局
+    private NavigationView mDrawerNavigationView;// 侧滑拦view
+    private TextView slider_menu_signature, slider_menu_nick_name;// 个性签名、昵称
+    private MenuItem mLoginMenuItem;// 登陆/注销选项
+    private ImageView mAvatar;
 
-    private User user;
+    FragmentManager mFm;
+    Account mAccount;
 
     private static final String CURRENT_BOTTOM_ITEM = "current_bottom_item";
+    private static final int REQUEST_CODE_LOGIN = 0;
 
 
     public static STFUFragment newInstance() {
@@ -69,39 +80,23 @@ public class STFUFragment extends Fragment {
                              ViewGroup container,
                              Bundle savedInstanceState) {
 
-
         final View view = inflater.inflate(R.layout.fragment_stfu, container, false);
         mFm = getActivity().getSupportFragmentManager();
 
 
         /**
-         * refresh UI according to the user sent in
-         */
-
-        /**
-         * toolbar and its component
+         * 工具栏及其组件
          */
         mToolbar = (Toolbar) view.findViewById(R.id.toolbar);
         ((AppCompatActivity) getActivity()).setSupportActionBar(mToolbar);
         TextView title = (TextView) view.findViewById(R.id.title_top);
         title.setText("汕大顺手邦");
         ImageView slideIcon = (ImageView) view.findViewById(R.id.menu_slide_icon);
-        slideIcon.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                mDrawerLayout.openDrawer(GravityCompat.START);
-
-            }
-        });
+        slideIcon.setOnClickListener(v -> mDrawerLayout.openDrawer(GravityCompat.START));
         ImageView searchIcon = (ImageView) view.findViewById(R.id.menu_search_icon);
-        searchIcon.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Toast.makeText(getActivity(), "Spare time for you!",
-                        Toast.LENGTH_SHORT)
-                        .show();
-            }
-        });
+        searchIcon.setOnClickListener(v -> Toast.makeText(getActivity(), "Spare time for you!",
+                Toast.LENGTH_SHORT)
+                .show());
 
         /**
          * 主片段及其布局
@@ -114,32 +109,28 @@ public class STFUFragment extends Fragment {
         mBottomNavigationView =
                 (BottomNavigationView) view.findViewById(R.id.bottom_navigation);
         mBottomNavigationView.setOnNavigationItemSelectedListener(
-                new BottomNavigationView.OnNavigationItemSelectedListener() {
-                    @Override
-                    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-
-                        switch (item.getItemId()) {
-                            case R.id.navigation_errand:
-                                loadErrandFragment();
-                                return true;
-                            case R.id.navigation_second_hand:
-                                loadIdleThingFragment();
-                                return true;
-                            case R.id.navigation_study:
-                                loadStudyFragment();
-                                return true;
-                            case R.id.navigation_search:
-                                loadSearchThingFragment();
-                                return true;
-                        }
-                        return false;
-
+                item -> {
+                    switch (item.getItemId()) {
+                        case R.id.navigation_errand:
+                            loadErrandFragment();
+                            return true;
+                        case R.id.navigation_second_hand:
+                            loadIdleThingFragment();
+                            return true;
+                        case R.id.navigation_study:
+                            loadStudyFragment();
+                            return true;
+                        case R.id.navigation_search:
+                            loadSearchThingFragment();
+                            return true;
                     }
+                    return false;
+
                 });
 
 
         /**
-         * 设置抽屉导航
+         * 设置侧滑栏
          */
         mDrawerLayout = (DrawerLayout) view.findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
@@ -149,9 +140,40 @@ public class STFUFragment extends Fragment {
         toggle.syncState();
 
         mDrawerNavigationView = (NavigationView) view.findViewById(R.id.slider_menu);
-        View mDrawerHeaderView = mDrawerNavigationView.getHeaderView(0);
+        mDrawerNavigationView.setNavigationItemSelectedListener(item -> {
+            switch (item.getItemId()) {
+                case R.id.slider_menu_task:
+                    Toast.makeText(getActivity(), item.getTitle(), Toast.LENGTH_SHORT)
+                            .show();
+                    break;
+                case R.id.slider_menu_personal_letter:
+                    Toast.makeText(getActivity(), item.getTitle(), Toast.LENGTH_SHORT)
+                            .show();
+                    break;
+                case R.id.slider_menu_login:
+                    if (mAccount != null) {
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP_MR1) {
+                            AccountManager.get(getContext()).removeAccountExplicitly(mAccount);
+                            STFUConfig.sUser = null;
+                            mAccount = null;
+                            updateViews();
+                        }
+                    }
+                    Intent intent = new Intent(getActivity(), LoginActivity.class);
+                    startActivityForResult(intent, REQUEST_CODE_LOGIN);
+                    break;
+                case R.id.slider_menu_exit:
+                    getActivity().finish();
+                    getActivity().moveTaskToBack(true);
+                    System.exit(0);
+            }
+            mDrawerLayout.closeDrawer(GravityCompat.START);
+            return true;
+        });
 
-        final ImageView mAvatar = (ImageView) mDrawerHeaderView.findViewById(R.id.slider_menu_avatar);
+
+        View mDrawerHeaderView = mDrawerNavigationView.getHeaderView(0);
+        mAvatar = (ImageView) mDrawerHeaderView.findViewById(R.id.slider_menu_avatar);
         try {
             Random random = new Random();
             int i = random.nextInt(11) + 1;
@@ -161,46 +183,16 @@ public class STFUFragment extends Fragment {
         } catch (IOException e) {
             Logger.e("onCreateView: ", e);
         }
-        mAvatar.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Toast.makeText(getActivity(), "Avatar", Toast.LENGTH_SHORT)
-                        .show();
-                Intent intent = new Intent(getActivity(), PersonalActivity.class);
-                intent.putExtra("user", user);
-                startActivity(intent);
-            }
+        mAvatar.setOnClickListener(v -> {
+            Toast.makeText(getActivity(), "Avatar", Toast.LENGTH_SHORT)
+                    .show();
+            Intent intent = new Intent(getActivity(), PersonalActivity.class);
+            intent.putExtra("user", STFUConfig.sUser);
+            startActivity(intent);
         });
 
-
-        mDrawerNavigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
-            @Override
-            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-                switch (item.getItemId()) {
-                    case R.id.slider_menu_task:
-                        Toast.makeText(getActivity(), item.getTitle(), Toast.LENGTH_SHORT)
-                                .show();
-                        break;
-                    case R.id.slider_menu_personal_letter:
-                        Toast.makeText(getActivity(), item.getTitle(), Toast.LENGTH_SHORT)
-                                .show();
-                        break;
-                    case R.id.slider_menu_login:
-                        Toast.makeText(getActivity(), item.getTitle(), Toast.LENGTH_SHORT)
-                                .show();
-                        Intent intent = new Intent(getActivity(), LoginActivity.class);
-                        startActivity(intent);
-                        break;
-                    case R.id.slider_menu_exit:
-                        getActivity().finish();
-                        getActivity().moveTaskToBack(true);
-                        System.exit(0);
-                }
-
-                mDrawerLayout.closeDrawer(GravityCompat.START);
-                return true;
-            }
-        });
+        Menu mDrawerMenuView = mDrawerNavigationView.getMenu();//侧滑栏的菜单
+        mLoginMenuItem = mDrawerMenuView.getItem(2);//第三个菜单项
 
 
         //初次加载的界面
@@ -226,13 +218,34 @@ public class STFUFragment extends Fragment {
             }
         }
 
-
         slider_menu_nick_name = (TextView) mDrawerHeaderView.findViewById(R.id.slider_menu_nick_name);
         slider_menu_signature = (TextView) mDrawerHeaderView.findViewById(R.id.slider_menu_signature);
-        setUI();
-
 
         return view;
+    }
+
+
+    @Override
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+
+        AccountManager accountManager = AccountManager.get(getContext());
+        Account[] account = accountManager.getAccountsByType(BuildConfig.APPLICATION_ID);
+
+        if (account.length != 0 && STFUConfig.sUser == null) {
+            mAccount = account[0];
+            STFUConfig.sUser = new User();
+            STFUConfig.sUser.setEmail(accountManager.getUserData(account[0], "email"));
+            STFUConfig.sUser.setNickname(accountManager.getUserData(account[0], "nickname"));
+            STFUConfig.sUser.setAvatar_url(accountManager.getUserData(account[0], "avatar_url"));
+            STFUConfig.sUser.setFavourable_rate(accountManager.getUserData(account[0], "favourable_rate"));
+            STFUConfig.sUser.setGender(accountManager.getUserData(account[0], "gender"));
+            STFUConfig.sUser.setPhone(accountManager.getUserData(account[0], "phone"));
+            STFUConfig.sUser.setSignature(accountManager.getUserData(account[0], "signature"));
+        }
+        if (STFUConfig.sUser != null) {
+            updateViews();
+        }
     }
 
     @Override
@@ -240,6 +253,25 @@ public class STFUFragment extends Fragment {
         super.onSaveInstanceState(outState);
         //bind the fragment with bottom navigation item
         outState.putInt(CURRENT_BOTTOM_ITEM, mBottomNavigationView.getSelectedItemId());
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (resultCode != Activity.RESULT_OK) {
+            return;
+        }
+
+        if (requestCode == REQUEST_CODE_LOGIN) {
+            if (data == null) {
+                return;
+            }
+            STFUConfig.sUser = new User();
+            STFUConfig.sUser = (User) data.getSerializableExtra("user");
+            AccountManager accountManager = AccountManager.get(getContext());
+            Account[] account = accountManager.getAccountsByType(BuildConfig.APPLICATION_ID);
+            mAccount = account[0];
+            updateViews();
+        }
     }
 
     /**
@@ -302,16 +334,27 @@ public class STFUFragment extends Fragment {
         mFm.beginTransaction()
                 .replace(R.id.main_fragment, mSearchThingFragment)
                 .commit();
-
     }
 
-
-    private void setUI() {
-        Intent intent = getActivity().getIntent();
-        user = (User) intent.getSerializableExtra("user");
-        if (user != null) {
-            slider_menu_nick_name.setText(user.getNick_name());
-            slider_menu_signature.setText(user.getSignature());
+    private void updateViews() {
+        if (STFUConfig.sUser != null) {
+            slider_menu_nick_name.setText(STFUConfig.sUser.getNickname());
+            slider_menu_signature.setText(STFUConfig.sUser.getSignature());
+            mLoginMenuItem.setTitle(getString(R.string.logout));
+            Picasso.get()
+                    .load(STFUConfig.sUser.getAvatar_url())
+                    .resize(200, 200)
+                    .centerCrop()
+                    .into(mAvatar);
+        } else {
+            slider_menu_nick_name.setText(getString(R.string.app_name));
+            slider_menu_signature.setText(getString(R.string.spare_time_for_u));
+            mLoginMenuItem.setTitle(getString(R.string.login));
+            Picasso.get()
+                    .load("file:///android_asset/avatar/ic_avatar1.jpg")
+                    .resize(200, 200)
+                    .centerCrop()
+                    .into(mAvatar);
         }
 
         //slider_menu_nick_name  slider_menu_signature

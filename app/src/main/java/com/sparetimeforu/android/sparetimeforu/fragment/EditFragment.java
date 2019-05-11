@@ -17,6 +17,7 @@ import android.widget.Toast;
 
 import com.sparetimeforu.android.sparetimeforu.R;
 import com.sparetimeforu.android.sparetimeforu.entity.User;
+import com.squareup.picasso.Picasso;
 
 import java.util.regex.Pattern;
 
@@ -49,7 +50,7 @@ public class EditFragment extends Fragment {
 
         //初始化控件
         init();
-        //初始化数据（user）
+        //初始化数据（sUser1234）
         initDate();
         changUI();
 
@@ -111,20 +112,20 @@ public class EditFragment extends Fragment {
                 case R.id.edit_Sex:
                     //弹出对话框修改性别
                     AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-                    int defaultChoice=1;
+                    int defaultChoice = 1;
                     builder.setIcon(R.mipmap.ic_launcher_round);
                     builder.setTitle("请选择性别");
                     final String[] sex = {"男", "女"};
 
-                    if(user!=null&&user.getSex().equals("男"))
-                        defaultChoice=0;
+                    if (user != null && user.getGender().equals("男"))
+                        defaultChoice = 0;
                     builder.setSingleChoiceItems(sex, defaultChoice, new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
                             Toast.makeText(getActivity(), "性别为：" + sex[which], Toast.LENGTH_SHORT).show();
 
-                            if(user!=null){
-                                user.setSex(sex[which]);
+                            if (user != null) {
+                                user.setGender(sex[which]);
                             }
                         }
                     });
@@ -155,10 +156,15 @@ public class EditFragment extends Fragment {
 
     private void changUI() {
         if (user != null) {
-            tv_edit_nickname.setText(user.getNick_name());
+            tv_edit_nickname.setText(user.getNickname());
             tv_edit_phonecall.setText(user.getPhone());
-            tv_edit_sex.setText(user.getSex());
+            tv_edit_sex.setText(user.getGender());
             tv_edit_signature.setText(user.getSignature());
+            Picasso.get()
+                    .load(user.getAvatar_url())
+                    .resize(200, 200)
+                    .centerCrop()
+                    .into(iv_edit_avatar);
         }
     }
 
@@ -185,10 +191,10 @@ public class EditFragment extends Fragment {
                 if (input != null) {
 
                     //根据要修改的信息类型修改用户信息
-                    if(user!=null){
+                    if (user != null) {
                         switch (changeType) {
                             case changeNickName:
-                                user.setNick_name(input);
+                                user.setNickname(input);
                                 break;
                             case changePhonecall:
 
@@ -228,7 +234,6 @@ public class EditFragment extends Fragment {
     private void sendMessageToServer(String message, int type) {
 
     }
-
 
     private boolean isInteger(String str) {
         Pattern pattern = Pattern.compile("^[-\\+]?[\\d]*$");

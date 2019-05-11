@@ -1,4 +1,33 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">SpareTimeForU</string>
+    <string name="app_name">STFU</string>
+    <string name="comment_hint">My response...</string>
+    <string name="comment_send">I\'ll tell you what</string>
+    <string name="edit_avatar">avatar</string>
+    <string name="edit_nickname">nickname</string>
+    <string name="edit_phone">phone</string>
+    <string name="edit_sex">gender</string>
+    <string name="edit_signature">signature</string>
+    <string name="exit">Exit</string>
+    <string name="login">Sign In</string>
+    <string name="logout">Logout</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_errand">Errand</string>
+    <string name="navigation_second_hand">Idle</string>
+    <string name="navigation_serch">Lost And Found</string>
+    <string name="navigation_study">Study</string>
+    <string name="personal_letter">Message</string>
+    <string name="send_verification_code">Get Verification Code</string>
+    <string name="sign_up_email_hint">STU email</string>
+    <string name="signup">Sign Up</string>
+    <string name="spare_time_for_u">Like a flower smile fleeting time</string>
+    <string name="task">Errand</string>
+    <string name="title">STFU</string>
+    <string name="verification_code">verification code</string>
+    <string name="signup_nickname_hint">nickname</string>
+    <string name="signup_pw1_hint">password</string>
+    <string name="signup_pw2_hint">confirm</string>
+    <string name="login_email_hint">STU email</string>
+    <string name="login_pw_hint">password</string>
 </resources>

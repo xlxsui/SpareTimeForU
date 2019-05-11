@@ -2,8 +2,10 @@ package com.sparetimeforu.android.sparetimeforu.util;
 
 import android.text.TextUtils;
 
+import com.google.gson.Gson;
 import com.sparetimeforu.android.sparetimeforu.entity.User;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import com.orhanobut.logger.Logger;
@@ -14,36 +16,24 @@ import com.orhanobut.logger.Logger;
 
 public class HandleMessageUtil {
 
-    /*
-    **  解析返回的登陆信息用户数据
+    /**
+     * 解析返回的登陆信息用户数据
+     *
+     * @param responseString
+     * @return
      */
-
-    public static User handleLoginMessage(String response) {
-        Logger.i(response);
-        if (!TextUtils.isEmpty(response)) {
+    public static User handleLoginMessage(String responseString) {
+        Logger.i(responseString);
+        if (!TextUtils.isEmpty(responseString)) {
+            Gson gson = new Gson();
+            User user = null;
             try {
-
-
-                JSONObject object1 = new JSONObject(response);
-                int success = object1.getInt("success");
-                Logger.i(response);
-                if (success == 1) {
-                    JSONObject userObject = new JSONObject(object1.getString("data"));//
-                    User user = new User();
-                    user.setNick_name(userObject.getString("nickname"));
-                    user.setSignature(userObject.getString("signature"));
-                    // user.setFavourable_rate(userObject.getString("favourable_rate"));
-                    user.setPicUrl(userObject.getString("avatar_url"));
-                    user.setSex(userObject.getString("gender"));
-                    user.setPhone(userObject.getString("phone"));
-                    user.setEmail(userObject.getString("email"));
-
-                    return user;
-                } else return null;
-            } catch (Exception e) {
-                Logger.i(e.getMessage());
+                JSONObject jsonObject = new JSONObject(responseString);
+                user = gson.fromJson(jsonObject.getString("data"), User.class);
+            } catch (JSONException e) {
+                Logger.e(e.toString());
             }
-
+            return user;
         }
         return null;
     }

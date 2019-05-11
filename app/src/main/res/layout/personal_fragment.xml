@@ -1,16 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.widget.LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
+<android.widget.LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
-    <include layout="@layout/personal_toolbar"/>
-    
+
+    <include layout="@layout/personal_toolbar" />
+
     <RelativeLayout
+        android:id="@+id/data_layout"
         android:layout_width="match_parent"
         android:layout_height="176dip"
-        android:background="@drawable/pink_background"
-        android:id="@+id/data_layout">
-        
+        android:layout_marginTop="2dp"
+        android:background="@drawable/pink_background">
+
         <ImageView
             android:id="@+id/personal_avator"
             android:layout_width="wrap_content"
@@ -19,13 +21,14 @@
             android:layout_centerVertical="true"
             android:layout_marginLeft="10dip"
             android:paddingBottom="30dip"
-            android:src="@mipmap/ic_launcher_round"/>
-        
+            android:src="@mipmap/ic_launcher_round" />
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="100dip"
             android:layout_alignParentBottom="true"
             android:orientation="vertical">
+
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -36,9 +39,9 @@
                     android:id="@+id/personal_edit"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:gravity="center"
                     android:layout_alignParentRight="true"
                     android:layout_marginRight="20dip"
+                    android:gravity="center"
                     android:text="编辑" />
 
                 <TextView
@@ -48,28 +51,31 @@
                     android:layout_centerHorizontal="true"
                     android:gravity="center"
                     android:text="SpareTimeForYou"
-                    android:textAppearance="@style/TextAppearance.AppCompat.Body1"/>
+                    android:textAppearance="@style/TextAppearance.AppCompat.Body1" />
             </RelativeLayout>
+
             <TextView
                 android:id="@+id/personal_signate"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:maxLines="3"
                 android:layout_marginStart="20dp"
                 android:layout_marginEnd="20dp"
-                android:text="@string/spare_time_for_u"
-                android:gravity="center_horizontal"/>
+                android:layout_weight="1"
+                android:gravity="center_horizontal"
+                android:maxLines="3"
+                android:text="@string/spare_time_for_u" />
 
         </LinearLayout>
     </RelativeLayout>
 
 
-    <include layout="@layout/personal_middlescrollview"/>
+    <include layout="@layout/personal_middlescrollview" />
+
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="bottom">
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="100dip"

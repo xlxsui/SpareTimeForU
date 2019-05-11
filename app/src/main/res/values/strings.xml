@@ -4,16 +4,16 @@
     <string name="navigation_second_hand">闲置</string>
     <string name="navigation_study">学习</string>
     <string name="navigation_serch">寻物</string>
-    <string name="spare_time_for_u">看小姐姐是罪过吗，我就是欣赏而已。看一下怎么啦，真是的</string>
+    <string name="spare_time_for_u">如花笑靥 似水流年</string>
     <string name="title">STFU</string>
     <string name="task">任务</string>
     <string name="personal_letter">私信</string>
-    <string name="login">登陆</string>
+    <string name="login">登录</string>
     <string name="logout">注销</string>
     <string name="exit">退出</string>
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
-    <string name="sign_up_email_hint">请输入您的汕大邮箱</string>
+    <string name="sign_up_email_hint">汕大邮箱</string>
     <string name="comment_hint">我的回应…</string>
     <string name="comment_send">我也说一句</string>
     <string name="edit_avatar">头像</string>
@@ -24,6 +24,11 @@
     <string name="verification_code">验证码</string>
     <string name="send_verification_code">获取验证码</string>
     <string name="signup">注册</string>
+    <string name="signup_nickname_hint">请输入您的昵称</string>
+    <string name="signup_pw1_hint">请输入您的密码</string>
+    <string name="signup_pw2_hint">确认密码</string>
+    <string name="login_email_hint">汕大邮箱</string>
+    <string name="login_pw_hint">请输入您的密码</string>
 
 
 </resources>

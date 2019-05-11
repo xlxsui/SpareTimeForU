@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+    <PreferenceCategory android:title="偏好设置"/>
+    <CheckBoxPreference android:title="消息"
+                        android:key="message"
+                        android:summary="别人回复的消息"
+                        android:defaultValue="true"/>
+    <CheckBoxPreference android:title="更新"
+                        android:key="update"
+                        android:summary="检查新版本"
+                        android:defaultValue="true"/>
+    <SwitchPreference android:key="like"
+                      android:title="喜欢"
+                      android:defaultValue="true"/>
+</PreferenceScreen>
