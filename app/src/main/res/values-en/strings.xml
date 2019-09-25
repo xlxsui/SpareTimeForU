@@ -30,4 +30,7 @@
     <string name="signup_pw2_hint">confirm</string>
     <string name="login_email_hint">STU email</string>
     <string name="login_pw_hint">password</string>
+    <string name="edit_bg">background</string>
+    <string name="edit_confirm">confirm</string>
+    <string name="forget_pw">forget password?</string>
 </resources>

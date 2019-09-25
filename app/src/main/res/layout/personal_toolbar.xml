@@ -1,30 +1,34 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.widget.RelativeLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/personal_layout"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="?attr/actionBarSize">
 
     <android.support.v7.widget.Toolbar
         android:id="@+id/personal_toolbar"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
-
         android:background="@color/colorPrimary">
 
     </android.support.v7.widget.Toolbar>
 
     <ImageView
-        android:layout_marginLeft="10dp"
         android:id="@+id/persnal_go_back"
         android:layout_width="40dp"
         android:layout_height="?attr/actionBarSize"
-
+        android:layout_marginStart="10dp"
+        app:layout_constraintLeft_toLeftOf="parent"
         app:srcCompat="@drawable/ic_back" />
+
     <ImageView
+        android:id="@+id/personal_icom"
         android:layout_width="45dp"
         android:layout_height="?attr/actionBarSize"
-        android:layout_centerHorizontal="true"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@mipmap/ic_launcher_round" />
 
-</android.widget.RelativeLayout>
+</android.support.constraint.ConstraintLayout>

@@ -1,6 +1,7 @@
 package com.sparetimeforu.android.sparetimeforu.fragment;
 
 import android.content.Intent;
+import android.graphics.PorterDuff;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -9,16 +10,23 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.support.v7.widget.Toolbar;
 
+import com.orhanobut.logger.Logger;
 import com.sparetimeforu.android.sparetimeforu.R;
 import com.sparetimeforu.android.sparetimeforu.STFUConfig;
 import com.sparetimeforu.android.sparetimeforu.activity.EditActivity;
 import com.sparetimeforu.android.sparetimeforu.activity.ErrandReceivedActivity;
 import com.sparetimeforu.android.sparetimeforu.entity.User;
+import com.squareup.picasso.Callback;
+import com.squareup.picasso.NetworkPolicy;
 import com.squareup.picasso.Picasso;
+
+import butterknife.BindView;
+import butterknife.ButterKnife;
 
 /**
  * Created by HQY on 2018/11/15.
@@ -35,11 +43,17 @@ public class PersonalFragment extends Fragment implements View.OnClickListener {
     private Toolbar toolbar;
     private ImageView personal_go_back;
     private TextView personal_edit;//点击编辑按钮
+    private ImageView mBGImageView;
+
+
+    @BindView(R.id.data_layout)
+    RelativeLayout mBGLayout;
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.personal_fragment, container, false);
+        ButterKnife.bind(this, view);
 
         //初始化控件
         personal_avator = (ImageView) view.findViewById(R.id.personal_avator);
@@ -49,7 +63,7 @@ public class PersonalFragment extends Fragment implements View.OnClickListener {
         personal_mission_released = (TextView) view.findViewById(R.id.personal_mission_released);
         personal_favourable_rate = (TextView) view.findViewById(R.id.personal_favourable_rate);
         personal_edit = (TextView) view.findViewById(R.id.personal_edit);
-        initDate();
+        mBGImageView = new ImageView(getContext());
 
 
         //给TextView添加监听
@@ -76,6 +90,12 @@ public class PersonalFragment extends Fragment implements View.OnClickListener {
         return view;
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        initDate();
+    }
+
     /**
      * 获取用户信息
      */
@@ -83,19 +103,37 @@ public class PersonalFragment extends Fragment implements View.OnClickListener {
         //先用服务器，后续需要使用Activity间的信息传递
         Intent intent = getActivity().getIntent();
         STFUConfig.sUser = (User) intent.getSerializableExtra("user");
-        setUI();
+        updateViews();
     }
 
-    private void setUI() {
+    private void updateViews() {
         if (STFUConfig.sUser != null) {
             personal_nickname.setText(STFUConfig.sUser.getNickname());
             personal_favourable_rate.setText(STFUConfig.sUser.getFavourable_rate() + "%");
             personal_signate.setText(STFUConfig.sUser.getSignature());
+            //设置头像
             Picasso.get()
-                    .load(STFUConfig.sUser.getAvatar_url())
+                    .load(STFUConfig.HOST + "/static/avatar/" + STFUConfig.sUser.getAvatar_url())
                     .resize(200, 200)
                     .centerCrop()
                     .into(personal_avator);
+            //设置背景图片
+            Picasso.get()
+                    .load(STFUConfig.HOST + "/static/personal_background/" + STFUConfig.sUser.getBg_url())
+                    .resize(1920, 1080)
+                    .centerCrop()
+                    .into(mBGImageView, new Callback() {
+                        @Override
+                        public void onSuccess() {
+                            mBGImageView.getDrawable().setColorFilter(0x33000000, PorterDuff.Mode.SRC_ATOP);
+                            mBGLayout.setBackground(mBGImageView.getDrawable());
+                        }
+
+                        @Override
+                        public void onError(Exception e) {
+                        }
+                    });
+
         }
 
     }

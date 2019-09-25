@@ -18,6 +18,17 @@ public class User implements Serializable {
     private String email;
     private String auth_token;
 
+
+    public String getBg_url() {
+        return bg_url;
+    }
+
+    public void setBg_url(String bg_url) {
+        this.bg_url = bg_url;
+    }
+
+    private String bg_url;
+
     public String getAuth_token() {
         return auth_token;
     }
@@ -94,6 +105,7 @@ public class User implements Serializable {
                 ", gender='" + gender + '\'' +
                 ", email='" + email + '\'' +
                 ", auth_token='" + auth_token + '\'' +
+                ", bg_url='" + bg_url + '\'' +
                 '}';
     }
 }

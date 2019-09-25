@@ -4,8 +4,6 @@ import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -34,70 +32,47 @@ import okhttp3.Response;
 
 /**
  * SpareTimeForU
- * Created by Jin on 2018/11/18.
+ * Created by Jin on 2019/5/27.
  * Email:17wjli6@stu.edu.cn
  */
+public class ChangePWFragment extends Fragment {
+    static String url = STFUConfig.HOST + "/user/change_password";
 
-public class SignUpFragment extends Fragment {
 
-    static String url = STFUConfig.HOST + "/auth/signup";
-
-    @BindView(R.id.toolbar)
-    Toolbar mToolbar;
-    @BindView(R.id.et_verification_code)
-    EditText mVerificationCode;
-    @BindView(R.id.btn_send_verification_code)
-    Button mBtnVerificationCode;
+    @BindView(R.id.change_pw_email)
+    EditText mEmailEditText;
+    @BindView(R.id.change_pw_password)
+    EditText mP1EditText;
+    @BindView(R.id.change_pw_password2)
+    EditText mP2EditText;
+    @BindView(R.id.change_pw_verification_code)
+    EditText mVCEditText;
+    @BindView(R.id.change_pw_btn_send_verification_code)
+    Button mSendVCButton;
 
     private CountDownTime mTime;
 
-    EditText et_username;
-    EditText et_username_back;
-    EditText et_nickname;
-    EditText et_password_reg;
-    EditText et_password2_reg;
-    Button btn_signup;
-
-    /*
-    * et_password2_reg
-    et_username
-    et_username_back
-    et_nickname
-    et_password_reg
-    et_password2_reg
-    btn_signup
-    * */
-
-    public static SignUpFragment newInstance() {
-        return new SignUpFragment();
+    public static Fragment newInstance() {
+        return new ChangePWFragment();
     }
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_signup, container, false);
+        View view = inflater.inflate(R.layout.fragment_change_password, container, false);
         ButterKnife.bind(this, view);
-
-        ((AppCompatActivity) getActivity()).setSupportActionBar(mToolbar);
-        et_nickname = (EditText) view.findViewById(R.id.et_nickname);
-        et_username = (EditText) view.findViewById(R.id.et_username);
-        et_username_back = (EditText) view.findViewById(R.id.et_username_back);
-        et_password2_reg = (EditText) view.findViewById(R.id.et_password2_reg);
-        et_password_reg = (EditText) view.findViewById(R.id.et_password_reg);
-        btn_signup = (Button) view.findViewById(R.id.btn_signup);
 
         mTime = new CountDownTime(60000, 1000);//倒计时的
         return view;
     }
-
 
     @OnClick(R.id.menu_back_icon)
     public void back() {
         getActivity().finish();
     }
 
-    @OnClick(R.id.btn_send_verification_code)
-    public void sendVCode() {
+    @OnClick(R.id.change_pw_btn_send_verification_code)
+    public void sendVC() {
         if (checkInformation() != 1) {
             sendVerificationCode();
             mTime.start(); //开始计时
@@ -106,17 +81,14 @@ public class SignUpFragment extends Fragment {
         }
     }
 
-    @OnClick(R.id.btn_signup)
-    public void signUp() {
+    @OnClick(R.id.change_pw_confirm)
+    public void confirm() {
         switch (checkInformation()) {
             case 0:
-                sendSignUpPostRequest();
+                sendChangePWRequest();
                 break;
             case 1:
                 Toast.makeText(getActivity(), "邮箱不能为空!", Toast.LENGTH_SHORT).show();
-                break;
-            case 2:
-                Toast.makeText(getActivity(), "昵称不能为空!", Toast.LENGTH_SHORT).show();
                 break;
             case 3:
                 Toast.makeText(getActivity(), "密码不匹配!", Toast.LENGTH_SHORT).show();
@@ -132,31 +104,9 @@ public class SignUpFragment extends Fragment {
         }
     }
 
-    /**
-     * @return 0 成功，1 邮箱为空，2 昵称为空，3 密码不匹配，4 密码少于8位，5 验证码为空
-     */
-    private int checkInformation() {
-        if (Objects.equals(et_username.getText().toString(), "")) {
-            return 1;
-        }
-        if (Objects.equals(et_nickname.getText().toString(), "")) {
-            return 2;
-        }
-        if (!Objects.equals(et_password_reg.getText().toString(), et_password2_reg.getText().toString())) {
-            return 3;
-        }
-        if (et_password_reg.getText().toString().length() < 8) {
-            return 4;
-        }
-        if (Objects.equals(mVerificationCode.getText().toString(), "")) {
-            return 5;
-        }
-        return 0;
-    }
-
     public void sendVerificationCode() {
-        String username = et_username.getText().toString();
-        String email = username + "@stu.edu.cn";//完整的邮箱
+        String emailPrefix = mEmailEditText.getText().toString();
+        String email = emailPrefix + "@stu.edu.cn";//完整的邮箱
         FormBody body = new FormBody.Builder()
                 .add("email", email)
                 .add("request_type", "send_verification_code")
@@ -200,23 +150,20 @@ public class SignUpFragment extends Fragment {
         });
     }
 
-
-    public void sendSignUpPostRequest() {
+    public void sendChangePWRequest() {
         //发送注册post请求
-        String nickname = et_nickname.getText().toString();
-        String username = et_username.getText().toString();
-        String email = username + "@stu.edu.cn";//完整的邮箱
-        String password1 = et_password_reg.getText().toString();
-        String password2 = et_password2_reg.getText().toString();
-        String verificationCode = mVerificationCode.getText().toString();
+        String emailPrefix = mEmailEditText.getText().toString();
+        String email = emailPrefix + "@stu.edu.cn";//完整的邮箱
+        String password1 = mP1EditText.getText().toString();
+        String password2 = mP2EditText.getText().toString();
+        String verificationCode = mVCEditText.getText().toString();
 
         FormBody body = new FormBody.Builder()
                 .add("email", email)
-                .add("nickname", nickname)
                 .add("password1", password1)
                 .add("password2", password2)
                 .add("verification_code", verificationCode)
-                .add("request_type", "sign_up")
+                .add("request_type", "change_password")
                 .build();
 
         //发送请求
@@ -241,7 +188,7 @@ public class SignUpFragment extends Fragment {
                             String status = jsonObject.getString("status");
                             if (Objects.equals(status, "success")) {
                                 getActivity().runOnUiThread(() -> {
-                                    Toast.makeText(getActivity(), "注册成功", Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(getActivity(), "修改密码成功", Toast.LENGTH_SHORT).show();
                                     getActivity().finish();
                                 });
                             } else if (Objects.equals(status, "error")) {
@@ -260,6 +207,24 @@ public class SignUpFragment extends Fragment {
                 });
     }
 
+    /**
+     * @return 0 成功，1 邮箱为空，3 密码不匹配，4 密码少于8位，5 验证码为空
+     */
+    private int checkInformation() {
+        if (Objects.equals(mEmailEditText.getText().toString(), "")) {
+            return 1;
+        }
+        if (!Objects.equals(mP1EditText.getText().toString(), mP2EditText.getText().toString())) {
+            return 3;
+        }
+        if (mP1EditText.getText().toString().length() < 8) {
+            return 4;
+        }
+        if (Objects.equals(mVCEditText.getText().toString(), "")) {
+            return 5;
+        }
+        return 0;
+    }
 
     /**
      * 使用android封装好的 CountDownTimer
@@ -274,15 +239,14 @@ public class SignUpFragment extends Fragment {
 
         @Override
         public void onTick(long l) {  //每计时一次回调一次该方法
-            mBtnVerificationCode.setClickable(false);
-            mBtnVerificationCode.setText(l / 1000 + "秒后重新发送");
+            mSendVCButton.setClickable(false);
+            mSendVCButton.setText(l / 1000 + "秒后重新发送");
         }
 
         @Override
         public void onFinish() { //计时结束回调该方法
-            mBtnVerificationCode.setClickable(true);
-            mBtnVerificationCode.setText("重新发送验证码");
+            mSendVCButton.setClickable(true);
+            mSendVCButton.setText("重新发送验证码");
         }
     }
-
 }

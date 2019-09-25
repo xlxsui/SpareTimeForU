@@ -9,7 +9,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="16dp"
-        android:text="人一到群体中，智商就严重降低，为了获得认同，个体愿意抛弃是非，用智商去换取那份让人备感安全的归属感。"
+        android:text="东门打包一杯益禾堂。"
+        android:gravity="center"
         android:textSize="16sp"
         android:textStyle="bold"/>
 

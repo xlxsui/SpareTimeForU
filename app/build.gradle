@@ -60,7 +60,7 @@ dependencies {
     implementation 'com.google.code.gson:gson:2.8.5'
 
     implementation files('libs/BaiduLBS_Android.jar')
-    compile 'com.github.hotchemi:permissionsdispatcher:2.2.0'
+    implementation 'com.github.hotchemi:permissionsdispatcher:2.2.0'
     annotationProcessor 'com.github.hotchemi:permissionsdispatcher-processor:2.2.0'
 
 }

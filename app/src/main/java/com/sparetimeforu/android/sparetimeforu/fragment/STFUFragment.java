@@ -2,14 +2,21 @@ package com.sparetimeforu.android.sparetimeforu.fragment;
 
 import android.accounts.Account;
 import android.accounts.AccountManager;
+import android.accounts.AccountManagerCallback;
+import android.accounts.AccountManagerFuture;
+import android.accounts.AuthenticatorException;
+import android.accounts.OperationCanceledException;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.design.widget.BottomNavigationView;
+import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -25,6 +32,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -39,11 +47,19 @@ import com.sparetimeforu.android.sparetimeforu.fragment.module.IdleThingFragment
 import com.sparetimeforu.android.sparetimeforu.fragment.module.SearchThingFragment;
 import com.sparetimeforu.android.sparetimeforu.fragment.module.StudyFragment;
 import com.sparetimeforu.android.sparetimeforu.entity.User;
+import com.squareup.picasso.Callback;
+import com.squareup.picasso.NetworkPolicy;
 import com.squareup.picasso.Picasso;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Random;
+
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import butterknife.OnClick;
+
+import static java.lang.System.exit;
 
 /**
  * SpareTimeForU
@@ -63,6 +79,8 @@ public class STFUFragment extends Fragment {
     private TextView slider_menu_signature, slider_menu_nick_name;// 个性签名、昵称
     private MenuItem mLoginMenuItem;// 登陆/注销选项
     private ImageView mAvatar;
+    private ImageView mBGImageView;
+    private LinearLayout mHeaderLinearLayout;
 
     FragmentManager mFm;
     Account mAccount;
@@ -81,6 +99,7 @@ public class STFUFragment extends Fragment {
                              Bundle savedInstanceState) {
 
         final View view = inflater.inflate(R.layout.fragment_stfu, container, false);
+        ButterKnife.bind(this, view);
         mFm = getActivity().getSupportFragmentManager();
 
 
@@ -132,12 +151,15 @@ public class STFUFragment extends Fragment {
         /**
          * 设置侧滑栏
          */
+
         mDrawerLayout = (DrawerLayout) view.findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 getActivity(), mDrawerLayout, mToolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close
         );
         mDrawerLayout.addDrawerListener(toggle);
         toggle.syncState();
+
+        mBGImageView = new ImageView(getContext());
 
         mDrawerNavigationView = (NavigationView) view.findViewById(R.id.slider_menu);
         mDrawerNavigationView.setNavigationItemSelectedListener(item -> {
@@ -165,14 +187,16 @@ public class STFUFragment extends Fragment {
                 case R.id.slider_menu_exit:
                     getActivity().finish();
                     getActivity().moveTaskToBack(true);
-                    System.exit(0);
+                    exit(0);
             }
+
             mDrawerLayout.closeDrawer(GravityCompat.START);
             return true;
         });
 
 
         View mDrawerHeaderView = mDrawerNavigationView.getHeaderView(0);
+        mHeaderLinearLayout = mDrawerHeaderView.findViewById(R.id.drawer_header_layout);
         mAvatar = (ImageView) mDrawerHeaderView.findViewById(R.id.slider_menu_avatar);
         try {
             Random random = new Random();
@@ -184,8 +208,6 @@ public class STFUFragment extends Fragment {
             Logger.e("onCreateView: ", e);
         }
         mAvatar.setOnClickListener(v -> {
-            Toast.makeText(getActivity(), "Avatar", Toast.LENGTH_SHORT)
-                    .show();
             Intent intent = new Intent(getActivity(), PersonalActivity.class);
             intent.putExtra("user", STFUConfig.sUser);
             startActivity(intent);
@@ -224,10 +246,9 @@ public class STFUFragment extends Fragment {
         return view;
     }
 
-
     @Override
-    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
+    public void onStart() {
+        super.onStart();
 
         AccountManager accountManager = AccountManager.get(getContext());
         Account[] account = accountManager.getAccountsByType(BuildConfig.APPLICATION_ID);
@@ -242,6 +263,10 @@ public class STFUFragment extends Fragment {
             STFUConfig.sUser.setGender(accountManager.getUserData(account[0], "gender"));
             STFUConfig.sUser.setPhone(accountManager.getUserData(account[0], "phone"));
             STFUConfig.sUser.setSignature(accountManager.getUserData(account[0], "signature"));
+            STFUConfig.sUser.setBg_url(accountManager.getUserData(account[0], "bg_url"));
+
+            //设置auth_token
+            new GetAuthThread().start();
         }
         if (STFUConfig.sUser != null) {
             updateViews();
@@ -257,6 +282,7 @@ public class STFUFragment extends Fragment {
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
+
         if (resultCode != Activity.RESULT_OK) {
             return;
         }
@@ -272,6 +298,11 @@ public class STFUFragment extends Fragment {
             mAccount = account[0];
             updateViews();
         }
+    }
+
+    @OnClick(R.id.fab)
+    public void onFABClicked() {
+        Toast.makeText(getContext(), "Toast from FAB", Toast.LENGTH_SHORT).show();
     }
 
     /**
@@ -342,10 +373,28 @@ public class STFUFragment extends Fragment {
             slider_menu_signature.setText(STFUConfig.sUser.getSignature());
             mLoginMenuItem.setTitle(getString(R.string.logout));
             Picasso.get()
-                    .load(STFUConfig.sUser.getAvatar_url())
+                    .load(STFUConfig.HOST + "/static/avatar/" + STFUConfig.sUser.getAvatar_url())
                     .resize(200, 200)
                     .centerCrop()
                     .into(mAvatar);
+            //设置背景图片
+            Picasso.get()
+                    .load(STFUConfig.HOST + "/static/personal_background/" + STFUConfig.sUser.getBg_url())
+                    .resize(1920, 1080)
+                    .centerCrop()
+                    .into(mBGImageView, new Callback() {
+                        @Override
+                        public void onSuccess() {
+                            mBGImageView.getDrawable().setColorFilter(0x33000000, PorterDuff.Mode.SRC_ATOP);
+                            mHeaderLinearLayout.setBackground(mBGImageView.getDrawable());
+                        }
+
+                        @Override
+                        public void onError(Exception e) {
+                            Logger.i(e.toString());
+                        }
+                    });
+
         } else {
             slider_menu_nick_name.setText(getString(R.string.app_name));
             slider_menu_signature.setText(getString(R.string.spare_time_for_u));
@@ -355,9 +404,27 @@ public class STFUFragment extends Fragment {
                     .resize(200, 200)
                     .centerCrop()
                     .into(mAvatar);
+            mHeaderLinearLayout.setBackground(getResources().getDrawable(R.drawable.pink_background));
         }
+    }
 
-        //slider_menu_nick_name  slider_menu_signature
+    class GetAuthThread extends Thread {
+        @Override
+        public void run() {
+            //获取设置，authToken
+            AccountManagerFuture<Bundle> future = AccountManager.get(getContext())
+                    .getAuthToken(mAccount, "normal",
+                            null, false, null, null);
+            Bundle result;
+            try {
+                result = future.getResult();
+                String authToken;
+                authToken = result.getString(AccountManager.KEY_AUTHTOKEN);
+                STFUConfig.sUser.setAuth_token(authToken);
+            } catch (Exception e) {
+                Logger.e(e.toString());
+            }
+        }
     }
 
 }

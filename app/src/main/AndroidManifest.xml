@@ -15,7 +15,6 @@
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
     <uses-permission android:name="android.permission.GET_TASKS" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
-    <uses-permission android:name="android.permission.WRITE_SETTINGS" />
     <!-- 访问精确位置的权限 -->
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <!-- 这个权限用于进行网络定位-->
@@ -61,6 +60,7 @@
         <activity android:name=".activity.post.StudyPostActivity" />
         <activity android:name=".activity.post.LostAndFoundPostActivity" />
         <activity android:name=".activity.PictureActivity" />
+        <activity android:name=".activity.ChangePWActivity" />
 
         <service
             android:name=".account.AccountAuthenticatorService"
@@ -72,6 +72,16 @@
                 android:name="android.accounts.AccountAuthenticator"
                 android:resource="@xml/authenticator" />
         </service>
+
+        <provider
+            android:name="android.support.v4.content.FileProvider"
+            android:authorities="com.sparetimeforu.android.sparetimeforu.fileProvider"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/provider_paths" />
+        </provider>
 
 
     </application>

@@ -17,12 +17,15 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
+import com.orhanobut.logger.Logger;
 import com.sparetimeforu.android.sparetimeforu.BuildConfig;
 import com.sparetimeforu.android.sparetimeforu.R;
 import com.sparetimeforu.android.sparetimeforu.STFUConfig;
 import com.sparetimeforu.android.sparetimeforu.ServerConnection.OkHttpUtil;
+import com.sparetimeforu.android.sparetimeforu.activity.ChangePWActivity;
 import com.sparetimeforu.android.sparetimeforu.activity.STFUActivity;
 import com.sparetimeforu.android.sparetimeforu.activity.SignUpActivity;
 import com.sparetimeforu.android.sparetimeforu.entity.User;
@@ -52,11 +55,10 @@ public class LoginFragment extends Fragment {
     private EditText mEmailEdit;
     private EditText mPasswordEdit;
     private Button mSignUpButton;
-    private Button mLoginButton;
 
-    private String authToken;
 
     private User mUser;
+
     @BindView(R.id.toolbar)
     Toolbar mToolbar;
 
@@ -96,8 +98,6 @@ public class LoginFragment extends Fragment {
             startActivityForResult(intent, 0);
         });
 
-        mLoginButton = (Button) view.findViewById(R.id.btn_login);
-
         return view;
     }
 
@@ -133,6 +133,7 @@ public class LoginFragment extends Fragment {
                                                 "用户名或者密码错误", Toast.LENGTH_SHORT).show());
                             } else {
                                 mUser = user;//给成员变量mUser赋值
+                                Logger.i(mUser.toString());
                                 getActivity().runOnUiThread(() -> {
                                     //添加账户
                                     addAccount();
@@ -147,6 +148,12 @@ public class LoginFragment extends Fragment {
         } else {
             Snackbar.make(getView(), "请输入邮箱和密码！", BaseTransientBottomBar.LENGTH_SHORT).show();
         }
+    }
+
+    @OnClick(R.id.login_forget_pw)
+    public void forgetPW() {
+        Intent intent = new Intent(getActivity(), ChangePWActivity.class);
+        startActivity(intent);
     }
 
     public void addAccount() {
@@ -168,5 +175,6 @@ public class LoginFragment extends Fragment {
         am.setUserData(account, "favourable_rate", mUser.getFavourable_rate());
         am.setUserData(account, "phone", mUser.getPhone());
         am.setUserData(account, "gender", mUser.getGender());
+        am.setUserData(account, "bg_url", mUser.getBg_url());
     }
 }

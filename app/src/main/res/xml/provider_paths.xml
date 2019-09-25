@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<paths>
+    <!--相机相册裁剪-->
+    <external-path
+        name="avatar_root"
+        path="/SpareTimeForU/bigAvatar" />
+</paths>
