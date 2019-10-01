@@ -17,11 +17,12 @@ import android.support.v7.widget.Toolbar;
 
 import com.orhanobut.logger.Logger;
 import com.sparetimeforu.android.sparetimeforu.R;
-import com.sparetimeforu.android.sparetimeforu.STFUConfig;
+import com.sparetimeforu.android.sparetimeforu.STFU;
 import com.sparetimeforu.android.sparetimeforu.activity.EditActivity;
 import com.sparetimeforu.android.sparetimeforu.activity.ErrandReceivedActivity;
 import com.sparetimeforu.android.sparetimeforu.entity.User;
 import com.squareup.picasso.Callback;
+import com.squareup.picasso.MemoryPolicy;
 import com.squareup.picasso.NetworkPolicy;
 import com.squareup.picasso.Picasso;
 
@@ -45,13 +46,16 @@ public class PersonalFragment extends Fragment implements View.OnClickListener {
     private TextView personal_edit;//点击编辑按钮
     private ImageView mBGImageView;
 
-
     @BindView(R.id.data_layout)
     RelativeLayout mBGLayout;
+
+    STFU app;
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        app = (STFU) getActivity().getApplication();
+
         View view = inflater.inflate(R.layout.personal_fragment, container, false);
         ButterKnife.bind(this, view);
 
@@ -87,41 +91,38 @@ public class PersonalFragment extends Fragment implements View.OnClickListener {
                 getActivity().finish();
             }
         });
+
         return view;
     }
 
     @Override
     public void onResume() {
         super.onResume();
-        initDate();
-    }
-
-    /**
-     * 获取用户信息
-     */
-    public void initDate() {
-        //先用服务器，后续需要使用Activity间的信息传递
-        Intent intent = getActivity().getIntent();
-        STFUConfig.sUser = (User) intent.getSerializableExtra("user");
         updateViews();
     }
 
+
     private void updateViews() {
-        if (STFUConfig.sUser != null) {
-            personal_nickname.setText(STFUConfig.sUser.getNickname());
-            personal_favourable_rate.setText(STFUConfig.sUser.getFavourable_rate() + "%");
-            personal_signate.setText(STFUConfig.sUser.getSignature());
+        if (app.getUser() != null) {
+            personal_nickname.setText(app.getUser().getNickname());
+            personal_favourable_rate.setText(app.getUser().getFavourable_rate() + "%");
+            personal_signate.setText(app.getUser().getSignature());
+            Logger.i(app.getUser().toString());
             //设置头像
             Picasso.get()
-                    .load(STFUConfig.HOST + "/static/avatar/" + STFUConfig.sUser.getAvatar_url())
+                    .load(app.getHOST() + "/static/avatar/" + app.getUser().getAvatar_url())
                     .resize(200, 200)
                     .centerCrop()
+                    .memoryPolicy(MemoryPolicy.NO_CACHE)
+                    .networkPolicy(NetworkPolicy.NO_CACHE)//限制Picasso从内存中加载图片  不然头像更换 不及时
                     .into(personal_avator);
             //设置背景图片
             Picasso.get()
-                    .load(STFUConfig.HOST + "/static/personal_background/" + STFUConfig.sUser.getBg_url())
+                    .load(app.getHOST() + "/static/personal_background/" + app.getUser().getBg_url())
                     .resize(1920, 1080)
                     .centerCrop()
+                    .memoryPolicy(MemoryPolicy.NO_CACHE)
+                    .networkPolicy(NetworkPolicy.NO_CACHE)//限制Picasso从内存中加载图片  不然头像更换 不及时
                     .into(mBGImageView, new Callback() {
                         @Override
                         public void onSuccess() {
@@ -152,7 +153,7 @@ public class PersonalFragment extends Fragment implements View.OnClickListener {
             case R.id.personal_edit:
 
                 Intent intent1 = new Intent(getActivity(), EditActivity.class);
-                intent1.putExtra("user", STFUConfig.sUser);
+                intent1.putExtra("user", app.getUser());
 
                 //之后要实现获取返回值
                 startActivity(intent1);

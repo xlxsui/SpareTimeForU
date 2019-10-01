@@ -2,10 +2,7 @@ package com.sparetimeforu.android.sparetimeforu.fragment;
 
 import android.accounts.Account;
 import android.accounts.AccountManager;
-import android.accounts.AccountManagerCallback;
 import android.accounts.AccountManagerFuture;
-import android.accounts.AuthenticatorException;
-import android.accounts.OperationCanceledException;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
@@ -13,10 +10,7 @@ import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Handler;
-import android.support.annotation.Nullable;
 import android.support.design.widget.BottomNavigationView;
-import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -38,7 +32,7 @@ import android.widget.Toast;
 
 import com.orhanobut.logger.Logger;
 import com.sparetimeforu.android.sparetimeforu.BuildConfig;
-import com.sparetimeforu.android.sparetimeforu.STFUConfig;
+import com.sparetimeforu.android.sparetimeforu.STFU;
 import com.sparetimeforu.android.sparetimeforu.activity.LoginActivity;
 import com.sparetimeforu.android.sparetimeforu.activity.PersonalActivity;
 import com.sparetimeforu.android.sparetimeforu.R;
@@ -48,6 +42,7 @@ import com.sparetimeforu.android.sparetimeforu.fragment.module.SearchThingFragme
 import com.sparetimeforu.android.sparetimeforu.fragment.module.StudyFragment;
 import com.sparetimeforu.android.sparetimeforu.entity.User;
 import com.squareup.picasso.Callback;
+import com.squareup.picasso.MemoryPolicy;
 import com.squareup.picasso.NetworkPolicy;
 import com.squareup.picasso.Picasso;
 
@@ -55,7 +50,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Random;
 
-import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
@@ -84,6 +78,7 @@ public class STFUFragment extends Fragment {
 
     FragmentManager mFm;
     Account mAccount;
+    STFU app;
 
     private static final String CURRENT_BOTTOM_ITEM = "current_bottom_item";
     private static final int REQUEST_CODE_LOGIN = 0;
@@ -97,6 +92,7 @@ public class STFUFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater,
                              ViewGroup container,
                              Bundle savedInstanceState) {
+        app = (STFU) getActivity().getApplication();
 
         final View view = inflater.inflate(R.layout.fragment_stfu, container, false);
         ButterKnife.bind(this, view);
@@ -176,7 +172,7 @@ public class STFUFragment extends Fragment {
                     if (mAccount != null) {
                         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP_MR1) {
                             AccountManager.get(getContext()).removeAccountExplicitly(mAccount);
-                            STFUConfig.sUser = null;
+                            app.setUser(null);
                             mAccount = null;
                             updateViews();
                         }
@@ -209,7 +205,6 @@ public class STFUFragment extends Fragment {
         }
         mAvatar.setOnClickListener(v -> {
             Intent intent = new Intent(getActivity(), PersonalActivity.class);
-            intent.putExtra("user", STFUConfig.sUser);
             startActivity(intent);
         });
 
@@ -253,22 +248,22 @@ public class STFUFragment extends Fragment {
         AccountManager accountManager = AccountManager.get(getContext());
         Account[] account = accountManager.getAccountsByType(BuildConfig.APPLICATION_ID);
 
-        if (account.length != 0 && STFUConfig.sUser == null) {
+        if (account.length != 0 && app.getUser().getEmail() == null) {
             mAccount = account[0];
-            STFUConfig.sUser = new User();
-            STFUConfig.sUser.setEmail(accountManager.getUserData(account[0], "email"));
-            STFUConfig.sUser.setNickname(accountManager.getUserData(account[0], "nickname"));
-            STFUConfig.sUser.setAvatar_url(accountManager.getUserData(account[0], "avatar_url"));
-            STFUConfig.sUser.setFavourable_rate(accountManager.getUserData(account[0], "favourable_rate"));
-            STFUConfig.sUser.setGender(accountManager.getUserData(account[0], "gender"));
-            STFUConfig.sUser.setPhone(accountManager.getUserData(account[0], "phone"));
-            STFUConfig.sUser.setSignature(accountManager.getUserData(account[0], "signature"));
-            STFUConfig.sUser.setBg_url(accountManager.getUserData(account[0], "bg_url"));
+            app.getUser().setEmail(accountManager.getUserData(account[0], "email"));
+            app.getUser().setNickname(accountManager.getUserData(account[0], "nickname"));
+            app.getUser().setAvatar_url(accountManager.getUserData(account[0], "avatar_url"));
+            app.getUser().setFavourable_rate(accountManager.getUserData(account[0], "favourable_rate"));
+            app.getUser().setGender(accountManager.getUserData(account[0], "gender"));
+            app.getUser().setPhone(accountManager.getUserData(account[0], "phone"));
+            app.getUser().setSignature(accountManager.getUserData(account[0], "signature"));
+            app.getUser().setBg_url(accountManager.getUserData(account[0], "bg_url"));
 
+            Logger.i(app.getUser().toString());
             //设置auth_token
             new GetAuthThread().start();
         }
-        if (STFUConfig.sUser != null) {
+        if (app.getUser() != null) {
             updateViews();
         }
     }
@@ -291,8 +286,7 @@ public class STFUFragment extends Fragment {
             if (data == null) {
                 return;
             }
-            STFUConfig.sUser = new User();
-            STFUConfig.sUser = (User) data.getSerializableExtra("user");
+            app.setUser((User) data.getSerializableExtra("user"));
             AccountManager accountManager = AccountManager.get(getContext());
             Account[] account = accountManager.getAccountsByType(BuildConfig.APPLICATION_ID);
             mAccount = account[0];
@@ -368,20 +362,24 @@ public class STFUFragment extends Fragment {
     }
 
     private void updateViews() {
-        if (STFUConfig.sUser != null) {
-            slider_menu_nick_name.setText(STFUConfig.sUser.getNickname());
-            slider_menu_signature.setText(STFUConfig.sUser.getSignature());
+        if (app.getUser().getEmail() != null) {
+            slider_menu_nick_name.setText(app.getUser().getNickname());
+            slider_menu_signature.setText(app.getUser().getSignature());
             mLoginMenuItem.setTitle(getString(R.string.logout));
             Picasso.get()
-                    .load(STFUConfig.HOST + "/static/avatar/" + STFUConfig.sUser.getAvatar_url())
+                    .load(app.getHOST() + "/static/avatar/" + app.getUser().getAvatar_url())
                     .resize(200, 200)
                     .centerCrop()
+                    .memoryPolicy(MemoryPolicy.NO_CACHE)
+                    .networkPolicy(NetworkPolicy.NO_CACHE)//限制Picasso从内存中加载图片  不然头像更换 不及时
                     .into(mAvatar);
             //设置背景图片
             Picasso.get()
-                    .load(STFUConfig.HOST + "/static/personal_background/" + STFUConfig.sUser.getBg_url())
+                    .load(app.getHOST() + "/static/personal_background/" + app.getUser().getBg_url())
                     .resize(1920, 1080)
                     .centerCrop()
+                    .memoryPolicy(MemoryPolicy.NO_CACHE)
+                    .networkPolicy(NetworkPolicy.NO_CACHE)//限制Picasso从内存中加载图片  不然头像更换 不及时
                     .into(mBGImageView, new Callback() {
                         @Override
                         public void onSuccess() {
@@ -391,7 +389,7 @@ public class STFUFragment extends Fragment {
 
                         @Override
                         public void onError(Exception e) {
-                            Logger.i(e.toString());
+                            Logger.e(e.toString());
                         }
                     });
 
@@ -420,7 +418,7 @@ public class STFUFragment extends Fragment {
                 result = future.getResult();
                 String authToken;
                 authToken = result.getString(AccountManager.KEY_AUTHTOKEN);
-                STFUConfig.sUser.setAuth_token(authToken);
+                app.getUser().setAuth_token(authToken);
             } catch (Exception e) {
                 Logger.e(e.toString());
             }

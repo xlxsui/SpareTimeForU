@@ -34,11 +34,12 @@ import android.widget.Toast;
 import com.orhanobut.logger.Logger;
 import com.sparetimeforu.android.sparetimeforu.BuildConfig;
 import com.sparetimeforu.android.sparetimeforu.R;
-import com.sparetimeforu.android.sparetimeforu.STFUConfig;
+import com.sparetimeforu.android.sparetimeforu.STFU;
 import com.sparetimeforu.android.sparetimeforu.ServerConnection.OkHttpUtil;
 import com.sparetimeforu.android.sparetimeforu.entity.PhotoPopupWindow;
 import com.sparetimeforu.android.sparetimeforu.entity.User;
 import com.sparetimeforu.android.sparetimeforu.util.HandleMessageUtil;
+import com.squareup.picasso.MemoryPolicy;
 import com.squareup.picasso.NetworkPolicy;
 import com.squareup.picasso.Picasso;
 
@@ -67,7 +68,7 @@ import static android.app.Activity.RESULT_OK;
  */
 
 public class EditFragment extends Fragment {
-    private final String url = STFUConfig.HOST + "/user";
+    private String url;
     private static final int CHANGE_NICK_NAME = 0;
     private static final int CHANGE_SIGNATURE = 1;
     private static final int CHANGE_PHONE_CALL = 2;
@@ -88,7 +89,7 @@ public class EditFragment extends Fragment {
     PhotoPopupWindow mPhotoPopupWindow;
 
 
-    private User mUser;
+    STFU app;
     Uri mUri;//文件在SD卡的路径，非content uri，Uri.fromFile()
     File mFile;//在SD卡的路径的文件
     private int imageViewNum = 0;//0代表编辑头像，1代表背景
@@ -96,6 +97,8 @@ public class EditFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater,
                              @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        app = (STFU) getActivity().getApplication();
+        url = app.getHOST() + "/user";
 
         view = inflater.inflate(R.layout.personal_edit_fragment, container, false);
         ButterKnife.bind(this, view);
@@ -210,7 +213,7 @@ public class EditFragment extends Fragment {
 
     private void sendChangeAttrRequest() {
         FormBody body = new FormBody.Builder().
-                add("auth_token", mUser.getAuth_token()).
+                add("auth_token", app.getUser().getAuth_token()).
                 add("nickname", tv_edit_nickname.getText().toString()).
                 add("gender", tv_edit_sex.getText().toString()).
                 add("signature", tv_edit_signature.getText().toString()).
@@ -241,20 +244,20 @@ public class EditFragment extends Fragment {
                                 AccountManager accountManager = AccountManager.get(getContext());
                                 Account[] account = accountManager.getAccountsByType(BuildConfig.APPLICATION_ID);
 
-                                if (account.length != 0 && STFUConfig.sUser == null) {
+                                if (account.length != 0 && app.getUser() == null) {
                                     accountManager.setUserData(account[0], "nickname", tv_edit_nickname.getText().toString());
                                     accountManager.setUserData(account[0], "gender", tv_edit_sex.getText().toString());
                                     accountManager.setUserData(account[0], "phone", tv_edit_phonecall.getText().toString());
                                     accountManager.setUserData(account[0], "signature", tv_edit_signature.getText().toString());
-                                    STFUConfig.sUser = new User();
-                                    STFUConfig.sUser.setEmail(accountManager.getUserData(account[0], "email"));
-                                    STFUConfig.sUser.setNickname(accountManager.getUserData(account[0], "nickname"));
-                                    STFUConfig.sUser.setAvatar_url(accountManager.getUserData(account[0], "avatar_url"));
-                                    STFUConfig.sUser.setFavourable_rate(accountManager.getUserData(account[0], "favourable_rate"));
-                                    STFUConfig.sUser.setGender(accountManager.getUserData(account[0], "gender"));
-                                    STFUConfig.sUser.setPhone(accountManager.getUserData(account[0], "phone"));
-                                    STFUConfig.sUser.setSignature(accountManager.getUserData(account[0], "signature"));
-                                    STFUConfig.sUser.setBg_url(accountManager.getUserData(account[0], "bg_url"));
+
+                                    app.getUser().setEmail(accountManager.getUserData(account[0], "email"));
+                                    app.getUser().setNickname(accountManager.getUserData(account[0], "nickname"));
+                                    app.getUser().setAvatar_url(accountManager.getUserData(account[0], "avatar_url"));
+                                    app.getUser().setFavourable_rate(accountManager.getUserData(account[0], "favourable_rate"));
+                                    app.getUser().setGender(accountManager.getUserData(account[0], "gender"));
+                                    app.getUser().setPhone(accountManager.getUserData(account[0], "phone"));
+                                    app.getUser().setSignature(accountManager.getUserData(account[0], "signature"));
+                                    app.getUser().setBg_url(accountManager.getUserData(account[0], "bg_url"));
                                 }
                                 getActivity().finish();
                             } else if (jsonObject.getString("status").equals("error")) {
@@ -283,7 +286,7 @@ public class EditFragment extends Fragment {
                 .setType(MultipartBody.FORM)
                 .addFormDataPart("avatar", mFile.getName(),
                         FormBody.create(MediaType.parse("*"), mFile))
-                .addFormDataPart("auth_token", mUser.getAuth_token())
+                .addFormDataPart("auth_token", app.getUser().getAuth_token())
                 .build();
 
         OkHttpUtil.sendOkHttpPostRequest(url + "/modify_avatar", body, new Callback() {
@@ -314,7 +317,7 @@ public class EditFragment extends Fragment {
                 .setType(MultipartBody.FORM)
                 .addFormDataPart("personal_bg", mFile.getName(),
                         FormBody.create(MediaType.parse("*"), mFile))
-                .addFormDataPart("auth_token", mUser.getAuth_token())
+                .addFormDataPart("auth_token", app.getUser().getAuth_token())
                 .build();
 
         OkHttpUtil.sendOkHttpPostRequest(url + "/modify_personal_bg", body, new Callback() {
@@ -355,20 +358,20 @@ public class EditFragment extends Fragment {
             if (!input.equals("")) {
 
                 //根据要修改的信息类型修改用户信息
-                if (mUser != null) {
+                if (app.getUser() != null) {
                     switch (changeType) {
                         case CHANGE_NICK_NAME:
-                            mUser.setNickname(input);
+                            app.getUser().setNickname(input);
                             break;
                         case CHANGE_PHONE_CALL:
 
                             if (isInteger(input))
-                                mUser.setPhone(input);
+                                app.getUser().setPhone(input);
                             else
                                 Toast.makeText(getActivity(), "修改电话时必须输入数字", Toast.LENGTH_SHORT).show();
                             break;
                         case CHANGE_SIGNATURE:
-                            mUser.setSignature(input);
+                            app.getUser().setSignature(input);
                             break;
                     }
                     updateWidgets();
@@ -385,12 +388,13 @@ public class EditFragment extends Fragment {
     }
 
     private void initUser() {
-        mUser = STFUConfig.sUser;
+        app.setUser((User) getActivity().getIntent().getSerializableExtra("user"));
+        Logger.i(app.getUser().toString());
     }
 
     private void updateNativeUser() {
         FormBody body = new FormBody.Builder()
-                .add("auth_token", mUser.getAuth_token())
+                .add("auth_token", app.getUser().getAuth_token())
                 .build();
 
         OkHttpUtil.sendOkHttpPostRequest(url + "/refresh", body, new Callback() {
@@ -404,23 +408,23 @@ public class EditFragment extends Fragment {
             @Override
             public void onResponse(Call call, Response response) throws IOException {
                 //获取新的user，并存到本地AccountManger数据库
-                mUser = HandleMessageUtil.handleLoginMessage(response.body().string());
+                app.setUser(HandleMessageUtil.handleLoginMessage(response.body().string()));
                 AccountManager am = AccountManager.get(getContext());
-                Account account = new Account(mUser.getEmail(), BuildConfig.APPLICATION_ID);
+                Account account = new Account(app.getUser().getEmail(), BuildConfig.APPLICATION_ID);
                 boolean isAdded = am.addAccountExplicitly(account, "", null);//安全起见，不存密码
-                am.setAuthToken(account, "normal", mUser.getAuth_token());
-                am.setUserData(account, "email", mUser.getEmail());
-                am.setUserData(account, "nickname", mUser.getNickname());
-                am.setUserData(account, "signature", mUser.getSignature());
-                am.setUserData(account, "avatar_url", mUser.getAvatar_url());
-                am.setUserData(account, "favourable_rate", mUser.getFavourable_rate());
-                am.setUserData(account, "phone", mUser.getPhone());
-                am.setUserData(account, "gender", mUser.getGender());
-                am.setUserData(account, "bg_url", mUser.getBg_url());
+                am.setAuthToken(account, "normal", app.getUser().getAuth_token());
+                am.setUserData(account, "email", app.getUser().getEmail());
+                am.setUserData(account, "nickname", app.getUser().getNickname());
+                am.setUserData(account, "signature", app.getUser().getSignature());
+                am.setUserData(account, "avatar_url", app.getUser().getAvatar_url());
+                am.setUserData(account, "favourable_rate", app.getUser().getFavourable_rate());
+                am.setUserData(account, "phone", app.getUser().getPhone());
+                am.setUserData(account, "gender", app.getUser().getGender());
+                am.setUserData(account, "bg_url", app.getUser().getBg_url());
 
-                //更新STFUConfig.sUser,更新组件
+                //更新STFUConfig.User,更新组件
                 getActivity().runOnUiThread(() -> {
-                    STFUConfig.sUser = mUser;
+                    app.setUser(app.getUser());
                     updateWidgets();
                     Toast.makeText(getContext(), "更新用户信息成功", Toast.LENGTH_SHORT).show();
                 });
@@ -457,20 +461,25 @@ public class EditFragment extends Fragment {
     }
 
     private void updateWidgets() {
-        if (mUser != null) {
-            tv_edit_nickname.setText(mUser.getNickname());
-            tv_edit_phonecall.setText(mUser.getPhone());
-            tv_edit_sex.setText(mUser.getGender());
-            tv_edit_signature.setText(mUser.getSignature());
+        if (app.getUser() != null) {
+            tv_edit_nickname.setText(app.getUser().getNickname());
+            tv_edit_phonecall.setText(app.getUser().getPhone());
+            tv_edit_sex.setText(app.getUser().getGender());
+            tv_edit_signature.setText(app.getUser().getSignature());
+            Logger.i(app.getUser().toString());
             Picasso.get()
-                    .load(STFUConfig.HOST + "/static/avatar/" + STFUConfig.sUser.getAvatar_url())
+                    .load(app.getHOST() + "/static/avatar/" + app.getUser().getAvatar_url())
                     .resize(200, 200)
                     .centerCrop()
+                    .memoryPolicy(MemoryPolicy.NO_CACHE)
+                    .networkPolicy(NetworkPolicy.NO_CACHE)//限制Picasso从内存中加载图片  不然头像更换 不及时
                     .into(iv_edit_avatar);
             Picasso.get()
-                    .load(STFUConfig.HOST + "/static/personal_background/" + STFUConfig.sUser.getBg_url())
+                    .load(app.getHOST() + "/static/personal_background/" + app.getUser().getBg_url())
                     .resize(400, 300)
                     .centerCrop()
+                    .memoryPolicy(MemoryPolicy.NO_CACHE)
+                    .networkPolicy(NetworkPolicy.NO_CACHE)//限制Picasso从内存中加载图片  不然头像更换 不及时
                     .into(iv_edit_bg);
         }
     }
@@ -709,15 +718,15 @@ public class EditFragment extends Fragment {
                     builder.setTitle("请选择性别");
                     final String[] sex = {"男", "女"};
 
-                    if (mUser != null && mUser.getGender().equals("男"))
+                    if (app.getUser() != null && app.getUser().getGender().equals("男"))
                         defaultChoice = 0;
                     builder.setSingleChoiceItems(sex, defaultChoice, new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
                             Toast.makeText(getActivity(), "性别为：" + sex[which], Toast.LENGTH_SHORT).show();
 
-                            if (mUser != null) {
-                                mUser.setGender(sex[which]);
+                            if (app.getUser() != null) {
+                                app.getUser().setGender(sex[which]);
                             }
                         }
                     });

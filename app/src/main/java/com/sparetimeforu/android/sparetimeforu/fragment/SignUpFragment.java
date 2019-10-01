@@ -15,7 +15,7 @@ import android.widget.Toast;
 
 import com.orhanobut.logger.Logger;
 import com.sparetimeforu.android.sparetimeforu.R;
-import com.sparetimeforu.android.sparetimeforu.STFUConfig;
+import com.sparetimeforu.android.sparetimeforu.STFU;
 import com.sparetimeforu.android.sparetimeforu.ServerConnection.OkHttpUtil;
 
 import org.json.JSONException;
@@ -40,7 +40,7 @@ import okhttp3.Response;
 
 public class SignUpFragment extends Fragment {
 
-    static String url = STFUConfig.HOST + "/auth/signup";
+    static String url;
 
     @BindView(R.id.toolbar)
     Toolbar mToolbar;
@@ -75,6 +75,8 @@ public class SignUpFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        STFU app = (STFU) getActivity().getApplication();
+        url = app.getHOST() + "/auth/signup";
         View view = inflater.inflate(R.layout.fragment_signup, container, false);
         ButterKnife.bind(this, view);
 

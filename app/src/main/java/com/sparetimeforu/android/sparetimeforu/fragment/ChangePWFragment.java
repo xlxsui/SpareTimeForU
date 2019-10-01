@@ -13,7 +13,7 @@ import android.widget.Toast;
 
 import com.orhanobut.logger.Logger;
 import com.sparetimeforu.android.sparetimeforu.R;
-import com.sparetimeforu.android.sparetimeforu.STFUConfig;
+import com.sparetimeforu.android.sparetimeforu.STFU;
 import com.sparetimeforu.android.sparetimeforu.ServerConnection.OkHttpUtil;
 
 import org.json.JSONException;
@@ -36,7 +36,7 @@ import okhttp3.Response;
  * Email:17wjli6@stu.edu.cn
  */
 public class ChangePWFragment extends Fragment {
-    static String url = STFUConfig.HOST + "/user/change_password";
+    static String url;
 
 
     @BindView(R.id.change_pw_email)
@@ -51,6 +51,7 @@ public class ChangePWFragment extends Fragment {
     Button mSendVCButton;
 
     private CountDownTime mTime;
+    STFU app;
 
     public static Fragment newInstance() {
         return new ChangePWFragment();
@@ -59,6 +60,9 @@ public class ChangePWFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        app = (STFU) getActivity().getApplication();
+        url = app.getHOST() + "/user/change_password";
+
         View view = inflater.inflate(R.layout.fragment_change_password, container, false);
         ButterKnife.bind(this, view);
 

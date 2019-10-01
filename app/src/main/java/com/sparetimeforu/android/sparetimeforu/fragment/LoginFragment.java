@@ -17,13 +17,12 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.orhanobut.logger.Logger;
 import com.sparetimeforu.android.sparetimeforu.BuildConfig;
 import com.sparetimeforu.android.sparetimeforu.R;
-import com.sparetimeforu.android.sparetimeforu.STFUConfig;
+import com.sparetimeforu.android.sparetimeforu.STFU;
 import com.sparetimeforu.android.sparetimeforu.ServerConnection.OkHttpUtil;
 import com.sparetimeforu.android.sparetimeforu.activity.ChangePWActivity;
 import com.sparetimeforu.android.sparetimeforu.activity.STFUActivity;
@@ -49,7 +48,7 @@ import okhttp3.Response;
  */
 
 public class LoginFragment extends Fragment {
-    private static String LoginServerUrl = STFUConfig.HOST + "/auth/login";
+    private static String LoginServerUrl;
     private ImageView m22;
     private ImageView m33;
     private EditText mEmailEdit;
@@ -69,6 +68,9 @@ public class LoginFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        STFU app = (STFU) getActivity().getApplication();
+        LoginServerUrl = app.getHOST() + "/auth/login";
+
         View view = inflater.inflate(R.layout.fragment_login, container, false);
         ButterKnife.bind(this, view);
 
