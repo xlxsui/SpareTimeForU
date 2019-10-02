@@ -1,4 +1,4 @@
-package com.sparetimeforu.android.sparetimeforu.activity.post;
+package com.sparetimeforu.android.sparetimeforu.activity;
 
 import android.support.v4.app.Fragment;
 

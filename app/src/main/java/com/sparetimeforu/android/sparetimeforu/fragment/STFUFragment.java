@@ -37,6 +37,7 @@ import com.sparetimeforu.android.sparetimeforu.activity.FriendActivity;
 import com.sparetimeforu.android.sparetimeforu.activity.LoginActivity;
 import com.sparetimeforu.android.sparetimeforu.activity.PersonalActivity;
 import com.sparetimeforu.android.sparetimeforu.R;
+import com.sparetimeforu.android.sparetimeforu.activity.ConversationListActivity;
 import com.sparetimeforu.android.sparetimeforu.fragment.module.ErrandFragment;
 import com.sparetimeforu.android.sparetimeforu.fragment.module.IdleThingFragment;
 import com.sparetimeforu.android.sparetimeforu.fragment.module.SearchThingFragment;
@@ -51,8 +52,10 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Random;
 
+import Listener.GlobalEventListener;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import cn.jpush.im.android.api.JMessageClient;
 
 import static java.lang.System.exit;
 
@@ -76,6 +79,7 @@ public class STFUFragment extends Fragment {
     private ImageView mAvatar;
     private ImageView mBGImageView;
     private LinearLayout mHeaderLinearLayout;
+    private ImageView slideIcon;
 
     FragmentManager mFm;
     Account mAccount;
@@ -92,7 +96,7 @@ public class STFUFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater,
                              ViewGroup container,
                              Bundle savedInstanceState) {
-
+        JMessageClient.init(getContext());
         final View view = inflater.inflate(R.layout.fragment_stfu, container, false);
         ButterKnife.bind(this, view);
         mFm = getActivity().getSupportFragmentManager();
@@ -105,7 +109,7 @@ public class STFUFragment extends Fragment {
         ((AppCompatActivity) getActivity()).setSupportActionBar(mToolbar);
         TextView title = (TextView) view.findViewById(R.id.title_top);
         title.setText("汕大顺手邦");
-        ImageView slideIcon = (ImageView) view.findViewById(R.id.menu_slide_icon);
+        slideIcon = (ImageView) view.findViewById(R.id.menu_slide_icon);
         slideIcon.setOnClickListener(v -> mDrawerLayout.openDrawer(GravityCompat.START));
         ImageView searchIcon = (ImageView) view.findViewById(R.id.menu_search_icon);
         searchIcon.setOnClickListener(v -> Toast.makeText(getActivity(), "Spare time for you!",
@@ -164,8 +168,11 @@ public class STFUFragment extends Fragment {
                             .show();
                     break;
                 case R.id.slider_menu_personal_letter:
-                    Toast.makeText(getActivity(), item.getTitle(), Toast.LENGTH_SHORT)
-                            .show();
+                    //点击之后就把图标变回原样
+                    set_Message_point_icon(0);
+                    //进入消息通知界面
+                    Intent intent1=new Intent(getContext(),ConversationListActivity.class);
+                    getActivity().startActivity(intent1);
                     break;
                 case R.id.slider_menu_login:
                     if (mAccount != null) {
@@ -241,9 +248,44 @@ public class STFUFragment extends Fragment {
         slider_menu_nick_name = (TextView) mDrawerHeaderView.findViewById(R.id.slider_menu_nick_name);
         slider_menu_signature = (TextView) mDrawerHeaderView.findViewById(R.id.slider_menu_signature);
 
+
+        /*
+        *  设置全局GlobalEventListener
+        */
+        if(STFUConfig.globalEventListener==null){
+            STFUConfig.globalEventListener=new GlobalEventListener();
+        }
+        STFUConfig.globalEventListener.setStfuFragment(this);
+        JMessageClient.registerEventReceiver(STFUConfig.globalEventListener);
+        init_Message_point_icon();
         return view;
     }
 
+
+    public void init_Message_point_icon(){
+        //获取是否有未读消息
+        if(JMessageClient.getAllUnReadMsgCount()>=0){
+            set_Message_point_icon(0);
+        }else set_Message_point_icon(1);
+    }
+
+    //用mode来标识，切换图标
+    //mode=0  正常图标
+    //mode=1  右上角有红点的图标
+    public boolean set_Message_point_icon(int  mode){
+        //修改左上角以及侧拉栏的图标，变成右上有红点
+        switch (mode){
+            case 0:
+                mDrawerNavigationView.getMenu().findItem(R.id.slider_menu_personal_letter).setIcon(R.drawable.ic_personal_letter);
+                slideIcon.setImageDrawable(getResources().getDrawable(R.drawable.ic_menu_slide));
+                break;
+            case 1:
+                mDrawerNavigationView.getMenu().findItem(R.id.slider_menu_personal_letter).setIcon(R.drawable.ic_menu_slide);
+                slideIcon.setImageDrawable(getResources().getDrawable(R.drawable.ic_personal_letter));
+                break;
+        }
+        return true;
+    }
     @Override
     public void onStart() {
         super.onStart();

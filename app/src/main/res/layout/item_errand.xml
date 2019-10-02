@@ -174,17 +174,19 @@
                         android:id="@+id/errand_caption"
                         android:layout_width="match_parent"
                         android:layout_height="0dp"
-                        android:layout_weight="1"
+                        android:layout_weight="2"
                         android:gravity="center"
                         android:maxLines="3"
-                        android:textSize="12sp"
+                        android:singleLine="false"
+                        android:maxEms="15"
+                        android:textSize="14sp"
                         android:textStyle="bold" />
 
                     <LinearLayout
                         android:id="@+id/errand_pictures"
                         android:layout_width="match_parent"
                         android:layout_height="0dp"
-                        android:layout_weight="3.9"
+                        android:layout_weight="2.9"
                         android:orientation="horizontal"
                         android:weightSum="3.01">
 

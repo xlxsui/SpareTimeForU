@@ -16,6 +16,7 @@ import com.sparetimeforu.android.sparetimeforu.R;
 import com.sparetimeforu.android.sparetimeforu.STFUConfig;
 import com.sparetimeforu.android.sparetimeforu.adapter.ConversationListAdapter;
 
+import java.util.Comparator;
 import java.util.List;
 
 import butterknife.BindView;
@@ -59,7 +60,38 @@ public class ConversationListFragment extends Fragment {
     public void init_data(){
         //初始化，获取所有conversation
         conversations=JMessageClient.getConversationList();
+        setAdapter(conversations);
+    }
+
+    public void setAdapter(List<Conversation> conversations){
+
+        sort_Conversations(conversations);
         mRecyclerView.setAdapter(new ConversationListAdapter(conversations,getContext()));
+    }
+    private void sort_Conversations(List<Conversation> conversations){
+        //将conversation中的会话按未读信息数来排列， 未读信息越多，排在越前面，系统通知置顶
+        //按未读信息数来排列
+        for(int i=0;i<conversations.size();i++){
+            for(int j=i;j<conversations.size()-1;i++){
+                if(conversations.get(j).getUnReadMsgCnt()<conversations.get(j+1).getUnReadMsgCnt()){//冒泡
+                    Conversation temp= conversations.get(j+1);
+                    conversations.remove(j+1);
+                    conversations.add(j,temp);
+                }
+            }
+        }
+        //置顶系统通知
+        int i=0;
+        while(i<conversations.size()){
+            if(conversations.get(i).getTargetId()==STFUConfig.manager_username)
+                break;
+            i++;
+        }
+        if(i<conversations.size()){
+            Conversation  conversation=conversations.get(i);
+            conversations.remove(i);
+            conversations.add(0,conversation);
+        }
     }
 
     public static ConversationListFragment newInstance() {

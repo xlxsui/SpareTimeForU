@@ -1,5 +1,6 @@
 package com.sparetimeforu.android.sparetimeforu.fragment.module;
 
+import android.app.Activity;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -17,13 +18,24 @@ import android.widget.Toast;
 
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.sparetimeforu.android.sparetimeforu.R;
+import com.sparetimeforu.android.sparetimeforu.STFUConfig;
+import com.sparetimeforu.android.sparetimeforu.ServerConnection.OkHttpUtil;
 import com.sparetimeforu.android.sparetimeforu.adapter.IdleThingAdapter;
 import com.sparetimeforu.android.sparetimeforu.data.DataServer;
 import com.sparetimeforu.android.sparetimeforu.entity.IdleThing;
+import com.sparetimeforu.android.sparetimeforu.fragment.STFUFragment;
+import com.sparetimeforu.android.sparetimeforu.util.HandleMessageUtil;
+import com.sparetimeforu.android.sparetimeforu.util.IdleThingDataBaseUtil;
 import com.squareup.picasso.Picasso;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.Random;
+
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.FormBody;
+import okhttp3.Response;
 
 /**
  * SpareTimeForU
@@ -39,49 +51,43 @@ interface RequestIdleThingCallBack {
 class RequestIdleThing extends Thread {
     private RequestIdleThingCallBack mCallBack;
     private Handler mHandler;
+    private String url;
+    private Activity activity;
+    private int orgin=0;
 
 
-    public RequestIdleThing(RequestIdleThingCallBack callBack) {
+    public RequestIdleThing(RequestIdleThingCallBack callBack,Activity activity) {
+        url= STFUConfig.HOST+"/idle_thing/refresh_newest";
         mCallBack = callBack;
         mHandler = new Handler(Looper.getMainLooper());
+        this.activity=activity;
     }
 
     @Override
     public void run() {
-        try {
-            Thread.sleep(500);
-        } catch (InterruptedException e) {
-        }
+        FormBody formBody=new FormBody.Builder()
+                .add("request_type","二手交易").build();
+        //每次下拉加载都把orgin重置为0  即取数据库中最新的帖子信息
+        orgin=0;
+        OkHttpUtil.sendOkHttpPostRequest(url, formBody, new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+                activity.runOnUiThread(() -> Toast.makeText(activity,
+                        "无法获取任务信息，请检查网络是否正常", Toast.LENGTH_SHORT).show());
+                mCallBack.fail(e);
+            }
 
-        Random random = new Random();
-        int i = random.nextInt(5);
-        switch (i) {
-            case 0:
-                mHandler.post(new Runnable() {
-                    @Override
-                    public void run() {
-                        mCallBack.fail(new RuntimeException("fail"));
-                    }
-                });
-                break;
-            case 1:
-                mHandler.post(new Runnable() {
-                    @Override
-                    public void run() {
-                        mCallBack.success(DataServer.getIdleThingData(15));
-                    }
-                });
-                break;
-            default:
-                mHandler.post(new Runnable() {
-                    @Override
-                    public void run() {
-                        mCallBack.success(DataServer.getIdleThingData(15));
-                    }
-                });
-                break;
-
-        }
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                //获取数据成功
+                HandleMessageUtil.handleIdleThingMessage(response.body().string());
+                final List<IdleThing> idleThings=IdleThingDataBaseUtil.getIdleThing_data(orgin);
+                if(idleThings.size()>0){
+                    orgin+=idleThings.size();
+                }
+                mCallBack.success(idleThings);
+            }
+        });
     }
 }
 
@@ -138,10 +144,15 @@ public class IdleThingFragment extends Fragment {
             public void success(List<IdleThing> data) {
                 Snackbar.make(getView(), "Refresh finished! ", Snackbar.LENGTH_SHORT).show();
                 //do something
-                setupAdapter(data);
-
-                mAdapter.setEnableLoadMore(true);
-                mIdleThingRefreshLayout.setRefreshing(false);
+                getActivity().runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        setupAdapter(data);
+                        mAdapter.setEnableLoadMore(true);
+                        mIdleThingRefreshLayout.setRefreshing(false);
+                        Snackbar.make(getView(), "Refresh finished! ",Snackbar.LENGTH_SHORT).show();
+                    }
+                });
             }
 
             @Override
@@ -152,7 +163,7 @@ public class IdleThingFragment extends Fragment {
                 mAdapter.setEnableLoadMore(true);
                 mIdleThingRefreshLayout.setRefreshing(false);
             }
-        }).start();
+        },getActivity()).start();
     }
 
 

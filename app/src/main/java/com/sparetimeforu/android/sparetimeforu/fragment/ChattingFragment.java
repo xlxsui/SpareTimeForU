@@ -69,7 +69,7 @@ public class ChattingFragment extends Fragment implements View.OnClickListener{
         title_top.setText(chat_user_Nickname);
         if(STFUConfig.globalEventListener!=null) {
             STFUConfig.globalEventListener.setChattingFragment(this);
-            JMessageClient.registerEventReceiver(new GlobalEventListener());
+            JMessageClient.registerEventReceiver(STFUConfig.globalEventListener);
         }
         init_Date();
         return view;

@@ -34,7 +34,7 @@ public class ErrandAdapter extends BaseQuickAdapter<Errand, BaseViewHolder> {
     public ErrandAdapter(List<Errand> errands) {
         super(R.layout.item_errand, errands);
 
-        url= STFUConfig.HOST+"/static/errand_picture";
+        url= STFUConfig.HOST+"/static";
         ErrandAdapter.this.setOnItemClickListener((adapter, view, position) -> {
             Log.d(TAG, "onItemClick: You clicked me");
             Toast.makeText(mContext, "You clicked the item: " + position, Toast.LENGTH_SHORT).show();
@@ -65,6 +65,7 @@ public class ErrandAdapter extends BaseQuickAdapter<Errand, BaseViewHolder> {
     protected void convert(BaseViewHolder helper, Errand item) {
         ImageView avatar = (ImageView) helper.getView(R.id.errand_avatar);
         TextView nickName = (TextView) helper.getView(R.id.errand_nick_name);
+        nickName.setText(item.getUser_Nickname());
         TextView grade = ((TextView) helper.getView(R.id.errand_grade));
         TextView date = ((TextView) helper.getView(R.id.errand_date));
         TextView reward = ((TextView) helper.getView(R.id.errand_reward));
@@ -96,54 +97,34 @@ public class ErrandAdapter extends BaseQuickAdapter<Errand, BaseViewHolder> {
         reward.setText(item.getMoney()+"");
        date.setText(item.getRelease_time());
        nickName.setText(item.getUser_Nickname());
-//        Picasso.get()
-//                .load("file:///android_asset/avatar/ic_avatar" + i + ".jpg")
-//                .into(avatar);
-
-//        String str1 = "帮我去近邻宝拿个小姐姐！谢谢啦";
-//        String str2 = "去二饭帮忙打包一份猪脚饭！顺便加饭";
-//        String str3 = "有没有小哥哥或者小姐姐帮我去东门买两斤apple！辛苦啦";
-//        String str4 = "我感冒了，浑身没力，好难受，宿舍又没人。谁能帮我去校医院拿点感冒药，十分感谢";
-//        String str5 = "求一位小哥哥帮我去近邻宝抬个大包裹回来，谢谢啦";
-//        i = random.nextInt(5) + 1;
-//        switch (i) {
-//            case 1:
-//                caption.setText(str1);
-//                break;
-//            case 2:
-//                caption.setText(str2);
-//                break;
-//            case 3:
-//                caption.setText(str3);
-//                break;
-//            case 4:
-//                caption.setText(str4);
-//                break;
-//            case 5:
-//                caption.setText(str5);
-//                break;
-//        }
 
         Picasso.get()
-                .load(url+"/"+item.getUser_Avatar())
+                .load(url+"/avatar/"+item.getUser_Avatar())
                 .resize(200, 200)
                 .centerCrop()
                 .into(avatar);
         Picasso.get()
-                .load(url+"/"+item.getPicture_url_1())
+                .load(url+"/mission_pictures/"+item.getPicture_url_1())
                 .resize(200, 200)
                 .centerCrop()
                 .into(p1);
         Picasso.get()
-                .load(url+"/"+item.getPicture_url_2())
+                .load(url+"/mission_pictures/"+item.getPicture_url_2())
                 .resize(200, 200)
                 .centerCrop()
                 .into(p2);
         Picasso.get()
-                .load(url+"/"+item.getPicture_url_3())
+                .load(url+"/mission_pictures/"+item.getPicture_url_3())
                 .resize(200, 200)
                 .centerCrop()
                 .into(p3);
+        avatar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                //进入他人界面
+
+            }
+        });
     }
 
 }

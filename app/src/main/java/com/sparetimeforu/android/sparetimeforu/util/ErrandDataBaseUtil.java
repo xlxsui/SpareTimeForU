@@ -38,14 +38,14 @@ public class ErrandDataBaseUtil {
         List <Errand> errands;
         if(destination.equals("随机")) {
             errands = LitePal.where("is_received = 0")
-                    .order("release_time desc")
+                    .order("errand_id desc")
                     .limit(6)
                     .offset(origin - 1)
                     .find(Errand.class);
         }
         else
             errands= LitePal.where("destination = ?  and is_received = 0",destination)
-                    .order("release_time desc")
+                    .order("errand_id desc")
                     .limit(6)
                     .offset(origin-1)
                     .find(Errand.class);

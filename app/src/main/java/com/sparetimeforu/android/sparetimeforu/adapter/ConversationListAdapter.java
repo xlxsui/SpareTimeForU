@@ -39,7 +39,9 @@ public class ConversationListAdapter extends BaseQuickAdapter<Conversation,BaseV
         message_user_name.setText(((UserInfo)item.getTargetInfo()).getNickname());
         TextView message_count=(TextView)helper.getView(R.id.message_count);
         int messages_count_num=item.getUnReadMsgCnt();
-        message_count.setText(messages_count_num+"");
+        if(item.getTargetId()!=STFUConfig.manager_username)
+            message_count.setText(messages_count_num+"");
+        else message_count.setText("系统");
         RelativeLayout relativeLayout=(RelativeLayout)helper.getView(R.id.conversation_list_item);
         relativeLayout.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -54,6 +56,7 @@ public class ConversationListAdapter extends BaseQuickAdapter<Conversation,BaseV
                 }else{
                     //系统发送给用户的信息
                     //进入系统通知界面
+
                 }
             }
         });

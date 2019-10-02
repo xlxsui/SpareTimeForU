@@ -2,7 +2,9 @@ package Listener;
 
 import android.app.Fragment;
 import android.util.Log;
+import android.widget.Toast;
 
+import com.orhanobut.logger.Logger;
 import com.sparetimeforu.android.sparetimeforu.STFUConfig;
 import com.sparetimeforu.android.sparetimeforu.activity.ChattingActivity;
 import com.sparetimeforu.android.sparetimeforu.fragment.ChattingFragment;
@@ -11,7 +13,6 @@ import com.sparetimeforu.android.sparetimeforu.fragment.STFUFragment;
 import com.sparetimeforu.android.sparetimeforu.fragment.module.StudyFragment;
 
 import java.util.List;
-import java.util.logging.Logger;
 
 import cn.jpush.im.android.api.JMessageClient;
 import cn.jpush.im.android.api.event.MessageEvent;
@@ -50,15 +51,17 @@ public class GlobalEventListener {
         if(!userInfo.getUserName().equals(STFUConfig.manager_username)){
             if(chattingFragment!=null){
                 //此时正在聊天界面中
-
                 List<Message> messages=conversation.getAllMessage();
+                Logger.i("获取了消息");
                 chattingFragment.setConversation_Messages_Position(conversation,messages,messages.size()-conversation.getUnReadMsgCnt());
             }else if(conversationListFragment!=null){
                 //此时正在私信列表界面中
-                Log.i("1","sv");
+                List<Conversation> conversations=JMessageClient.getConversationList();
+                conversationListFragment.setAdapter(conversations);
+            }else if(stfuFragment!=null){
+                //修改为红点图标
+                stfuFragment.set_Message_point_icon(1);
             }
-        }else if(stfuFragment!=null){
-            //系统管理员发布的信息
         }
 
     }

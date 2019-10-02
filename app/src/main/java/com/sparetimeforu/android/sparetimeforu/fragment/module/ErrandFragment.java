@@ -105,7 +105,7 @@ class RequestErrand extends Thread {
         FormBody body=new FormBody.Builder()
                 .add("destination",destination_location)
                 //.add("last_errand_id",get_Last_Errand_Id());
-                .add("biggest_id", ErrandDataBaseUtil.Get_biggest_errand_id()+"")
+                .add("biggest_id", 1+"")
                         .build();
         origin=0;//每次获取完数据库更新的任务数据，origin都设置为0，重新开始从数据库中拿数据
         OkHttpUtil.sendOkHttpPostRequest(GetErrandServerUrl, body, new Callback() {
@@ -125,7 +125,7 @@ class RequestErrand extends Thread {
                         final List<Errand> errand_data = ErrandDataBaseUtil.getErrand_data(origin,destination_location);
                         //把orgin更新
                         if(errand_data.size()!=0)
-                        origin=errand_data.get(errand_data.size()-1).getId();
+                        origin+=errand_data.size();
                         mCallBack.success((errand_data));
                     }
                 });
