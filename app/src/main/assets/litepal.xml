@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<litepal>
+    <!--数据库名sparetimeforu-->
+   <dbname value="STFU"/>
+    <version value="4"/>
+    <list>
+        <mapping class="com.sparetimeforu.android.sparetimeforu.entity.Errand"></mapping>
+    </list>
+</litepal>

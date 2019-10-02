@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.widget.LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
+    android:orientation="vertical"
+    android:background="#ddd"
+    android:layout_height="wrap_content">
+    <RelativeLayout
+        android:id="@+id/conversation_list_item"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:id="@+id/message_friend_head"
+            android:layout_marginTop="10dp"
+            android:layout_marginLeft="5dp"
+            android:layout_marginBottom="10dp"
+            android:layout_alignParentLeft="true"
+            android:layout_width="70dp"
+            android:layout_height="70dp"
+            android:src="@mipmap/ic_launcher"/>
+        <TextView
+            android:id="@+id/message_user"
+            android:layout_width="wrap_content"
+            android:layout_marginTop="40dp"
+            android:layout_marginLeft="20dp"
+            android:textColor="#222"
+            android:text="用户名"
+            android:layout_toRightOf="@+id/message_friend_head"
+            android:layout_height="wrap_content" />
+        <TextView
+            android:layout_toRightOf="@+id/message_user"
+            android:layout_marginTop="40dp"
+            android:layout_marginLeft="10dp"
+            android:id="@+id/message_count"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="给您发来了3条信息"
+            android:singleLine="true"/>
+    </RelativeLayout>
+    <TextView
+        android:layout_alignBottom="@id/message_friend_head"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="#aaa"/>
+</android.widget.LinearLayout>

@@ -4,11 +4,16 @@ android {
     compileSdkVersion 26
     defaultConfig {
         applicationId "com.sparetimeforu.android.sparetimeforu"
-        minSdkVersion 19
+        minSdkVersion 23
         targetSdkVersion 26
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+        manifestPlaceholders = [
+                JPUSH_PKGNAME : applicationId,
+                JPUSH_APPKEY : "5d2123e624129226b9afdcab", //JPush上注册的包名对应的appkey.
+                JPUSH_CHANNEL : "developer-default", //暂时填写默认值即可.
+        ]
     }
     signingConfigs {
         config {
@@ -57,10 +62,14 @@ dependencies {
     implementation 'com.jakewharton:butterknife:8.8.1'
     annotationProcessor 'com.jakewharton:butterknife-compiler:8.8.1'
     implementation 'com.github.chrisbanes:PhotoView:2.1.3'
+    implementation 'de.hdodenhof:circleimageview:2.2.0'
+    implementation 'cn.jiguang.sdk:jmessage:2.9.0'  // 此处以JMessage 2.9.0 版本为例。
+    implementation 'cn.jiguang.sdk:jcore:2.0.0'  // 此处以JCore 2.0.0 版本为例。
     implementation 'com.google.code.gson:gson:2.8.5'
-
     implementation files('libs/BaiduLBS_Android.jar')
     implementation 'com.github.hotchemi:permissionsdispatcher:2.2.0'
+    compile 'com.github.hotchemi:permissionsdispatcher:2.2.0'
+    implementation 'org.litepal.android:java:3.0.0'
     annotationProcessor 'com.github.hotchemi:permissionsdispatcher-processor:2.2.0'
 
 }

@@ -29,6 +29,8 @@
     <string name="signup_pw2_hint">确认密码</string>
     <string name="login_email_hint">汕大邮箱</string>
     <string name="login_pw_hint">请输入您的密码</string>
+    <string name="friend_start_chatting">私聊</string>
+    <string name="friend">好友</string>
     <string name="edit_bg">个人主页背景</string>
     <string name="edit_confirm">确认</string>
     <string name="forget_pw"><u>忘记密码？</u></string>

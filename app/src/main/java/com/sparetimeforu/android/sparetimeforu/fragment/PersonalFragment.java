@@ -17,7 +17,7 @@ import android.support.v7.widget.Toolbar;
 
 import com.orhanobut.logger.Logger;
 import com.sparetimeforu.android.sparetimeforu.R;
-import com.sparetimeforu.android.sparetimeforu.STFU;
+import com.sparetimeforu.android.sparetimeforu.STFUConfig;
 import com.sparetimeforu.android.sparetimeforu.activity.EditActivity;
 import com.sparetimeforu.android.sparetimeforu.activity.ErrandReceivedActivity;
 import com.sparetimeforu.android.sparetimeforu.entity.User;
@@ -49,12 +49,10 @@ public class PersonalFragment extends Fragment implements View.OnClickListener {
     @BindView(R.id.data_layout)
     RelativeLayout mBGLayout;
 
-    STFU app;
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        app = (STFU) getActivity().getApplication();
 
         View view = inflater.inflate(R.layout.personal_fragment, container, false);
         ButterKnife.bind(this, view);
@@ -99,18 +97,19 @@ public class PersonalFragment extends Fragment implements View.OnClickListener {
     public void onResume() {
         super.onResume();
         updateViews();
+        Logger.i("1\n"+STFUConfig.sUser.toString());
     }
 
 
     private void updateViews() {
-        if (app.getUser() != null) {
-            personal_nickname.setText(app.getUser().getNickname());
-            personal_favourable_rate.setText(app.getUser().getFavourable_rate() + "%");
-            personal_signate.setText(app.getUser().getSignature());
-            Logger.i(app.getUser().toString());
+        if (STFUConfig.sUser != null) {
+            personal_nickname.setText(STFUConfig.sUser.getNickname());
+            personal_favourable_rate.setText(STFUConfig.sUser.getFavourable_rate() + "%");
+            personal_signate.setText(STFUConfig.sUser.getSignature());
+            Logger.i(STFUConfig.sUser.toString());
             //设置头像
             Picasso.get()
-                    .load(app.getHOST() + "/static/avatar/" + app.getUser().getAvatar_url())
+                    .load(STFUConfig.HOST + "/static/avatar/" + STFUConfig.sUser.getAvatar_url())
                     .resize(200, 200)
                     .centerCrop()
                     .memoryPolicy(MemoryPolicy.NO_CACHE)
@@ -118,7 +117,7 @@ public class PersonalFragment extends Fragment implements View.OnClickListener {
                     .into(personal_avator);
             //设置背景图片
             Picasso.get()
-                    .load(app.getHOST() + "/static/personal_background/" + app.getUser().getBg_url())
+                    .load(STFUConfig.HOST + "/static/personal_background/" + STFUConfig.sUser.getBg_url())
                     .resize(1920, 1080)
                     .centerCrop()
                     .memoryPolicy(MemoryPolicy.NO_CACHE)
@@ -153,7 +152,7 @@ public class PersonalFragment extends Fragment implements View.OnClickListener {
             case R.id.personal_edit:
 
                 Intent intent1 = new Intent(getActivity(), EditActivity.class);
-                intent1.putExtra("user", app.getUser());
+                intent1.putExtra("user", STFUConfig.sUser);
 
                 //之后要实现获取返回值
                 startActivity(intent1);

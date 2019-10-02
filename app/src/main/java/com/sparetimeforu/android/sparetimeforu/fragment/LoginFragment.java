@@ -11,6 +11,7 @@ import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,7 +23,7 @@ import android.widget.Toast;
 import com.orhanobut.logger.Logger;
 import com.sparetimeforu.android.sparetimeforu.BuildConfig;
 import com.sparetimeforu.android.sparetimeforu.R;
-import com.sparetimeforu.android.sparetimeforu.STFU;
+import com.sparetimeforu.android.sparetimeforu.STFUConfig;
 import com.sparetimeforu.android.sparetimeforu.ServerConnection.OkHttpUtil;
 import com.sparetimeforu.android.sparetimeforu.activity.ChangePWActivity;
 import com.sparetimeforu.android.sparetimeforu.activity.STFUActivity;
@@ -33,9 +34,12 @@ import com.sparetimeforu.android.sparetimeforu.util.HandleMessageUtil;
 import java.io.IOException;
 import java.util.Objects;
 
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import cn.jpush.im.android.api.JMessageClient;
+import cn.jpush.im.api.BasicCallback;
 import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.FormBody;
@@ -68,8 +72,8 @@ public class LoginFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        STFU app = (STFU) getActivity().getApplication();
-        LoginServerUrl = app.getHOST() + "/auth/login";
+        JMessageClient.init(getActivity().getApplicationContext());
+        LoginServerUrl = STFUConfig.HOST + "/auth/login";
 
         View view = inflater.inflate(R.layout.fragment_login, container, false);
         ButterKnife.bind(this, view);
@@ -138,6 +142,14 @@ public class LoginFragment extends Fragment {
                                 Logger.i(mUser.toString());
                                 getActivity().runOnUiThread(() -> {
                                     //添加账户
+                                    JMessageClient.login(user.getEmail(), user.getEmail()+"1", new BasicCallback() {
+                                        @Override
+                                        public void gotResult(int i, String s) {
+                                            if(i==0){
+                                                com.orhanobut.logger.Logger.i("极光登陆成功");
+                                            }
+                                        }
+                                    });
                                     addAccount();
                                     Intent intent = new Intent(getActivity(), STFUActivity.class);
                                     intent.putExtra("user", user);

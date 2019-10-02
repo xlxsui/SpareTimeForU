@@ -66,6 +66,7 @@
             </RelativeLayout>
 
             <RelativeLayout
+                android:id="@+id/iv_bg_change"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@drawable/bottom_line"

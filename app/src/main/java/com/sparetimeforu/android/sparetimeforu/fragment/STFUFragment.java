@@ -32,7 +32,8 @@ import android.widget.Toast;
 
 import com.orhanobut.logger.Logger;
 import com.sparetimeforu.android.sparetimeforu.BuildConfig;
-import com.sparetimeforu.android.sparetimeforu.STFU;
+import com.sparetimeforu.android.sparetimeforu.STFUConfig;
+import com.sparetimeforu.android.sparetimeforu.activity.FriendActivity;
 import com.sparetimeforu.android.sparetimeforu.activity.LoginActivity;
 import com.sparetimeforu.android.sparetimeforu.activity.PersonalActivity;
 import com.sparetimeforu.android.sparetimeforu.R;
@@ -78,7 +79,6 @@ public class STFUFragment extends Fragment {
 
     FragmentManager mFm;
     Account mAccount;
-    STFU app;
 
     private static final String CURRENT_BOTTOM_ITEM = "current_bottom_item";
     private static final int REQUEST_CODE_LOGIN = 0;
@@ -92,7 +92,6 @@ public class STFUFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater,
                              ViewGroup container,
                              Bundle savedInstanceState) {
-        app = (STFU) getActivity().getApplication();
 
         final View view = inflater.inflate(R.layout.fragment_stfu, container, false);
         ButterKnife.bind(this, view);
@@ -172,13 +171,17 @@ public class STFUFragment extends Fragment {
                     if (mAccount != null) {
                         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP_MR1) {
                             AccountManager.get(getContext()).removeAccountExplicitly(mAccount);
-                            app.setUser(null);
+                            STFUConfig.sUser=null;
                             mAccount = null;
                             updateViews();
                         }
                     }
                     Intent intent = new Intent(getActivity(), LoginActivity.class);
                     startActivityForResult(intent, REQUEST_CODE_LOGIN);
+                    break;
+                case R.id.slider_menu_friend:
+                    Intent intent2=new Intent(getContext(), FriendActivity.class);
+                    startActivity(intent2);
                     break;
                 case R.id.slider_menu_exit:
                     getActivity().finish();
@@ -248,22 +251,23 @@ public class STFUFragment extends Fragment {
         AccountManager accountManager = AccountManager.get(getContext());
         Account[] account = accountManager.getAccountsByType(BuildConfig.APPLICATION_ID);
 
-        if (account.length != 0 && app.getUser().getEmail() == null) {
+        if (account.length != 0 && STFUConfig.sUser == null) {
+            STFUConfig.sUser=new User();
             mAccount = account[0];
-            app.getUser().setEmail(accountManager.getUserData(account[0], "email"));
-            app.getUser().setNickname(accountManager.getUserData(account[0], "nickname"));
-            app.getUser().setAvatar_url(accountManager.getUserData(account[0], "avatar_url"));
-            app.getUser().setFavourable_rate(accountManager.getUserData(account[0], "favourable_rate"));
-            app.getUser().setGender(accountManager.getUserData(account[0], "gender"));
-            app.getUser().setPhone(accountManager.getUserData(account[0], "phone"));
-            app.getUser().setSignature(accountManager.getUserData(account[0], "signature"));
-            app.getUser().setBg_url(accountManager.getUserData(account[0], "bg_url"));
+            STFUConfig.sUser.setEmail(accountManager.getUserData(account[0], "email"));
+            STFUConfig.sUser.setNickname(accountManager.getUserData(account[0], "nickname"));
+            STFUConfig.sUser.setAvatar_url(accountManager.getUserData(account[0], "avatar_url"));
+            STFUConfig.sUser.setFavourable_rate(accountManager.getUserData(account[0], "favourable_rate"));
+            STFUConfig.sUser.setGender(accountManager.getUserData(account[0], "gender"));
+            STFUConfig.sUser.setPhone(accountManager.getUserData(account[0], "phone"));
+            STFUConfig.sUser.setSignature(accountManager.getUserData(account[0], "signature"));
+            STFUConfig.sUser.setBg_url(accountManager.getUserData(account[0], "bg_url"));
 
-            Logger.i(app.getUser().toString());
+            Logger.i(STFUConfig.sUser.toString());
             //设置auth_token
             new GetAuthThread().start();
         }
-        if (app.getUser() != null) {
+        if (STFUConfig.sUser != null) {
             updateViews();
         }
     }
@@ -286,7 +290,7 @@ public class STFUFragment extends Fragment {
             if (data == null) {
                 return;
             }
-            app.setUser((User) data.getSerializableExtra("user"));
+            STFUConfig.sUser=((User) data.getSerializableExtra("user"));
             AccountManager accountManager = AccountManager.get(getContext());
             Account[] account = accountManager.getAccountsByType(BuildConfig.APPLICATION_ID);
             mAccount = account[0];
@@ -362,12 +366,12 @@ public class STFUFragment extends Fragment {
     }
 
     private void updateViews() {
-        if (app.getUser().getEmail() != null) {
-            slider_menu_nick_name.setText(app.getUser().getNickname());
-            slider_menu_signature.setText(app.getUser().getSignature());
+        if (STFUConfig.sUser.getEmail() != null) {
+            slider_menu_nick_name.setText(STFUConfig.sUser.getNickname());
+            slider_menu_signature.setText(STFUConfig.sUser.getSignature());
             mLoginMenuItem.setTitle(getString(R.string.logout));
             Picasso.get()
-                    .load(app.getHOST() + "/static/avatar/" + app.getUser().getAvatar_url())
+                    .load(STFUConfig.HOST + "/static/avatar/" + STFUConfig.sUser.getAvatar_url())
                     .resize(200, 200)
                     .centerCrop()
                     .memoryPolicy(MemoryPolicy.NO_CACHE)
@@ -375,7 +379,7 @@ public class STFUFragment extends Fragment {
                     .into(mAvatar);
             //设置背景图片
             Picasso.get()
-                    .load(app.getHOST() + "/static/personal_background/" + app.getUser().getBg_url())
+                    .load(STFUConfig.HOST + "/static/personal_background/" + STFUConfig.sUser.getBg_url())
                     .resize(1920, 1080)
                     .centerCrop()
                     .memoryPolicy(MemoryPolicy.NO_CACHE)
@@ -418,7 +422,7 @@ public class STFUFragment extends Fragment {
                 result = future.getResult();
                 String authToken;
                 authToken = result.getString(AccountManager.KEY_AUTHTOKEN);
-                app.getUser().setAuth_token(authToken);
+                STFUConfig.sUser.setAuth_token(authToken);
             } catch (Exception e) {
                 Logger.e(e.toString());
             }

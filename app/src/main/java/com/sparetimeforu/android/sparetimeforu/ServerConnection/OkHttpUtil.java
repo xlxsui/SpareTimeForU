@@ -1,6 +1,8 @@
 package com.sparetimeforu.android.sparetimeforu.ServerConnection;
 
 
+import com.sparetimeforu.android.sparetimeforu.entity.User;
+
 import okhttp3.Callback;
 import okhttp3.FormBody;
 import okhttp3.OkHttpClient;
@@ -40,6 +42,7 @@ public class OkHttpUtil {
                 .build();
         okHttpClient.newCall(request).enqueue(callback);
     }
+
 
 
 }

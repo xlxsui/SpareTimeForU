@@ -15,7 +15,7 @@ import android.widget.Toast;
 
 import com.orhanobut.logger.Logger;
 import com.sparetimeforu.android.sparetimeforu.R;
-import com.sparetimeforu.android.sparetimeforu.STFU;
+import com.sparetimeforu.android.sparetimeforu.STFUConfig;
 import com.sparetimeforu.android.sparetimeforu.ServerConnection.OkHttpUtil;
 
 import org.json.JSONException;
@@ -27,6 +27,8 @@ import java.util.Objects;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import cn.jpush.im.android.api.JMessageClient;
+import cn.jpush.im.api.BasicCallback;
 import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.FormBody;
@@ -75,8 +77,8 @@ public class SignUpFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        STFU app = (STFU) getActivity().getApplication();
-        url = app.getHOST() + "/auth/signup";
+        url = STFUConfig.HOST + "/auth/signup";
+        JMessageClient.init(getActivity().getApplicationContext());
         View view = inflater.inflate(R.layout.fragment_signup, container, false);
         ButterKnife.bind(this, view);
 
@@ -244,6 +246,14 @@ public class SignUpFragment extends Fragment {
                             if (Objects.equals(status, "success")) {
                                 getActivity().runOnUiThread(() -> {
                                     Toast.makeText(getActivity(), "注册成功", Toast.LENGTH_SHORT).show();
+                                    JMessageClient.register(email, email+"1", new BasicCallback() {
+                                        @Override
+                                        public void gotResult(int i, String s) {
+                                            if(i==0){
+                                                Logger.i("极光注册成功");
+                                            }
+                                        }
+                                    });
                                     getActivity().finish();
                                 });
                             } else if (Objects.equals(status, "error")) {

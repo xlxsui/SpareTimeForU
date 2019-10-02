@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.widget.LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:id="@+id/friend_head"
+            android:layout_marginTop="10dp"
+            android:layout_marginLeft="5dp"
+            android:layout_alignParentLeft="true"
+            android:layout_width="70dp"
+            android:layout_height="70dp"
+            android:src="@mipmap/ic_launcher"/>
+        <TextView
+            android:id="@+id/friend_nickname"
+            android:layout_width="wrap_content"
+            android:layout_toRightOf="@+id/friend_head"
+            android:textColor="#222"
+            android:layout_marginTop="40dp"
+            android:layout_marginLeft="30dp"
+            android:layout_height="wrap_content"
+            android:text="名字"/>
+        <Button
+            android:id="@+id/friend_start_chatting"
+            android:text="@string/friend_start_chatting"
+            android:layout_alignParentRight="true"
+            android:background="@drawable/pink_background"
+            android:layout_marginTop="20dp"
+            android:layout_marginRight="20dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+    </RelativeLayout>
+    <TextView
+        android:layout_marginTop="10dp"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="#ddd"/>
+
+
+
+</android.widget.LinearLayout>
