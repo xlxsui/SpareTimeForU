@@ -53,7 +53,7 @@ public class FriendFragment extends Fragment {
             @Override
             public void gotResult(int i, String s, List<UserInfo> list) {
                 if(i==0){//获取朋友列表成功
-                    friend_recyclerview.setAdapter(new FriendAdapter(list,getContext()));
+                    friend_recyclerview.setAdapter(new FriendAdapter(list,getActivity()));
                 }else{
                     Snackbar.make(getView(),"网络请求错误，请检查您的设备",Snackbar.LENGTH_SHORT).show();
                 }

@@ -20,21 +20,41 @@
         <TextView
             android:id="@+id/message_user"
             android:layout_width="wrap_content"
-            android:layout_marginTop="40dp"
-            android:layout_marginLeft="20dp"
+            android:layout_marginLeft="20dip"
             android:textColor="#222"
             android:text="用户名"
+            android:layout_marginTop="40dip"
             android:layout_toRightOf="@+id/message_friend_head"
             android:layout_height="wrap_content" />
         <TextView
             android:layout_toRightOf="@+id/message_user"
-            android:layout_marginTop="40dp"
+            android:layout_alignTop="@+id/message_user"
             android:layout_marginLeft="10dp"
-            android:id="@+id/message_count"
+            android:id="@+id/conversation_list_item_format1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="给您发来了3条信息"
+            android:text="给您发来了 "
             android:singleLine="true"/>
+        <TextView
+            android:layout_width="30dip"
+            android:height="20dip"
+            android:layout_toRightOf="@+id/conversation_list_item_format1"
+            android:layout_alignTop="@id/message_user"
+            android:id="@+id/conversation_list_item_message_count"
+            android:text="3"
+            android:textColor="#ccc"
+            android:gravity="center"
+            android:background="@drawable/round_tag"
+            android:layout_height="20dip" />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_toRightOf="@id/conversation_list_item_message_count"
+            android:id="@+id/conversation_list_item_format2"
+            android:layout_alignTop="@+id/message_user"
+            android:singleLine="true"
+            android:text=" 条新信息"
+            android:layout_height="wrap_content" />
+
     </RelativeLayout>
     <TextView
         android:layout_alignBottom="@id/message_friend_head"

@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.widget.LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
+    android:orientation="vertical"
+    android:background="#ddd"
+    android:layout_height="wrap_content">
+    <RelativeLayout
+        android:id="@+id/system_message_list_item"
+        android:layout_width="match_parent"
+        android:layout_height="120dip">
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="80dip">
+            <TextView
+                android:layout_width="20dip"
+                android:id="@+id/system_message_list_item_red_point_tag"
+                android:layout_height="20dip"
+                android:background="@drawable/round_tag"/>
+            <de.hdodenhof.circleimageview.CircleImageView
+                android:id="@+id/system_message_list_item_header"
+                android:layout_marginTop="10dp"
+                android:layout_marginLeft="10dp"
+                android:layout_marginBottom="10dp"
+                android:layout_alignParentLeft="true"
+                android:layout_width="70dp"
+                android:layout_height="70dp"
+                android:src="@mipmap/ic_launcher"/>
+            <LinearLayout
+                android:layout_toRightOf="@id/system_message_list_item_header"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:weightSum="5"
+                android:orientation="vertical">
+                <TextView
+                    android:id="@+id/system_message_list_item_type"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="信息类型"
+                    android:layout_marginTop="20dip"
+                    android:layout_marginLeft="20dip"
+                    android:layout_weight="1"/>
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="3"
+                    android:orientation="horizontal">
+                    <TextView
+                        android:id="@+id/system_message_list_item_usernickname"
+                        android:layout_width="wrap_content"
+                        android:layout_marginLeft="20dip"
+                        android:textColor="#222"
+                        android:text="用户名"
+                        android:layout_height="wrap_content" />
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:id="@+id/system_message_list_item_content"
+                        android:layout_marginLeft="10dip"
+                        android:text="给您发来了一条消息"
+                        android:gravity="center"
+                        android:layout_height="20dip" />
+                </LinearLayout>
+            </LinearLayout>
+        </RelativeLayout>
+        <RelativeLayout
+            android:layout_alignParentBottom="true"
+            android:layout_width="match_parent"
+            android:layout_height="40dip">
+            <TextView
+                android:layout_width="wrap_content"
+                android:id="@+id/system_message_list_item_date"
+                android:text="2018-3-13 8:10"
+                android:layout_marginLeft="10dip"
+                android:textColor="#000"
+                android:layout_marginTop="5dip"
+                android:layout_height="wrap_content" />
+            <TextView
+                android:id="@+id/system_message_list_item_hint"
+                android:layout_width="wrap_content"
+                android:layout_alignTop="@+id/system_message_list_item_date"
+                android:layout_alignParentRight="true"
+                android:layout_marginRight="5dip"
+                android:text="@string/system_message_list_item_hint_get_more"
+                android:layout_height="wrap_content" />
+        </RelativeLayout>
+    </RelativeLayout>
+    <TextView
+        android:layout_alignBottom="@id/system_message_list_item"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="#aaa"/>
+</android.widget.LinearLayout>

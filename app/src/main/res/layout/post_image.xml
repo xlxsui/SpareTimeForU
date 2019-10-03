@@ -6,8 +6,9 @@
 
     <com.github.chrisbanes.photoview.PhotoView
         android:id="@+id/post_image"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_width="300dip"
+        android:layout_height="200dip"
+        android:layout_gravity="center"
         android:layout_alignParentEnd="true"
         android:layout_alignParentStart="true" />
 

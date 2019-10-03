@@ -3,10 +3,13 @@ package com.sparetimeforu.android.sparetimeforu.util;
 import android.text.TextUtils;
 
 import com.google.gson.Gson;
+import com.sparetimeforu.android.sparetimeforu.STFUConfig;
+import com.sparetimeforu.android.sparetimeforu.entity.Comment;
 import com.sparetimeforu.android.sparetimeforu.entity.Errand;
 import com.sparetimeforu.android.sparetimeforu.entity.IdleThing;
 import com.sparetimeforu.android.sparetimeforu.entity.SearchThing;
 import com.sparetimeforu.android.sparetimeforu.entity.Study;
+import com.sparetimeforu.android.sparetimeforu.entity.SystemMessage;
 import com.sparetimeforu.android.sparetimeforu.entity.User;
 
 import org.json.JSONException;
@@ -16,6 +19,8 @@ import com.orhanobut.logger.Logger;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import cn.jpush.im.android.api.model.Message;
 
 /**
  * Created by HQY on 2018/11/15.
@@ -138,6 +143,61 @@ public class HandleMessageUtil {
         }
 
         return false;
+    }
+
+    public static boolean handleSystemMessage(List<Message> messages,int un_read_message_count){
+        SystemMessage systemMessage;
+        for(int i=messages.size()-un_read_message_count;i<messages.size();i++){
+            Message message=messages.get(i);
+            systemMessage=system_message_handle(message.getContent().toString());
+            if(systemMessage!=null)
+            STFUConfig.systemMessages.add(0,systemMessage);
+        }
+        return true;
+    }
+    public static Errand handlePost_Errand_Message(String responseString){
+        Errand errand;
+        if(responseString!=null){
+            Gson gson=new Gson();
+            try{
+                JSONObject jsonObject=new JSONObject(responseString);
+                JSONObject data1 = new JSONObject(jsonObject.getString("data"));
+                JSONObject data=new JSONObject(data1.getString("errand_message"));
+                String errand_data=data.getString("post_0");
+                errand=gson.fromJson(errand_data,Errand.class);
+                return errand;
+            }catch (Exception e){
+                e.printStackTrace();
+            }
+        }
+        return null;
+    }
+    public static List<Comment> handlePost_Errand_Comment_Message(String responseString){
+        List<Comment> comments;
+        if(!responseString.isEmpty()){
+            Gson gson=new Gson();
+            try{
+                comments=new ArrayList<Comment>();
+                JSONObject jsonObject=new JSONObject(responseString);
+                JSONObject data = new JSONObject(jsonObject.getString("data"));
+                JSONObject comments_data=new JSONObject(data.getString("comments_message"));
+                int i=0;
+                while(i<comments_data.length()){
+                    String str=(String)comments_data.getString("comment_"+i);
+                    Comment comment=gson.fromJson(str,Comment.class);
+                    comments.add(comment);
+                    i++;
+                }
+                return comments;
+            }catch (Exception e){
+                Logger.i(e.toString());;
+            }
+        }
+        return null;
+    }
+    private static SystemMessage system_message_handle(String jsonString){//处理系统通知的json字符串，转化成systemMessage
+        Gson gson=new Gson();
+        return gson.fromJson(jsonString,SystemMessage.class);
     }
 
 }

@@ -53,6 +53,8 @@ import java.util.regex.Pattern;
 
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import cn.jpush.im.android.api.JMessageClient;
+import cn.jpush.im.api.BasicCallback;
 import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.FormBody;
@@ -300,6 +302,12 @@ public class EditFragment extends Fragment {
             public void onResponse(Call call, Response response) throws IOException {
                 getActivity().runOnUiThread(() -> {
                     Toast.makeText(getContext(), "修改头像成功", Toast.LENGTH_SHORT).show();
+                    JMessageClient.updateUserAvatar(mFile, new BasicCallback() {
+                        @Override
+                        public void gotResult(int i, String s) {
+                            Logger.i("更换头像成功");
+                        }
+                    });
                     updateNativeUser();
                 });
             }

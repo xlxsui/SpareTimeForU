@@ -1,5 +1,9 @@
 <resources>
     <string name="app_name">汕大顺手邦</string>
+    <string name="system_message_list_item_hint_get_more">>> 点击查看详细消息</string>
+    <string name="system_message_list_item_hint_add_friend">>> 点击选择</string>
+    <string name="system_message_list_item_hint_errand_message">>> 点击查看详细消息</string>
+    <string name="system_message_list_item_hint_approval">>> 点击标注已读</string>
     <string name="navigation_errand">赏金</string>
     <string name="navigation_second_hand">闲置</string>
     <string name="navigation_study">学习</string>

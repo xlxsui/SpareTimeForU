@@ -299,7 +299,7 @@ public class ErrandFragment extends Fragment implements BaiduMap.OnMarkerClickLi
 
     private void setupAdapter(List<Errand> errands) {
 
-        mAdapter = new ErrandAdapter(errands);
+        mAdapter = new ErrandAdapter(errands,getActivity());
         mAdapter.openLoadAnimation(BaseQuickAdapter.SLIDEIN_LEFT);
         mAdapter.isFirstOnly(false);
 

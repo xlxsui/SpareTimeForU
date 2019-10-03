@@ -6,6 +6,7 @@ import android.accounts.AccountManagerFuture;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
@@ -38,6 +39,7 @@ import com.sparetimeforu.android.sparetimeforu.activity.LoginActivity;
 import com.sparetimeforu.android.sparetimeforu.activity.PersonalActivity;
 import com.sparetimeforu.android.sparetimeforu.R;
 import com.sparetimeforu.android.sparetimeforu.activity.ConversationListActivity;
+import com.sparetimeforu.android.sparetimeforu.entity.SystemMessage;
 import com.sparetimeforu.android.sparetimeforu.fragment.module.ErrandFragment;
 import com.sparetimeforu.android.sparetimeforu.fragment.module.IdleThingFragment;
 import com.sparetimeforu.android.sparetimeforu.fragment.module.SearchThingFragment;
@@ -48,14 +50,19 @@ import com.squareup.picasso.MemoryPolicy;
 import com.squareup.picasso.NetworkPolicy;
 import com.squareup.picasso.Picasso;
 
+import java.io.BufferedOutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.Random;
 
 import Listener.GlobalEventListener;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import cn.jpush.im.android.api.JMessageClient;
+import cn.jpush.im.api.BasicCallback;
 
 import static java.lang.System.exit;
 
@@ -252,13 +259,20 @@ public class STFUFragment extends Fragment {
         /*
         *  设置全局GlobalEventListener
         */
-        if(STFUConfig.globalEventListener==null){
-            STFUConfig.globalEventListener=new GlobalEventListener();
-        }
+        init_STFUConfig();
         STFUConfig.globalEventListener.setStfuFragment(this);
         JMessageClient.registerEventReceiver(STFUConfig.globalEventListener);
         init_Message_point_icon();
+
         return view;
+    }
+    private void init_STFUConfig(){
+        if(STFUConfig.globalEventListener==null){
+            STFUConfig.globalEventListener=new GlobalEventListener();
+        }
+        if(STFUConfig.systemMessages==null){
+            STFUConfig.systemMessages=new ArrayList<SystemMessage>();
+        }
     }
 
 
@@ -305,6 +319,27 @@ public class STFUFragment extends Fragment {
             STFUConfig.sUser.setSignature(accountManager.getUserData(account[0], "signature"));
             STFUConfig.sUser.setBg_url(accountManager.getUserData(account[0], "bg_url"));
 
+            //设置极光头像
+            if(JMessageClient.getMyInfo().getAvatar()==null){//极光未设置头像
+                try {
+                    File file=new File("");
+                    Bitmap bitmap=Picasso.get().load(STFUConfig.sUser.getAvatar_url()).get();
+                    if(bitmap!=null){
+                        BufferedOutputStream bos = new BufferedOutputStream(new FileOutputStream(file));
+                        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, bos);
+                        JMessageClient.updateUserAvatar(file, new BasicCallback() {
+                            @Override
+                            public void gotResult(int i, String s) {
+                                Logger.i("更新头像成功");
+                            }
+                        });
+                    }
+                    file.delete();
+                }catch (Exception e){
+                    e.printStackTrace();
+                }
+
+            }
             Logger.i(STFUConfig.sUser.toString());
             //设置auth_token
             new GetAuthThread().start();

@@ -61,15 +61,7 @@
                         android:gravity="start|center"
                         android:text="@string/app_name" />
 
-                    <TextView
-                        android:id="@+id/comment_grade"
-                        android:layout_width="wrap_content"
-                        android:layout_height="match_parent"
-                        android:layout_margin="1dp"
-                        android:gravity="center"
-                        android:text="L6"
-                        android:textSize="14sp"
-                        android:textStyle="bold" />
+
 
                 </LinearLayout>
 
@@ -89,7 +81,7 @@
                 android:layout_weight="0.8">
 
                 <TextView
-                    android:id="@+id/comment_status"
+                    android:id="@+id/comment_floor"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_margin="2dp"
@@ -127,44 +119,12 @@
                         android:id="@+id/comment_caption"
                         android:layout_width="match_parent"
                         android:layout_height="0dp"
-                        android:layout_weight="1"
-                        android:gravity="center"
+                        android:layout_weight="3.5"
+                        android:padding="10dip"
                         android:maxLines="3"
-                        android:textSize="12sp"
+                        android:text="hello"
+                        android:textSize="14sp"
                         android:textStyle="bold" />
-
-                    <LinearLayout
-                        android:id="@+id/comment_pictures"
-                        android:layout_width="match_parent"
-                        android:layout_height="0dp"
-                        android:layout_weight="3.9"
-                        android:orientation="horizontal"
-                        android:weightSum="3.01">
-
-                        <com.github.chrisbanes.photoview.PhotoView
-                            android:id="@+id/comment_picture1"
-                            android:layout_width="0dp"
-                            android:layout_height="match_parent"
-                            android:layout_margin="2dp"
-                            android:layout_weight="1" />
-
-                        <com.github.chrisbanes.photoview.PhotoView
-                            android:id="@+id/comment_picture2"
-                            android:layout_width="0dp"
-                            android:layout_height="match_parent"
-                            android:layout_margin="2dp"
-                            android:layout_weight="1" />
-
-                        <com.github.chrisbanes.photoview.PhotoView
-                            android:id="@+id/comment_picture3"
-                            android:layout_width="0dp"
-                            android:layout_height="match_parent"
-                            android:layout_margin="2dp"
-                            android:layout_weight="1" />
-
-
-                    </LinearLayout>
-
 
                 </LinearLayout>
 

@@ -25,6 +25,7 @@ import cn.jpush.im.android.api.JMessageClient;
 import cn.jpush.im.android.api.model.Conversation;
 
 /**
+ * 通知列表界面的fragment（其中包括系统通知和用户通知）
  * Created by HQY on 2019/7/20.
  */
 
@@ -66,7 +67,7 @@ public class ConversationListFragment extends Fragment {
     public void setAdapter(List<Conversation> conversations){
 
         sort_Conversations(conversations);
-        mRecyclerView.setAdapter(new ConversationListAdapter(conversations,getContext()));
+        mRecyclerView.setAdapter(new ConversationListAdapter(conversations,getActivity()));
     }
     private void sort_Conversations(List<Conversation> conversations){
         //将conversation中的会话按未读信息数来排列， 未读信息越多，排在越前面，系统通知置顶
@@ -81,13 +82,14 @@ public class ConversationListFragment extends Fragment {
             }
         }
         //置顶系统通知
+
         int i=0;
         while(i<conversations.size()){
             if(conversations.get(i).getTargetId()==STFUConfig.manager_username)
                 break;
             i++;
         }
-        if(i<conversations.size()){
+        if(i<conversations.size()){//找到了系统通知
             Conversation  conversation=conversations.get(i);
             conversations.remove(i);
             conversations.add(0,conversation);

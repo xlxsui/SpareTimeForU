@@ -13,7 +13,7 @@
         android:layout_height="match_parent"
         android:layout_weight="3"
         android:gravity="center"
-        android:text="东门" />
+        android:text="任务未设置" />
 
     <ImageView
         android:layout_width="0dp"

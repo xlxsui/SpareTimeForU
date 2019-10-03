@@ -1,5 +1,6 @@
 package com.sparetimeforu.android.sparetimeforu.adapter;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -25,10 +26,10 @@ import cn.jpush.im.android.api.model.UserInfo;
  */
 
 public class FriendAdapter extends BaseQuickAdapter<UserInfo,BaseViewHolder>{
-    Context context;
-    public FriendAdapter(List<UserInfo> userInfos, Context context){
+    Activity activity;
+    public FriendAdapter(List<UserInfo> userInfos, Activity activity){
         super(R.layout.fragment_friend_item,userInfos);
-        this.context=context;
+        this.activity=activity;
     }
     @Override
     protected void convert(BaseViewHolder helper, UserInfo item) {
@@ -37,7 +38,12 @@ public class FriendAdapter extends BaseQuickAdapter<UserInfo,BaseViewHolder>{
             @Override
             public void gotResult(int i, String s, Bitmap bitmap) {
                 if(i==0){//获取头像成功
-                    friend_avatar.setImageBitmap(bitmap);
+                    activity.runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            friend_avatar.setImageBitmap(bitmap);
+                        }
+                    });
                 }
             }
         });
@@ -50,10 +56,10 @@ public class FriendAdapter extends BaseQuickAdapter<UserInfo,BaseViewHolder>{
                 String userName=item.getUserName();
                 Logger.i(item.toString());
                 //将信息传进chattingactivity
-                Intent intent=new Intent(context, ChattingActivity.class);
+                Intent intent=new Intent(activity, ChattingActivity.class);
                 intent.putExtra("username",userName);//将聊天对象的用户名传进去
                 intent.putExtra("userNickname",item.getNickname());
-                context.startActivity(intent);
+                activity.startActivity(intent);
             }
         });
 

@@ -52,7 +52,7 @@ import okhttp3.Response;
  * Created by HQY on 2019/10/1.
  */
 
-public class OthersMessageFragment extends Fragment implements View.OnClickListener  {
+public class OthersPersonalFragment extends Fragment implements View.OnClickListener  {
 
 
     //所查看用户个人信息
@@ -98,6 +98,7 @@ public class OthersMessageFragment extends Fragment implements View.OnClickListe
 
         //设置Toolbar
         toolbar = view.findViewById(R.id.personal_toolbar);
+        toolbar.setTitle("");
         ((AppCompatActivity) getActivity()).setSupportActionBar(toolbar);
 
 
@@ -120,11 +121,12 @@ public class OthersMessageFragment extends Fragment implements View.OnClickListe
         super.onResume();
     }
     private void init_others_user(){//初始化他人界面上的用户信息
+        String url=STFUConfig.HOST+"/user/get_user";
         Intent intent=getActivity().getIntent();
         //发送请求到服务器拿信息
 
-        FormBody formBody=new FormBody.Builder().add("user_Emial",intent.getStringExtra("user_Email")).build();
-        OkHttpUtil.sendOkHttpPostRequest(STFUConfig.HOST, formBody, new okhttp3.Callback() {
+        FormBody formBody=new FormBody.Builder().add("user_email",intent.getStringExtra("user_Email")).build();
+        OkHttpUtil.sendOkHttpPostRequest(url, formBody, new okhttp3.Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
                 getActivity().runOnUiThread(new Runnable() {
@@ -137,8 +139,14 @@ public class OthersMessageFragment extends Fragment implements View.OnClickListe
 
             @Override
             public void onResponse(Call call, Response response) throws IOException {
-                others_user= HandleMessageUtil.handleLoginMessage(response.toString());
-                updateViews();
+                others_user= HandleMessageUtil.handleLoginMessage(response.body().string());
+                getActivity().runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        updateViews();
+                    }
+                });
+
             }
         });
     }

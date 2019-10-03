@@ -1,5 +1,6 @@
 package com.sparetimeforu.android.sparetimeforu.adapter;
 
+import android.graphics.Bitmap;
 import android.view.View;
 import android.widget.TextView;
 
@@ -10,8 +11,12 @@ import com.sparetimeforu.android.sparetimeforu.STFUConfig;
 
 import java.util.List;
 
+import cn.jpush.im.android.api.JMessageClient;
+import cn.jpush.im.android.api.callback.GetAvatarBitmapCallback;
+import cn.jpush.im.android.api.callback.GetUserInfoCallback;
 import cn.jpush.im.android.api.content.TextContent;
 import cn.jpush.im.android.api.model.Message;
+import cn.jpush.im.android.api.model.UserInfo;
 import de.hdodenhof.circleimageview.CircleImageView;
 
 /**
@@ -19,8 +24,38 @@ import de.hdodenhof.circleimageview.CircleImageView;
  */
 
 public class MessageAdapter extends BaseQuickAdapter<Message,BaseViewHolder>{
+    Bitmap bitmap_self_avatar,bitmap_other_side_avatar;
     public MessageAdapter(List<Message> messages){
         super(R.layout.chat_box,messages);
+        Message temp_message=null;
+        //初始化两个用户头像  对方和本机用户
+        for(int i=messages.size()-1;i>0;i++){
+            //找到一个对方用户发送的message
+            if(!messages.get(i).getFromUser().getUserName().equals(STFUConfig.sUser.getEmail()))
+                temp_message=messages.get(i);
+        }
+        if(temp_message!=null){
+            JMessageClient.getUserInfo(temp_message.getFromUser().getUserName(), new GetUserInfoCallback() {
+                @Override
+                public void gotResult(int i, String s, UserInfo userInfo) {
+                    userInfo.getAvatarBitmap(new GetAvatarBitmapCallback() {
+                        @Override
+                        public void gotResult(int i, String s, Bitmap bitmap) {
+                            bitmap_other_side_avatar=bitmap;
+                        }
+                    });
+                }
+            });
+        }
+
+        //获取本机用户头像
+        JMessageClient.getMyInfo().getAvatarBitmap(new GetAvatarBitmapCallback() {
+            @Override
+            public void gotResult(int i, String s, Bitmap bitmap) {
+                bitmap_self_avatar=bitmap;
+            }
+        });
+
     }
 
     @Override
@@ -39,6 +74,8 @@ public class MessageAdapter extends BaseQuickAdapter<Message,BaseViewHolder>{
                 tc1.setVisibility(View.VISIBLE);
                 avatar1.setVisibility(View.GONE);
                 avatar2.setVisibility(View.VISIBLE);
+                //修改我的头像
+                avatar2.setImageBitmap(bitmap_self_avatar);
                 if (message_text!=null)
                 content.setText(message_text);
             }else{
@@ -46,6 +83,7 @@ public class MessageAdapter extends BaseQuickAdapter<Message,BaseViewHolder>{
                 tc2.setVisibility(View.VISIBLE);
                 avatar2.setVisibility(View.GONE);
                 avatar1.setVisibility(View.VISIBLE);
+                avatar1.setImageBitmap(bitmap_other_side_avatar);
                 if (message_text!=null)
                 content.setText(message_text);
             }

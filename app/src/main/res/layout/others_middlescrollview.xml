@@ -22,17 +22,9 @@
                 android:layout_marginTop="80dip"
                 android:background="@drawable/border_line"
                 android:textColor="#fff"
+                android:layout_marginBottom="5dip"
                 android:text="发出的任务"/>
-            <TextView
-                android:id="@+id/others_mission_received"
-                android:layout_width="200dip"
-                android:layout_height="40dip"
-                android:layout_gravity="center"
-                android:gravity="center"
-                android:layout_marginTop="30dip"
-                android:background="@drawable/border_line"
-                android:textColor="#fff"
-                android:text="私聊"/>
+
 
         </LinearLayout>
 
