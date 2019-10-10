@@ -2,6 +2,7 @@ package com.sparetimeforu.android.sparetimeforu.fragment;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -10,11 +11,21 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.sparetimeforu.android.sparetimeforu.R;
+import com.sparetimeforu.android.sparetimeforu.STFUConfig;
+import com.sparetimeforu.android.sparetimeforu.ServerConnection.OkHttpUtil;
+import com.sparetimeforu.android.sparetimeforu.adapter.ErrandAdapter;
 import com.sparetimeforu.android.sparetimeforu.adapter.ErrandReceivedAdapter;
 import com.sparetimeforu.android.sparetimeforu.data.DataServer;
 import com.sparetimeforu.android.sparetimeforu.entity.Errand;
+import com.sparetimeforu.android.sparetimeforu.util.HandleMessageUtil;
 
+import java.io.IOException;
 import java.util.List;
+
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.FormBody;
+import okhttp3.Response;
 
 /**
  * Created by HQY on 2018/12/2.
@@ -26,7 +37,7 @@ public class ErrandContentFragment extends Fragment{
     private List<Errand> data;
     private RecyclerView mRecyclerView;
     int mode;
-
+    private String url=STFUConfig.HOST;
 
 
     @Nullable
@@ -43,8 +54,6 @@ public class ErrandContentFragment extends Fragment{
 
         return view;
     }
-
-
     /**
      * get Errand data
      */
@@ -52,12 +61,51 @@ public class ErrandContentFragment extends Fragment{
         Bundle bundle=getArguments();
         mode=bundle.getInt("mode");
 
-        if(mode==Errand_received_fragment.RECEIVED_MISSION_DOING)
-        data= DataServer.getErrandData(10);
-        else data=DataServer.getErrandData(10);
+        if(mode==Errand_received_fragment.RECEIVED_MISSION_DOING){
+            FormBody formBody=new FormBody.Builder()
+                    .add("user_id", STFUConfig.sUser.getUser_id()+"").build();
+            OkHttpUtil.sendOkHttpPostRequest(url + "/get_user_received_ndone_posts", formBody, new Callback() {
+                @Override
+                public void onFailure(Call call, IOException e) {
+                    getActivity().runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            Snackbar.make(getView(),"网络请求错误",Snackbar.LENGTH_SHORT).show();
+                        }
+                    });
+                }
+                @Override
+                public void onResponse(Call call, Response response) throws IOException {
+                    List<Errand> data;
+                    data= HandleMessageUtil.handleReleasedErrandMessage(response.body().string());
+                    ErrandAdapter adapter=new ErrandAdapter(data,getActivity());
+                    setupAdapter();
+                }
+            });
+        }else{
+            FormBody formBody=new FormBody.Builder()
+                    .add("user_id", STFUConfig.sUser.getUser_id()+"").build();
+            OkHttpUtil.sendOkHttpPostRequest(url + "/get_user_received_done_posts", formBody, new Callback() {
+                @Override
+                public void onFailure(Call call, IOException e) {
+                    getActivity().runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            Snackbar.make(getView(),"网络请求错误",Snackbar.LENGTH_SHORT).show();
+                        }
+                    });
+                }
+                @Override
+                public void onResponse(Call call, Response response) throws IOException {
+                    List<Errand> data;
+                    data= HandleMessageUtil.handleReleasedErrandMessage(response.body().string());
+                    ErrandAdapter adapter=new ErrandAdapter(data,getActivity());
+                    setupAdapter();
+                }
+            });
+        }
     }
     private void setupAdapter(){
-        mAdapter=new ErrandReceivedAdapter(data);
         mRecyclerView.setAdapter(mAdapter);
     }
 }

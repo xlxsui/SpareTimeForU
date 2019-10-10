@@ -17,7 +17,15 @@ public class User implements Serializable {
     private String gender;
     private String email;
     private String auth_token;
+    private int user_id;
 
+    public int getUser_id() {
+        return user_id;
+    }
+
+    public void setUser_id(int user_id) {
+        this.user_id = user_id;
+    }
 
     public String getBg_url() {
         return bg_url;

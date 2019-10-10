@@ -78,7 +78,6 @@ public class ErrandAdapter extends BaseQuickAdapter<Errand, BaseViewHolder> {
         ImageView avatar = (ImageView) helper.getView(R.id.errand_avatar);
         TextView nickName = (TextView) helper.getView(R.id.errand_nick_name);
         nickName.setText(item.getUser_Nickname());
-        TextView grade = ((TextView) helper.getView(R.id.errand_grade));
         TextView date = ((TextView) helper.getView(R.id.errand_date));
         TextView reward = ((TextView) helper.getView(R.id.errand_reward));
         reward.setText(item.getMoney()+"");

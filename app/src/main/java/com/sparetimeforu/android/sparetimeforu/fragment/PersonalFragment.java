@@ -20,6 +20,7 @@ import com.sparetimeforu.android.sparetimeforu.R;
 import com.sparetimeforu.android.sparetimeforu.STFUConfig;
 import com.sparetimeforu.android.sparetimeforu.activity.EditActivity;
 import com.sparetimeforu.android.sparetimeforu.activity.ErrandReceivedActivity;
+import com.sparetimeforu.android.sparetimeforu.activity.PostReleasedActivity;
 import com.sparetimeforu.android.sparetimeforu.entity.User;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.MemoryPolicy;
@@ -147,16 +148,15 @@ public class PersonalFragment extends Fragment implements View.OnClickListener {
                 startActivity(intent);
                 break;
             case R.id.personal_mission_released:
-                Toast.makeText(getActivity(), "You clicked the misson_released", Toast.LENGTH_SHORT).show();
+                Intent intent1 = new Intent(getActivity(), PostReleasedActivity.class);
+                intent1.putExtra("user_id",STFUConfig.sUser.getUser_id());
+                startActivity(intent1);
                 break;
             case R.id.personal_edit:
-
-                Intent intent1 = new Intent(getActivity(), EditActivity.class);
-                intent1.putExtra("user", STFUConfig.sUser);
-
+                Intent intent2 = new Intent(getActivity(), EditActivity.class);
+                intent2.putExtra("user", STFUConfig.sUser);
                 //之后要实现获取返回值
-                startActivity(intent1);
-
+                startActivity(intent2);
                 break;
         }
     }

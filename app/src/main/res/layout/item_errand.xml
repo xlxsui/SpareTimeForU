@@ -43,7 +43,7 @@
             <LinearLayout
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
-                android:layout_weight="3.4"
+                android:layout_weight="1.6"
                 android:orientation="vertical"
                 android:weightSum="2">
 
@@ -61,15 +61,7 @@
                         android:gravity="start|center"
                         android:text="@string/app_name" />
 
-                    <TextView
-                        android:id="@+id/errand_grade"
-                        android:layout_width="wrap_content"
-                        android:layout_height="match_parent"
-                        android:layout_margin="1dp"
-                        android:gravity="center"
-                        android:text="L6"
-                        android:textSize="14sp"
-                        android:textStyle="bold" />
+
 
                 </LinearLayout>
 
@@ -86,7 +78,7 @@
             <LinearLayout
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
-                android:layout_weight="0.8">
+                android:layout_weight="1.2">
 
                 <TextView
                     android:id="@+id/errand_reward"
@@ -97,6 +89,24 @@
                     android:text="￥2" />
             </LinearLayout>
 
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_weight="1.4"
+                android:orientation="vertical"
+                android:layout_height="match_parent">
+                <Button
+                    android:layout_marginTop="10dip"
+                    android:layout_gravity="center"
+                    android:layout_width="wrap_content"
+                    android:background="@drawable/button_style"
+                    android:textSize="12sp"
+                    android:gravity="center"
+                    android:textColor="#fb7299"
+                    android:textStyle="bold"
+                    android:text="接受任务"
+                    android:layout_height="30dip" />
+
+            </LinearLayout>
         </LinearLayout>
 
         <LinearLayout

@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/post_released_errand"
+        android:icon="@drawable/navigation_errand"
+        android:title="跑腿"
+        />
+    <item
+        android:id="@+id/post_released_trade"
+        android:icon="@drawable/navigation_second_hand"
+        android:title="二手"
+        />
+    <item
+        android:id="@+id/post_released_study"
+        android:icon="@drawable/navigation_study"
+        android:title="学习"
+        />
+    <item
+        android:id="@+id/post_released_find"
+        android:icon="@drawable/navigation_search"
+        android:title="寻物"
+        />
+</menu>
