@@ -22,7 +22,6 @@ import butterknife.OnClick;
  */
 
 public class StudyPostFragment extends Fragment {
-
     @BindView(R.id.toolbar)
     Toolbar mToolbar;
 
@@ -37,7 +36,6 @@ public class StudyPostFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.post_study, container, false);
         ButterKnife.bind(this, view);
-
         ((AppCompatActivity) getActivity()).setSupportActionBar(mToolbar);
 
         return view;

@@ -33,11 +33,11 @@ import okhttp3.Response;
 
 public class ErrandContentFragment extends Fragment{
     private View view;
-    private ErrandReceivedAdapter mAdapter;
+    private ErrandAdapter mAdapter;
     private List<Errand> data;
     private RecyclerView mRecyclerView;
     int mode;
-    private String url=STFUConfig.HOST;
+    private String url=STFUConfig.HOST+"/mission";
 
 
     @Nullable
@@ -50,7 +50,6 @@ public class ErrandContentFragment extends Fragment{
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         //获取data数据
         initDate();
-        setupAdapter();
 
         return view;
     }
@@ -63,7 +62,7 @@ public class ErrandContentFragment extends Fragment{
 
         if(mode==Errand_received_fragment.RECEIVED_MISSION_DOING){
             FormBody formBody=new FormBody.Builder()
-                    .add("user_id", STFUConfig.sUser.getUser_id()+"").build();
+                    .add("user_id", 1+"").build();
             OkHttpUtil.sendOkHttpPostRequest(url + "/get_user_received_ndone_posts", formBody, new Callback() {
                 @Override
                 public void onFailure(Call call, IOException e) {
@@ -78,13 +77,18 @@ public class ErrandContentFragment extends Fragment{
                 public void onResponse(Call call, Response response) throws IOException {
                     List<Errand> data;
                     data= HandleMessageUtil.handleReleasedErrandMessage(response.body().string());
-                    ErrandAdapter adapter=new ErrandAdapter(data,getActivity());
-                    setupAdapter();
+                    mAdapter=new ErrandAdapter(data,getActivity());
+                    getActivity().runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            setupAdapter();
+                        }
+                    });
                 }
             });
         }else{
             FormBody formBody=new FormBody.Builder()
-                    .add("user_id", STFUConfig.sUser.getUser_id()+"").build();
+                    .add("user_id", 1+"").build();
             OkHttpUtil.sendOkHttpPostRequest(url + "/get_user_received_done_posts", formBody, new Callback() {
                 @Override
                 public void onFailure(Call call, IOException e) {
@@ -99,8 +103,14 @@ public class ErrandContentFragment extends Fragment{
                 public void onResponse(Call call, Response response) throws IOException {
                     List<Errand> data;
                     data= HandleMessageUtil.handleReleasedErrandMessage(response.body().string());
-                    ErrandAdapter adapter=new ErrandAdapter(data,getActivity());
-                    setupAdapter();
+                    mAdapter=new ErrandAdapter(data,getActivity());
+                    getActivity().runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            setupAdapter();
+                        }
+                    });
+
                 }
             });
         }

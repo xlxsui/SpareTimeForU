@@ -14,7 +14,7 @@ import cn.jpush.im.android.api.model.Message;
  * Email:17wjli6@stu.edu.cn
  */
 public  class STFUConfig {
-    public static String HOST = "http://www.xlxs.top:5000";
+    public static String HOST = "http://wifi.xlxs.top:5000";
     public static User sUser;// 一个全局变量user
     public static GlobalEventListener globalEventListener=null;
     public static String manager_username="manager@stu.edu.cn";

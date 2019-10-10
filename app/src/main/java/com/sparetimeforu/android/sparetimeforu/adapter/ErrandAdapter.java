@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -94,6 +95,8 @@ public class ErrandAdapter extends BaseQuickAdapter<Errand, BaseViewHolder> {
         ImageView p3 = (ImageView) helper.getView(R.id.errand_picture3);
         ImageView share = (ImageView) helper.getView(R.id.errand_share);
         ImageView like = (ImageView) helper.getView(R.id.errand_like);
+        Button button=(Button)helper.getView(R.id.Errand_accpet_mission);
+
         LinearLayout comment = (LinearLayout) helper.getView(R.id.errand_comment);
 
         helper.addOnClickListener(R.id.errand_avatar)
@@ -129,6 +132,18 @@ public class ErrandAdapter extends BaseQuickAdapter<Errand, BaseViewHolder> {
                 .resize(200, 200)
                 .centerCrop()
                 .into(p3);
+
+        if(item.getIs_received()==1) {
+            button.setVisibility(View.INVISIBLE);
+        }else{
+            button.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    //发送请求到服务器  用户接收任务
+                }
+            });
+        }
+
     }
 
 }

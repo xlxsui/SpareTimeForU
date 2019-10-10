@@ -97,6 +97,7 @@
                 <Button
                     android:layout_marginTop="10dip"
                     android:layout_gravity="center"
+                    android:id="@+id/Errand_accpet_mission"
                     android:layout_width="wrap_content"
                     android:background="@drawable/button_style"
                     android:textSize="12sp"

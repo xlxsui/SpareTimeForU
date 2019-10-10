@@ -149,7 +149,6 @@ public class PersonalFragment extends Fragment implements View.OnClickListener {
                 break;
             case R.id.personal_mission_released:
                 Intent intent1 = new Intent(getActivity(), PostReleasedActivity.class);
-                intent1.putExtra("user_id",STFUConfig.sUser.getUser_id());
                 startActivity(intent1);
                 break;
             case R.id.personal_edit:

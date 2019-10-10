@@ -61,7 +61,8 @@ public class PostReleasedFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         view=inflater.inflate(R.layout.post_released,container,false);
 
-        user_id=getActivity().getIntent().getIntExtra("user_id",0);
+        //user_id=STFUConfig.sUser.getUser_id();
+        user_id=1;
         mFragmentManager=getFragmentManager();
 
         recyclerView=(RecyclerView)view.findViewById(R.id.post_released_recylerview);
@@ -69,10 +70,11 @@ public class PostReleasedFragment extends Fragment {
         recyclerView.setLayoutManager(linearLayoutManager);
         //设置toolbar
         toolbar = view.findViewById(R.id.personal_toolbar);
+        toolbar.setTitle("");
         ((AppCompatActivity) getActivity()).setSupportActionBar(toolbar);
 
         //设置导航切换界面
-        mission_received_switch=(BottomNavigationView)view.findViewById(R.id.mission_received_select);
+        mission_received_switch=(BottomNavigationView)view.findViewById(R.id.post_released_select);
         mission_received_switch.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
@@ -97,7 +99,7 @@ public class PostReleasedFragment extends Fragment {
         return view;
     }
 
-    String url= STFUConfig.HOST;
+    String url= STFUConfig.HOST+"/mission";
     private void load_Errand_Recylerview(){
         //获取服务器数据
         FormBody formBody=new FormBody.Builder()
@@ -117,7 +119,12 @@ public class PostReleasedFragment extends Fragment {
                 List<Errand> data;
                 data= HandleMessageUtil.handleReleasedErrandMessage(response.body().string());
                 ErrandAdapter adapter=new ErrandAdapter(data,getActivity());
-                recyclerView.setAdapter(adapter);
+                getActivity().runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        recyclerView.setAdapter(adapter);
+                    }
+                });
             }
         });
 
@@ -141,7 +148,12 @@ public class PostReleasedFragment extends Fragment {
                 List<SearchThing> data;
                 data= HandleMessageUtil.handlePostSearchThingMessage(response.body().string());
                 LostAndFoundAdapter adapter=new LostAndFoundAdapter(data);
-                recyclerView.setAdapter(adapter);
+                getActivity().runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        recyclerView.setAdapter(adapter);
+                    }
+                });
             }
         });
 
@@ -165,7 +177,12 @@ public class PostReleasedFragment extends Fragment {
                 List<Study> data;
                 data= HandleMessageUtil.handlePostStudyMessage(response.body().string());
                 StudyAdapter adapter=new StudyAdapter(data);
-                recyclerView.setAdapter(adapter);
+                getActivity().runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        recyclerView.setAdapter(adapter);
+                    }
+                });
             }
         });
     }
@@ -188,7 +205,12 @@ public class PostReleasedFragment extends Fragment {
                 List<IdleThing> data;
                 data= HandleMessageUtil.handlePostIdleThingMessage(response.body().string());
                 IdleThingAdapter adapter=new IdleThingAdapter(data);
-                recyclerView.setAdapter(adapter);
+                getActivity().runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        recyclerView.setAdapter(adapter);
+                    }
+                });
             }
         });
     }
