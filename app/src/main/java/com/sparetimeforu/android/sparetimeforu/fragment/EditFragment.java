@@ -3,10 +3,14 @@ package com.sparetimeforu.android.sparetimeforu.fragment;
 import android.Manifest;
 import android.accounts.Account;
 import android.accounts.AccountManager;
+import android.content.ContentResolver;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.database.Cursor;
 import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -25,6 +29,8 @@ import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
@@ -39,16 +45,15 @@ import com.sparetimeforu.android.sparetimeforu.ServerConnection.OkHttpUtil;
 import com.sparetimeforu.android.sparetimeforu.entity.PhotoPopupWindow;
 import com.sparetimeforu.android.sparetimeforu.entity.User;
 import com.sparetimeforu.android.sparetimeforu.util.HandleMessageUtil;
+import com.sparetimeforu.android.sparetimeforu.util.StatusBarUtils;
 import com.squareup.picasso.MemoryPolicy;
 import com.squareup.picasso.NetworkPolicy;
 import com.squareup.picasso.Picasso;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
-import java.net.URI;
 import java.util.regex.Pattern;
 
 import butterknife.ButterKnife;
@@ -62,11 +67,14 @@ import okhttp3.MediaType;
 import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
 import okhttp3.Response;
+import top.zibin.luban.Luban;
 
 import static android.app.Activity.RESULT_OK;
 
 /**
- * Created by HQY on 2018/11/25.
+ * SpareTimeForU
+ * Created by Jin on 2018/11/21.
+ * Email:17wjli6@stu.edu.cn
  */
 
 public class EditFragment extends Fragment {
@@ -76,24 +84,29 @@ public class EditFragment extends Fragment {
     private static final int CHANGE_PHONE_CALL = 2;
     private static final int CHANGE_AVATOR = 3;
     private static final int CHANGE_SEX = 4;
-    private static final int REQUEST_IMAGE_GET = 0;
-    private static final int REQUEST_IMAGE_CAPTURE = 1;
-    private static final int REQUEST_BIG_IMAGE_CUTTING = 3;
+    private static final int REQUEST_IMAGE_GET = 5;
+    private static final int REQUEST_IMAGE_CAPTURE = 6;
+    private static final int REQUEST_BIG_IMAGE_CUTTING = 7;
 
     private Toolbar toolbar;
     private ImageView personal_go_back;
     //每一行的相对布局，对应不同信息的修改
     private View view;
-    private RelativeLayout edit_PhoneCall, edit_Avatar, edit_Signature, edit_Nickname, edit_Sex,iv_bg_change;
+    private RelativeLayout edit_PhoneCall, edit_Avatar, edit_Signature, edit_Nickname, edit_Sex, edit_BG;
     //每一行布局中的TextView，用以更新个人信息
     private TextView tv_edit_phonecall, tv_edit_signature, tv_edit_sex, tv_edit_nickname;
     private ImageView iv_edit_avatar, iv_edit_bg;
-    PhotoPopupWindow mPhotoPopupWindow;
+
+    private PhotoPopupWindow mPhotoPopupWindow;
 
 
-    Uri mUri;//文件在SD卡的路径，非content uri，Uri.fromFile()
-    File mFile;//在SD卡的路径的文件
-    private int imageViewNum = 0;//0代表编辑头像，1代表背景
+    private Uri mUri;//文件在SD卡的路径，非content uri，而是Uri.fromFile()
+    private File originFile;//原始的文件
+    private File cropFile;//裁剪之后的
+    private File compressFile;//压缩后的
+
+    private int isEditBG = 0;//0代表编辑头像，1代表背景
+
 
     @Override
     public View onCreateView(LayoutInflater inflater,
@@ -119,8 +132,7 @@ public class EditFragment extends Fragment {
         });
         //初始化控件
         initWidgets();
-        //初始化数据（sUser1234）
-        initUser();
+        //初始化数据
         updateWidgets();
 
         return view;
@@ -148,7 +160,7 @@ public class EditFragment extends Fragment {
             case 300:
                 if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     mPhotoPopupWindow.dismiss();
-                    imageCapture();
+                    takePhoto();
                 } else {
                     mPhotoPopupWindow.dismiss();
                 }
@@ -164,42 +176,47 @@ public class EditFragment extends Fragment {
 
                 // 相册选取后干的事，裁剪，此时data.getData()对应选取图片应用的内容提供器的uri
                 case REQUEST_IMAGE_GET:
-                    try {
-                        if (data != null) {
-                            startBigPhotoZoom(data.getData());
-                        }
-                    } catch (Exception e) {
-                        Logger.e(e.toString());
-                    }
+                    Uri uri = data.getData();//拿到相册应用的content uri，接下来转为自己的uri
+
+                    File oldFile = new File(
+                            getFilePathFromContentUri(uri, getActivity().getContentResolver()));
+                    originFile = new File(Environment.getExternalStorageDirectory() + "/SpareTimeForU/picture",
+                            System.currentTimeMillis() + ".jpeg");
+                    copyFile(oldFile.getAbsolutePath(), originFile.getAbsolutePath());
+
+                    uri = FileProvider.getUriForFile(getContext(),
+                            "com.sparetimeforu.android.sparetimeforu.fileProvider", originFile);
+                    cropPhoto(uri);
                     break;
 
 
                 //拍照完之后干的事，想要裁剪，此时avatarFile对应SD卡中的文件
                 case REQUEST_IMAGE_CAPTURE:
                     Uri pictureUri = FileProvider.getUriForFile(getContext(),
-                            "com.sparetimeforu.android.sparetimeforu.fileProvider", mFile);
-                    startBigPhotoZoom(pictureUri); //自己定义的内容提供器的uri传入会裁剪失败，努力修复
-                    //拍照完成临时使用代码
-//                    if (imageViewNum == 0) {
-//                        iv_edit_avatar.setImageURI(pictureUri);
-//                        sendChangeAvatarRequest();
-//                    } else {
-//                        iv_edit_bg.setImageURI(pictureUri);
-//                        sendChangeBGRequest();
-//                    }
+                            "com.sparetimeforu.android.sparetimeforu.fileProvider", originFile);
+                    cropPhoto(pictureUri);
                     break;
 
 
-                //裁剪完图片之后的操作
+                //裁剪完图片之后的操作,压缩，生成压缩图片的照片uri
                 case REQUEST_BIG_IMAGE_CUTTING:
-                    if (mUri != null) {
-                        if (imageViewNum == 0) {
-                            iv_edit_avatar.setImageURI(mUri);
-                            sendChangeAvatarRequest();
-                        } else {
-                            iv_edit_bg.setImageURI(mUri);
-                            sendChangeBGRequest();
-                        }
+                    compressFile = compressImage(getActivity(), cropFile);
+                    mUri = Uri.fromFile(compressFile);
+                    // 以广播方式刷新系统相册，以便能够在相册中找到刚刚所拍摄和裁剪的照片？？？不知道干嘛
+                    Intent intentBc = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
+                    intentBc.setData(mUri);
+                    getActivity().sendBroadcast(intentBc);
+
+                    if (isEditBG == 0) {
+                        sendChangeAvatarRequest();
+                        iv_edit_avatar.setImageURI(mUri);
+                    } else {
+                        sendChangeBGRequest();
+                        iv_edit_bg.setImageURI(mUri);
+                    }
+                    if (originFile != null || compressFile != null) {
+                        originFile.delete();
+                        cropFile.delete();
                     }
                     break;
             }
@@ -209,140 +226,6 @@ public class EditFragment extends Fragment {
     @OnClick(R.id.btn_confirm)
     public void changeAttr() {
         sendChangeAttrRequest();
-    }
-
-    private void sendChangeAttrRequest() {
-        FormBody body = new FormBody.Builder().
-                add("auth_token",STFUConfig.sUser.getAuth_token()).
-                add("nickname", tv_edit_nickname.getText().toString()).
-                add("gender", tv_edit_sex.getText().toString()).
-                add("signature", tv_edit_signature.getText().toString()).
-                add("phone", tv_edit_phonecall.getText().toString()).
-                build();
-
-        OkHttpUtil.sendOkHttpPostRequest(url + "/modify_profile", body,
-                new Callback() {
-                    @Override
-                    public void onFailure(Call call, IOException e) {
-                        Logger.i(e.toString());
-                        getActivity().runOnUiThread(() -> {
-                            Toast.makeText(getContext(), "网络请求错误", Toast.LENGTH_SHORT).show();
-                        });
-                    }
-
-                    @Override
-                    public void onResponse(Call call, Response response) throws IOException {
-                        JSONObject jsonObject;
-                        try {
-                            jsonObject = new JSONObject(response.body().string());
-                            Logger.i(jsonObject.toString());
-                            if (jsonObject.getString("status").equals("success")) {
-                                //一个吐司
-                                getActivity().runOnUiThread(() -> {
-                                    Toast.makeText(getContext(), "修改成功", Toast.LENGTH_SHORT).show();
-                                });
-                                AccountManager accountManager = AccountManager.get(getContext());
-                                Account[] account = accountManager.getAccountsByType(BuildConfig.APPLICATION_ID);
-
-                                if (account.length != 0 && STFUConfig.sUser == null) {
-                                    accountManager.setUserData(account[0], "nickname", tv_edit_nickname.getText().toString());
-                                    accountManager.setUserData(account[0], "gender", tv_edit_sex.getText().toString());
-                                    accountManager.setUserData(account[0], "phone", tv_edit_phonecall.getText().toString());
-                                    accountManager.setUserData(account[0], "signature", tv_edit_signature.getText().toString());
-
-                                    STFUConfig.sUser.setEmail(accountManager.getUserData(account[0], "email"));
-                                    STFUConfig.sUser.setNickname(accountManager.getUserData(account[0], "nickname"));
-                                    STFUConfig.sUser.setAvatar_url(accountManager.getUserData(account[0], "avatar_url"));
-                                    STFUConfig.sUser.setFavourable_rate(accountManager.getUserData(account[0], "favourable_rate"));
-                                    STFUConfig.sUser.setGender(accountManager.getUserData(account[0], "gender"));
-                                    STFUConfig.sUser.setPhone(accountManager.getUserData(account[0], "phone"));
-                                    STFUConfig.sUser.setSignature(accountManager.getUserData(account[0], "signature"));
-                                    STFUConfig.sUser.setBg_url(accountManager.getUserData(account[0], "bg_url"));
-                                }
-                                getActivity().finish();
-                            } else if (jsonObject.getString("status").equals("error")) {
-                                String error = jsonObject.getString("error");
-                                getActivity().runOnUiThread(() -> {
-                                    Toast.makeText(getContext(), error, Toast.LENGTH_SHORT).show();
-                                });
-                            }
-                        } catch (JSONException e) {
-                            Logger.e(e.toString());
-                        }
-
-                        getActivity().runOnUiThread(() -> {
-                            updateNativeUser();
-                        });
-                    }//onResponse
-                });
-    }
-
-    private void sendChangeAvatarRequest() {
-        if (mUri != null) {
-            mFile = new File(URI.create(mUri.toString()));
-        }
-
-        RequestBody body = new MultipartBody.Builder()
-                .setType(MultipartBody.FORM)
-                .addFormDataPart("avatar", mFile.getName(),
-                        FormBody.create(MediaType.parse("*"), mFile))
-                .addFormDataPart("auth_token", STFUConfig.sUser.getAuth_token())
-                .build();
-
-        OkHttpUtil.sendOkHttpPostRequest(url + "/modify_avatar", body, new Callback() {
-            @Override
-            public void onFailure(Call call, IOException e) {
-                Logger.i(e.toString());
-                getActivity().runOnUiThread(() -> {
-                    Toast.makeText(getContext(), "修改头像失败", Toast.LENGTH_SHORT).show();
-                });
-            }
-
-            @Override
-            public void onResponse(Call call, Response response) throws IOException {
-                getActivity().runOnUiThread(() -> {
-                    Toast.makeText(getContext(), "修改头像成功", Toast.LENGTH_SHORT).show();
-                    JMessageClient.updateUserAvatar(mFile, new BasicCallback() {
-                        @Override
-                        public void gotResult(int i, String s) {
-                            Logger.i("更换头像成功");
-                        }
-                    });
-                    updateNativeUser();
-                });
-            }
-        });
-    }
-
-    private void sendChangeBGRequest() {
-        if (mUri != null) {
-            mFile = new File(URI.create(mUri.toString()));
-        }
-
-        RequestBody body = new MultipartBody.Builder()
-                .setType(MultipartBody.FORM)
-                .addFormDataPart("personal_bg", mFile.getName(),
-                        FormBody.create(MediaType.parse("*"), mFile))
-                .addFormDataPart("auth_token", STFUConfig.sUser.getAuth_token())
-                .build();
-
-        OkHttpUtil.sendOkHttpPostRequest(url + "/modify_personal_bg", body, new Callback() {
-            @Override
-            public void onFailure(Call call, IOException e) {
-                Logger.i(e.toString());
-                getActivity().runOnUiThread(() -> {
-                    Toast.makeText(getContext(), "修改背景失败", Toast.LENGTH_SHORT).show();
-                });
-            }
-
-            @Override
-            public void onResponse(Call call, Response response) throws IOException {
-                getActivity().runOnUiThread(() -> {
-                    Toast.makeText(getContext(), "修改背景成功", Toast.LENGTH_SHORT).show();
-                    updateNativeUser();
-                });
-            }
-        });
     }
 
     /**
@@ -393,10 +276,6 @@ public class EditFragment extends Fragment {
         builder.show();
     }
 
-    private void initUser() {
-        STFUConfig.sUser=((User) getActivity().getIntent().getSerializableExtra("user"));
-        Logger.i(STFUConfig.sUser.toString());
-    }
 
     private void updateNativeUser() {
         FormBody body = new FormBody.Builder()
@@ -414,12 +293,13 @@ public class EditFragment extends Fragment {
             @Override
             public void onResponse(Call call, Response response) throws IOException {
                 //获取新的user，并存到本地AccountManger数据库
-                STFUConfig.sUser=(HandleMessageUtil.handleLoginMessage(response.body().string()));
+                STFUConfig.sUser = (HandleMessageUtil.handleLoginMessage(response.body().string()));
                 AccountManager am = AccountManager.get(getContext());
                 Account account = new Account(STFUConfig.sUser.getEmail(), BuildConfig.APPLICATION_ID);
                 boolean isAdded = am.addAccountExplicitly(account, "", null);//安全起见，不存密码
                 am.setAuthToken(account, "normal", STFUConfig.sUser.getAuth_token());
                 am.setUserData(account, "email", STFUConfig.sUser.getEmail());
+                am.setUserData(account, "user_id", STFUConfig.sUser.getUser_id() + "");
                 am.setUserData(account, "nickname", STFUConfig.sUser.getNickname());
                 am.setUserData(account, "signature", STFUConfig.sUser.getSignature());
                 am.setUserData(account, "avatar_url", STFUConfig.sUser.getAvatar_url());
@@ -430,7 +310,6 @@ public class EditFragment extends Fragment {
 
                 //更新STFUConfig.User,更新组件
                 getActivity().runOnUiThread(() -> {
-                    STFUConfig.sUser=(STFUConfig.sUser);
                     updateWidgets();
                     Toast.makeText(getContext(), "更新用户信息成功", Toast.LENGTH_SHORT).show();
                 });
@@ -444,7 +323,7 @@ public class EditFragment extends Fragment {
         edit_Avatar = (RelativeLayout) view.findViewById(R.id.edit_Avatar);
         edit_Signature = (RelativeLayout) view.findViewById(R.id.edit_Signature);
         edit_Nickname = (RelativeLayout) view.findViewById(R.id.edit_Nickname);
-        iv_bg_change=(RelativeLayout)view.findViewById(R.id.iv_bg_change);
+        edit_BG = (RelativeLayout) view.findViewById(R.id.iv_bg_change);
         edit_Sex = (RelativeLayout) view.findViewById(R.id.edit_Sex);
 
         tv_edit_nickname = (TextView) view.findViewById(R.id.tv_edit_nickname);
@@ -460,8 +339,7 @@ public class EditFragment extends Fragment {
         MyListener myListener = new MyListener();
         edit_PhoneCall.setOnClickListener(myListener);
         edit_Avatar.setOnClickListener(myListener);
-        iv_edit_bg.setOnClickListener(myListener);
-        iv_bg_change.setOnClickListener(myListener);
+        edit_BG.setOnClickListener(myListener);
         edit_Signature.setOnClickListener(myListener);
         edit_Nickname.setOnClickListener(myListener);
         edit_Sex.setOnClickListener(myListener);
@@ -477,14 +355,14 @@ public class EditFragment extends Fragment {
             Logger.i(STFUConfig.sUser.toString());
             Picasso.get()
                     .load(STFUConfig.HOST + "/static/avatar/" + STFUConfig.sUser.getAvatar_url())
-                    .resize(200, 200)
+                    .resize(600, 600)
                     .centerCrop()
                     .memoryPolicy(MemoryPolicy.NO_CACHE)
                     .networkPolicy(NetworkPolicy.NO_CACHE)//限制Picasso从内存中加载图片  不然头像更换 不及时
                     .into(iv_edit_avatar);
             Picasso.get()
                     .load(STFUConfig.HOST + "/static/personal_background/" + STFUConfig.sUser.getBg_url())
-                    .resize(400, 300)
+                    .resize(960, 593)
                     .centerCrop()
                     .memoryPolicy(MemoryPolicy.NO_CACHE)
                     .networkPolicy(NetworkPolicy.NO_CACHE)//限制Picasso从内存中加载图片  不然头像更换 不及时
@@ -492,81 +370,15 @@ public class EditFragment extends Fragment {
         }
     }
 
-    private boolean isInteger(String str) {
-        Pattern pattern = Pattern.compile("^[-\\+]?[\\d]*$");
-        return pattern.matcher(str).matches();
-    }
-
-
-    /**
-     * 大图模式切割图片
-     * 直接创建一个文件将切割后的图片写入
-     *
-     * @param uri 被裁剪图片的uri
-     */
-    private void startBigPhotoZoom(Uri uri) {
-        Logger.i("startBigPhotoZoom: " + uri.toString());
-        Uri imageUri = null;//本地存放输出的uri
-        // 创建大图文件夹
-        if (Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)) {
-            String storage = Environment.getExternalStorageDirectory().getPath();
-            File dirFile = new File(storage + "/SpareTimeForU/bigAvatar");
-            if (!dirFile.exists()) {
-                if (!dirFile.mkdirs()) {
-                    Logger.e("文件夹创建失败");
-                } else {
-                    Logger.i("文件夹创建成功");
-                }
-            }
-            File file = new File(dirFile, System.currentTimeMillis() + ".jpg");
-            imageUri = Uri.fromFile(file);
-        }
-        // 开始切割
-        Intent intent = new Intent("com.android.camera.action.CROP");
-        intent.setDataAndType(uri, "image/*");//文件输入uri
-        intent.putExtra("crop", "true");
-        if (imageViewNum == 0) {
-            intent.putExtra("aspectX", 1); // 裁剪框比例
-            intent.putExtra("aspectY", 1);
-        } else {
-            intent.putExtra("aspectX", 1920); // 裁剪框比例
-            intent.putExtra("aspectY", 1080);
-        }
-        if (imageViewNum == 0) {
-            intent.putExtra("outputX", 600); // 输出图片大小
-            intent.putExtra("outputY", 600);
-        } else {
-            intent.putExtra("outputX", 1920); // 输出图片大小
-            intent.putExtra("outputY", 1080);
-        }
-        intent.putExtra("scale", true);
-        intent.putExtra("return-data", false); // 不直接返回数据
-        intent.putExtra(MediaStore.EXTRA_OUTPUT, imageUri); // 返回一个文件，保存到sd卡中
-        intent.putExtra("outputFormat", Bitmap.CompressFormat.JPEG.toString());
-        mUri = imageUri;//之后直接从SD卡中读取
-        if (intent.resolveActivity(getActivity().getPackageManager()) != null) {
-            Logger.i("可以裁剪");
-            startActivityForResult(intent, REQUEST_BIG_IMAGE_CUTTING);
-        } else {
-            if (imageViewNum == 0) {
-                iv_edit_avatar.setImageURI(uri);
-            } else {
-                iv_edit_bg.setImageURI(uri);
-            }
-
-        }
-
-    }
-
     /**
      * 拍照
      */
-    private void imageCapture() {
+    private void takePhoto() {
         Intent intent;
         Uri pictureUri;
-        File pictureFile = new File(Environment.getExternalStorageDirectory() + "/SpareTimeForU/bigAvatar",
-                System.currentTimeMillis() + ".jpg");
-        mFile = pictureFile;
+        File pictureFile = new File(Environment.getExternalStorageDirectory() + "/SpareTimeForU/picture",
+                System.currentTimeMillis() + ".jpeg");
+        originFile = pictureFile;
         if (pictureFile.exists()) {
             pictureFile.getAbsoluteFile().delete();
         }
@@ -590,6 +402,254 @@ public class EditFragment extends Fragment {
         }
     }
 
+    /**
+     * 图片裁剪
+     * 直接创建一个文件将裁剪后的图片写入
+     *
+     * @param uri 被裁剪图片的uri
+     */
+    private void cropPhoto(Uri uri) {
+        Uri imageUri = null;//本地存放输出的uri
+        // 创建大图文件夹
+        if (Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)) {
+            String storage = Environment.getExternalStorageDirectory().getPath();
+            File dirFile = new File(storage + "/SpareTimeForU/picture");
+            if (!dirFile.exists()) {
+                if (!dirFile.mkdirs()) {
+                    Logger.e("文件夹创建失败");
+                } else {
+                    Logger.i("文件夹创建成功");
+                }
+            }
+            File file = new File(dirFile, System.currentTimeMillis() + ".jpeg");
+            cropFile = file;
+            imageUri = Uri.fromFile(file);
+        }
+        // 开始切割
+        Intent intent = new Intent("com.android.camera.action.CROP");
+        intent.setDataAndType(uri, "image/*");//文件输入uri
+        intent.putExtra("crop", "true");
+
+        // 注意一定要添加该项权限，否则会提示无法裁剪，我透，好像权限不一样会有问题
+        //相册，此模式返回的content uri不属于当前应用，权限相册应用持有，无法赋予读和写的权限，否则报错。
+        //所以把相册的uri转为自己的content uri就好了
+        intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+        intent.addFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
+
+
+        if (isEditBG == 0) {
+            intent.putExtra("aspectX", 1); // 裁剪框比例
+            intent.putExtra("aspectY", 1);
+        } else {
+            intent.putExtra("aspectX", 1920); // 裁剪框比例
+            intent.putExtra("aspectY", 1186);
+        }
+        if (isEditBG == 0) {
+            intent.putExtra("outputX", 1000); // 输出图片大小
+            intent.putExtra("outputY", 1000);
+        } else {
+            intent.putExtra("outputX", 1920); // 输出图片大小
+            intent.putExtra("outputY", 1186);
+        }
+        intent.putExtra("scale", true);
+        intent.putExtra("return-data", false); // 不直接返回数据
+        intent.putExtra(MediaStore.EXTRA_OUTPUT, imageUri); // 返回一个文件，保存到sd卡中
+        intent.putExtra("outputFormat", Bitmap.CompressFormat.JPEG.toString());
+
+        if (intent.resolveActivity(getActivity().getPackageManager()) != null) {
+            startActivityForResult(intent, REQUEST_BIG_IMAGE_CUTTING);
+        } else {
+            if (isEditBG == 0) {
+                iv_edit_avatar.setImageURI(uri);
+            } else {
+                iv_edit_bg.setImageURI(uri);
+            }
+        }
+
+    }
+
+    /**
+     * 压缩图片
+     *
+     * @param file 要压缩的图片
+     * @return
+     */
+    public static File compressImage(Context context, File file) {
+        try {
+            File result = Luban.with(context)
+                    .load(file)
+                    .setTargetDir(file.getParent())
+                    .get(file.getAbsolutePath());
+
+            return result;
+        } catch (IOException e) {
+            Logger.e(e.toString());
+        }
+        return file;
+    }
+
+
+    private void sendChangeAttrRequest() {
+        FormBody body = new FormBody.Builder().
+                add("auth_token", STFUConfig.sUser.getAuth_token()).
+                add("nickname", tv_edit_nickname.getText().toString()).
+                add("gender", tv_edit_sex.getText().toString()).
+                add("signature", tv_edit_signature.getText().toString()).
+                add("phone", tv_edit_phonecall.getText().toString()).
+                build();
+
+        OkHttpUtil.sendOkHttpPostRequest(url + "/modify_profile", body,
+                new Callback() {
+                    @Override
+                    public void onFailure(Call call, IOException e) {
+                        Logger.i(e.toString());
+                        getActivity().runOnUiThread(() -> {
+                            Toast.makeText(getContext(), "网络请求错误", Toast.LENGTH_SHORT).show();
+                        });
+                    }
+
+                    @Override
+                    public void onResponse(Call call, Response response) throws IOException {
+
+                        getActivity().runOnUiThread(() -> {
+                            Toast.makeText(getContext(), "修改成功", Toast.LENGTH_SHORT).show();
+                            updateNativeUser();
+                        });
+//                        getActivity().finish();
+                    }//onResponse
+                });
+    }
+
+    private void sendChangeAvatarRequest() {
+
+        RequestBody body = new MultipartBody.Builder()
+                .setType(MultipartBody.FORM)
+                .addFormDataPart("avatar", compressFile.getName(),
+                        FormBody.create(MediaType.parse("*"), compressFile))
+                .addFormDataPart("auth_token", STFUConfig.sUser.getAuth_token())
+                .build();
+
+        OkHttpUtil.sendOkHttpPostRequest(url + "/modify_avatar", body, new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+                Logger.i(e.toString());
+                getActivity().runOnUiThread(() -> {
+                    Toast.makeText(getContext(), "修改头像失败", Toast.LENGTH_SHORT).show();
+                });
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                getActivity().runOnUiThread(() -> {
+                    Toast.makeText(getContext(), "修改头像成功", Toast.LENGTH_SHORT).show();
+                    JMessageClient.updateUserAvatar(compressFile, new BasicCallback() {
+                        @Override
+                        public void gotResult(int i, String s) {
+                            Logger.i("更换头像成功");
+                        }
+                    });
+                    updateNativeUser();
+                });
+            }
+        });
+    }
+
+    private void sendChangeBGRequest() {
+
+        RequestBody body = new MultipartBody.Builder()
+                .setType(MultipartBody.FORM)
+                .addFormDataPart("personal_bg", compressFile.getName(),
+                        FormBody.create(MediaType.parse("*"), compressFile))
+                .addFormDataPart("auth_token", STFUConfig.sUser.getAuth_token())
+                .build();
+
+        OkHttpUtil.sendOkHttpPostRequest(url + "/modify_personal_bg", body, new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+                Logger.i(e.toString());
+                getActivity().runOnUiThread(() -> {
+                    Toast.makeText(getContext(), "修改背景失败", Toast.LENGTH_SHORT).show();
+                });
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                getActivity().runOnUiThread(() -> {
+                    Toast.makeText(getContext(), "修改背景成功", Toast.LENGTH_SHORT).show();
+                    updateNativeUser();
+                });
+            }
+        });
+    }
+
+    private boolean isInteger(String str) {
+        Pattern pattern = Pattern.compile("^[-\\+]?[\\d]*$");
+        return pattern.matcher(str).matches();
+    }
+
+    /**
+     * 把content uri转为 文件路径
+     *
+     * @param contentUri      要转换的content uri
+     * @param contentResolver 解析器
+     * @return
+     */
+    public static String getFilePathFromContentUri(Uri contentUri,
+                                                   ContentResolver contentResolver) {
+        String filePath;
+        String[] filePathColumn = {MediaStore.MediaColumns.DATA};
+
+        Cursor cursor = contentResolver.query(contentUri, filePathColumn, null, null, null);
+
+        cursor.moveToFirst();
+
+        int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
+        filePath = cursor.getString(columnIndex);
+        cursor.close();
+        return filePath;
+    }
+
+    /**
+     * 复制单个文件
+     *
+     * @param oldPath$Name String 原文件路径+文件名 如：data/user/0/com.test/files/abc.txt
+     * @param newPath$Name String 复制后路径+文件名 如：data/user/0/com.test/cache/abc.txt
+     * @return <code>true</code> if and only if the file was copied;
+     * <code>false</code> otherwise
+     */
+    public static File copyFile(String oldPath$Name, String newPath$Name) {
+        try {
+            File oldFile = new File(oldPath$Name);
+            File newFile = new File(newPath$Name);
+            if (!oldFile.exists()) {
+                Logger.e("copyFile:  oldFile not exist.");
+                return null;
+            } else if (!oldFile.isFile()) {
+                Logger.e("copyFile:  oldFile not file.");
+                return null;
+            } else if (!oldFile.canRead()) {
+                Logger.e("copyFile:  oldFile cannot read.");
+                return null;
+            }
+
+
+            FileInputStream fileInputStream = new FileInputStream(oldPath$Name);
+            FileOutputStream fileOutputStream = new FileOutputStream(newPath$Name);
+            byte[] buffer = new byte[1024];
+            int byteRead;
+            while (-1 != (byteRead = fileInputStream.read(buffer))) {
+                fileOutputStream.write(buffer, 0, byteRead);
+            }
+            fileInputStream.close();
+            fileOutputStream.flush();
+            fileOutputStream.close();
+            return newFile;
+        } catch (Exception e) {
+            Logger.e(e.toString());
+            return null;
+        }
+    }
+
 
     /**
      * 监听器，判断哪个id被点击，执行对应的操作
@@ -600,7 +660,7 @@ public class EditFragment extends Fragment {
             View rootView;//图片弹出窗口需要的根View
             switch (view.getId()) {
                 case R.id.edit_Avatar:
-                    imageViewNum = 0;
+                    isEditBG = 0;
                     //弹出对话框选择头像
                     mPhotoPopupWindow = new PhotoPopupWindow(getActivity(),
                             v1 -> {
@@ -643,7 +703,7 @@ public class EditFragment extends Fragment {
                                 } else {
                                     // 权限已经申请，直接拍照
                                     mPhotoPopupWindow.dismiss();
-                                    imageCapture();
+                                    takePhoto();
                                 }
                             }
                     );
@@ -654,7 +714,7 @@ public class EditFragment extends Fragment {
                     break;
 
                 case R.id.iv_bg_change:
-                    imageViewNum = 1;
+                    isEditBG = 1;
                     //弹出对话框选择头像
                     mPhotoPopupWindow = new PhotoPopupWindow(getActivity(),
                             v1 -> {
@@ -697,7 +757,7 @@ public class EditFragment extends Fragment {
                                 } else {
                                     // 权限已经申请，直接拍照
                                     mPhotoPopupWindow.dismiss();
-                                    imageCapture();
+                                    takePhoto();
                                 }
                             }
                     );
@@ -728,28 +788,15 @@ public class EditFragment extends Fragment {
 
                     if (STFUConfig.sUser != null && STFUConfig.sUser.getGender().equals("男"))
                         defaultChoice = 0;
-                    builder.setSingleChoiceItems(sex, defaultChoice, new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            Toast.makeText(getActivity(), "性别为：" + sex[which], Toast.LENGTH_SHORT).show();
+                    builder.setSingleChoiceItems(sex, defaultChoice, (dialog, which) -> {
+                        Toast.makeText(getActivity(), "性别为：" + sex[which], Toast.LENGTH_SHORT).show();
 
-                            if (STFUConfig.sUser != null) {
-                                STFUConfig.sUser.setGender(sex[which]);
-                            }
+                        if (STFUConfig.sUser != null) {
+                            STFUConfig.sUser.setGender(sex[which]);
                         }
                     });
-                    builder.setPositiveButton("确定", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            updateWidgets();
-                        }
-                    });
-                    builder.setNegativeButton("取消", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-
-                        }
-                    });
+                    builder.setPositiveButton("确定", (dialog, which) -> updateWidgets());
+                    builder.setNegativeButton("取消", (dialog, which) -> updateWidgets());
                     builder.show();
 
                     break;
@@ -757,9 +804,6 @@ public class EditFragment extends Fragment {
                     //弹出对话框修改昵称
                     showAlertDialog("signature", CHANGE_SIGNATURE);
             }
-
-            //修改信息完成后进行界面的更新
-            updateWidgets();
         }
     }
 }

@@ -3,5 +3,5 @@
     <!--相机相册裁剪-->
     <external-path
         name="avatar_root"
-        path="/SpareTimeForU/bigAvatar" />
+        path="/SpareTimeForU/picture" />
 </paths>

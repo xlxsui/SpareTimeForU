@@ -9,7 +9,6 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
-import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.BottomNavigationView;
 import android.support.design.widget.NavigationView;
@@ -33,18 +32,20 @@ import android.widget.Toast;
 
 import com.orhanobut.logger.Logger;
 import com.sparetimeforu.android.sparetimeforu.BuildConfig;
+import com.sparetimeforu.android.sparetimeforu.R;
 import com.sparetimeforu.android.sparetimeforu.STFUConfig;
+import com.sparetimeforu.android.sparetimeforu.activity.ConversationListActivity;
 import com.sparetimeforu.android.sparetimeforu.activity.FriendActivity;
 import com.sparetimeforu.android.sparetimeforu.activity.LoginActivity;
 import com.sparetimeforu.android.sparetimeforu.activity.PersonalActivity;
-import com.sparetimeforu.android.sparetimeforu.R;
-import com.sparetimeforu.android.sparetimeforu.activity.ConversationListActivity;
+import com.sparetimeforu.android.sparetimeforu.activity.post.SendPostActivity;
 import com.sparetimeforu.android.sparetimeforu.entity.SystemMessage;
+import com.sparetimeforu.android.sparetimeforu.entity.User;
 import com.sparetimeforu.android.sparetimeforu.fragment.module.ErrandFragment;
 import com.sparetimeforu.android.sparetimeforu.fragment.module.IdleThingFragment;
 import com.sparetimeforu.android.sparetimeforu.fragment.module.SearchThingFragment;
 import com.sparetimeforu.android.sparetimeforu.fragment.module.StudyFragment;
-import com.sparetimeforu.android.sparetimeforu.entity.User;
+import com.sparetimeforu.android.sparetimeforu.util.StatusBarUtils;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.MemoryPolicy;
 import com.squareup.picasso.NetworkPolicy;
@@ -61,9 +62,13 @@ import java.util.Random;
 import Listener.GlobalEventListener;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
-import cn.jpush.im.android.api.JMessageClient;
 import cn.jpush.im.api.BasicCallback;
 
+import static cn.jpush.im.android.api.JMessageClient.getAllUnReadMsgCount;
+import static cn.jpush.im.android.api.JMessageClient.getMyInfo;
+import static cn.jpush.im.android.api.JMessageClient.init;
+import static cn.jpush.im.android.api.JMessageClient.registerEventReceiver;
+import static cn.jpush.im.android.api.JMessageClient.updateUserAvatar;
 import static java.lang.System.exit;
 
 /**
@@ -103,7 +108,7 @@ public class STFUFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater,
                              ViewGroup container,
                              Bundle savedInstanceState) {
-        JMessageClient.init(getContext());
+        init(getContext());
         final View view = inflater.inflate(R.layout.fragment_stfu, container, false);
         ButterKnife.bind(this, view);
         mFm = getActivity().getSupportFragmentManager();
@@ -154,14 +159,10 @@ public class STFUFragment extends Fragment {
                 });
 
 
-        /**
-         * 设置侧滑栏
-         */
-
+        //设置抽屉栏
         mDrawerLayout = (DrawerLayout) view.findViewById(R.id.drawer_layout);
-        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
-                getActivity(), mDrawerLayout, mToolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close
-        );
+        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(getActivity(), mDrawerLayout,
+                mToolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         mDrawerLayout.addDrawerListener(toggle);
         toggle.syncState();
 
@@ -178,23 +179,21 @@ public class STFUFragment extends Fragment {
                     //点击之后就把图标变回原样
                     set_Message_point_icon(0);
                     //进入消息通知界面
-                    Intent intent1=new Intent(getContext(),ConversationListActivity.class);
+                    Intent intent1 = new Intent(getContext(), ConversationListActivity.class);
                     getActivity().startActivity(intent1);
                     break;
                 case R.id.slider_menu_login:
                     if (mAccount != null) {
-                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP_MR1) {
-                            AccountManager.get(getContext()).removeAccountExplicitly(mAccount);
-                            STFUConfig.sUser=null;
-                            mAccount = null;
-                            updateViews();
-                        }
+                        AccountManager.get(getContext()).removeAccountExplicitly(mAccount);
+                        STFUConfig.sUser = null;
+                        mAccount = null;
+                        updateViews();
                     }
                     Intent intent = new Intent(getActivity(), LoginActivity.class);
                     startActivityForResult(intent, REQUEST_CODE_LOGIN);
                     break;
                 case R.id.slider_menu_friend:
-                    Intent intent2=new Intent(getContext(), FriendActivity.class);
+                    Intent intent2 = new Intent(getContext(), FriendActivity.class);
                     startActivity(intent2);
                     break;
                 case R.id.slider_menu_exit:
@@ -226,7 +225,7 @@ public class STFUFragment extends Fragment {
         });
 
         Menu mDrawerMenuView = mDrawerNavigationView.getMenu();//侧滑栏的菜单
-        mLoginMenuItem = mDrawerMenuView.getItem(2);//第三个菜单项
+        mLoginMenuItem = mDrawerMenuView.getItem(3);//第4个菜单项
 
 
         //初次加载的界面
@@ -257,49 +256,16 @@ public class STFUFragment extends Fragment {
 
 
         /*
-        *  设置全局GlobalEventListener
-        */
+         *  设置全局GlobalEventListener
+         */
         init_STFUConfig();
         STFUConfig.globalEventListener.setStfuFragment(this);
-        JMessageClient.registerEventReceiver(STFUConfig.globalEventListener);
+        registerEventReceiver(STFUConfig.globalEventListener);
         init_Message_point_icon();
 
         return view;
     }
-    private void init_STFUConfig(){
-        if(STFUConfig.globalEventListener==null){
-            STFUConfig.globalEventListener=new GlobalEventListener();
-        }
-        if(STFUConfig.systemMessages==null){
-            STFUConfig.systemMessages=new ArrayList<SystemMessage>();
-        }
-    }
 
-
-    public void init_Message_point_icon(){
-        //获取是否有未读消息
-        if(JMessageClient.getAllUnReadMsgCount()>=0){
-            set_Message_point_icon(0);
-        }else set_Message_point_icon(1);
-    }
-
-    //用mode来标识，切换图标
-    //mode=0  正常图标
-    //mode=1  右上角有红点的图标
-    public boolean set_Message_point_icon(int  mode){
-        //修改左上角以及侧拉栏的图标，变成右上有红点
-        switch (mode){
-            case 0:
-                mDrawerNavigationView.getMenu().findItem(R.id.slider_menu_personal_letter).setIcon(R.drawable.ic_personal_letter);
-                slideIcon.setImageDrawable(getResources().getDrawable(R.drawable.ic_menu_slide));
-                break;
-            case 1:
-                mDrawerNavigationView.getMenu().findItem(R.id.slider_menu_personal_letter).setIcon(R.drawable.ic_menu_slide);
-                slideIcon.setImageDrawable(getResources().getDrawable(R.drawable.ic_personal_letter));
-                break;
-        }
-        return true;
-    }
     @Override
     public void onStart() {
         super.onStart();
@@ -308,9 +274,12 @@ public class STFUFragment extends Fragment {
         Account[] account = accountManager.getAccountsByType(BuildConfig.APPLICATION_ID);
 
         if (account.length != 0 && STFUConfig.sUser == null) {
-            STFUConfig.sUser=new User();
+            STFUConfig.sUser = new User();
             mAccount = account[0];
             STFUConfig.sUser.setEmail(accountManager.getUserData(account[0], "email"));
+            STFUConfig.sUser.setUser_id(
+                    Integer.parseInt(accountManager.getUserData(account[0], "user_id"))
+            );
             STFUConfig.sUser.setNickname(accountManager.getUserData(account[0], "nickname"));
             STFUConfig.sUser.setAvatar_url(accountManager.getUserData(account[0], "avatar_url"));
             STFUConfig.sUser.setFavourable_rate(accountManager.getUserData(account[0], "favourable_rate"));
@@ -318,31 +287,32 @@ public class STFUFragment extends Fragment {
             STFUConfig.sUser.setPhone(accountManager.getUserData(account[0], "phone"));
             STFUConfig.sUser.setSignature(accountManager.getUserData(account[0], "signature"));
             STFUConfig.sUser.setBg_url(accountManager.getUserData(account[0], "bg_url"));
-
-            //设置极光头像
-            if(JMessageClient.getMyInfo().getAvatar()==null){//极光未设置头像
-                try {
-                    File file=new File("");
-                    Bitmap bitmap=Picasso.get().load(STFUConfig.sUser.getAvatar_url()).get();
-                    if(bitmap!=null){
-                        BufferedOutputStream bos = new BufferedOutputStream(new FileOutputStream(file));
-                        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, bos);
-                        JMessageClient.updateUserAvatar(file, new BasicCallback() {
-                            @Override
-                            public void gotResult(int i, String s) {
-                                Logger.i("更新头像成功");
-                            }
-                        });
-                    }
-                    file.delete();
-                }catch (Exception e){
-                    e.printStackTrace();
-                }
-
-            }
-            Logger.i(STFUConfig.sUser.toString());
             //设置auth_token
             new GetAuthThread().start();
+
+            //设置极光头像
+            if (getMyInfo() != null) {//极光未设置头像
+                if (getMyInfo().getAvatar() == null) {
+                    try {
+                        File file = new File("");
+                        Bitmap bitmap = Picasso.get().load(STFUConfig.sUser.getAvatar_url()).get();
+                        if (bitmap != null) {
+                            BufferedOutputStream bos = new BufferedOutputStream(new FileOutputStream(file));
+                            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, bos);
+                            updateUserAvatar(file, new BasicCallback() {
+                                @Override
+                                public void gotResult(int i, String s) {
+                                    Logger.i("更新头像成功");
+                                }
+                            });
+                        }
+                        file.delete();
+                    } catch (Exception e) {
+                        Logger.e(e.toString());
+                    }
+                }
+            }
+
         }
         if (STFUConfig.sUser != null) {
             updateViews();
@@ -367,7 +337,7 @@ public class STFUFragment extends Fragment {
             if (data == null) {
                 return;
             }
-            STFUConfig.sUser=((User) data.getSerializableExtra("user"));
+            STFUConfig.sUser = ((User) data.getSerializableExtra("user"));
             AccountManager accountManager = AccountManager.get(getContext());
             Account[] account = accountManager.getAccountsByType(BuildConfig.APPLICATION_ID);
             mAccount = account[0];
@@ -375,9 +345,47 @@ public class STFUFragment extends Fragment {
         }
     }
 
+    private void init_STFUConfig() {
+        if (STFUConfig.globalEventListener == null) {
+            STFUConfig.globalEventListener = new GlobalEventListener();
+        }
+        if (STFUConfig.systemMessages == null) {
+            STFUConfig.systemMessages = new ArrayList<SystemMessage>();
+        }
+    }
+
+
+    public void init_Message_point_icon() {
+        //获取是否有未读消息
+        if (getAllUnReadMsgCount() >= 0) {
+            set_Message_point_icon(0);
+        } else set_Message_point_icon(1);
+    }
+
+    //用mode来标识，切换图标
+    //mode=0  正常图标
+    //mode=1  右上角有红点的图标
+    public boolean set_Message_point_icon(int mode) {
+        //修改左上角以及侧拉栏的图标，变成右上有红点
+        switch (mode) {
+            case 0:
+                mDrawerNavigationView.getMenu().findItem(R.id.slider_menu_personal_letter).setIcon(R.drawable.ic_personal_letter);
+                slideIcon.setImageDrawable(getResources().getDrawable(R.drawable.ic_menu_slide));
+                break;
+            case 1:
+                mDrawerNavigationView.getMenu().findItem(R.id.slider_menu_personal_letter).setIcon(R.drawable.ic_menu_slide);
+                slideIcon.setImageDrawable(getResources().getDrawable(R.drawable.ic_personal_letter));
+                break;
+        }
+        return true;
+    }
+
+
     @OnClick(R.id.fab)
     public void onFABClicked() {
-        Toast.makeText(getContext(), "Toast from FAB", Toast.LENGTH_SHORT).show();
+        Intent intent = new Intent(getActivity(), SendPostActivity.class);
+        intent.putExtra("current_item", mBottomNavigationView.getSelectedItemId());
+        startActivity(intent);
     }
 
     /**
@@ -443,7 +451,7 @@ public class STFUFragment extends Fragment {
     }
 
     private void updateViews() {
-        if (STFUConfig.sUser.getEmail() != null) {
+        if (STFUConfig.sUser != null) {
             slider_menu_nick_name.setText(STFUConfig.sUser.getNickname());
             slider_menu_signature.setText(STFUConfig.sUser.getSignature());
             mLoginMenuItem.setTitle(getString(R.string.logout));

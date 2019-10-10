@@ -113,6 +113,7 @@ public class User implements Serializable {
                 ", gender='" + gender + '\'' +
                 ", email='" + email + '\'' +
                 ", auth_token='" + auth_token + '\'' +
+                ", user_id=" + user_id +
                 ", bg_url='" + bg_url + '\'' +
                 '}';
     }

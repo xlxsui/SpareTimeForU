@@ -142,10 +142,10 @@ public class LoginFragment extends Fragment {
                                 Logger.i(mUser.toString());
                                 getActivity().runOnUiThread(() -> {
                                     //添加账户
-                                    JMessageClient.login(user.getEmail(), user.getEmail()+"1", new BasicCallback() {
+                                    JMessageClient.login(user.getEmail(), user.getEmail() + "1", new BasicCallback() {
                                         @Override
                                         public void gotResult(int i, String s) {
-                                            if(i==0){
+                                            if (i == 0) {
                                                 com.orhanobut.logger.Logger.i("极光登陆成功");
                                             }
                                         }
@@ -182,7 +182,9 @@ public class LoginFragment extends Fragment {
             Toast.makeText(getActivity(), "账号更新成功", Toast.LENGTH_SHORT).show();
             am.setAuthToken(account, "normal", mUser.getAuth_token());
         }
+
         am.setUserData(account, "email", mUser.getEmail());
+        am.setUserData(account, "user_id", mUser.getUser_id() + "");
         am.setUserData(account, "nickname", mUser.getNickname());
         am.setUserData(account, "signature", mUser.getSignature());
         am.setUserData(account, "avatar_url", mUser.getAvatar_url());
