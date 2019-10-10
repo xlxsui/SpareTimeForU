@@ -1,5 +1,6 @@
 package com.sparetimeforu.android.sparetimeforu.fragment;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.graphics.PorterDuff;
 import android.os.Bundle;
@@ -20,8 +21,11 @@ import com.sparetimeforu.android.sparetimeforu.R;
 import com.sparetimeforu.android.sparetimeforu.STFUConfig;
 import com.sparetimeforu.android.sparetimeforu.activity.EditActivity;
 import com.sparetimeforu.android.sparetimeforu.activity.ErrandReceivedActivity;
+import com.sparetimeforu.android.sparetimeforu.activity.LoginActivity;
+import com.sparetimeforu.android.sparetimeforu.activity.PictureActivity;
 import com.sparetimeforu.android.sparetimeforu.activity.PostReleasedActivity;
 import com.sparetimeforu.android.sparetimeforu.entity.User;
+import com.sparetimeforu.android.sparetimeforu.util.StatusBarUtils;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.MemoryPolicy;
 import com.squareup.picasso.NetworkPolicy;
@@ -29,12 +33,17 @@ import com.squareup.picasso.Picasso;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
+
+import static com.sparetimeforu.android.sparetimeforu.fragment.post.ErrandPostFragment.PHOTO_URL;
 
 /**
  * Created by HQY on 2018/11/15.
  */
 
 public class PersonalFragment extends Fragment implements View.OnClickListener {
+
+    private final int LOGIN_CODE = 1;
     //用户个人信息
     private TextView personal_favourable_rate, personal_nickname, personal_signate;
     private ImageView personal_avator;
@@ -51,7 +60,6 @@ public class PersonalFragment extends Fragment implements View.OnClickListener {
     RelativeLayout mBGLayout;
 
 
-    @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 
@@ -95,10 +103,53 @@ public class PersonalFragment extends Fragment implements View.OnClickListener {
     }
 
     @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (resultCode == Activity.RESULT_OK) {
+            switch (requestCode) {
+                case LOGIN_CODE:
+                    STFUConfig.sUser = (User) data.getSerializableExtra("user");
+                    updateViews();
+                    break;
+                default:
+                    break;
+
+            }
+        }
+    }
+
+    @Override
     public void onResume() {
         super.onResume();
         updateViews();
-        Logger.i("1\n"+STFUConfig.sUser.toString());
+    }
+
+    @OnClick(R.id.personal_avator)
+    public void clickAvatar() {
+
+        if (STFUConfig.sUser != null) {
+            Intent intent = new Intent(getActivity(), PictureActivity.class);
+            intent.putExtra(PHOTO_URL, STFUConfig.HOST + "/static/avatar/" + STFUConfig.sUser.getAvatar_url());
+            getActivity().startActivity(intent);
+        } else {
+            Intent intent1 = new Intent(getActivity(), LoginActivity.class);
+            startActivityForResult(intent1, LOGIN_CODE);
+        }
+
+    }
+
+    @OnClick(R.id.data_layout)
+    public void clickBG() {
+
+        if (STFUConfig.sUser != null) {
+            Intent intent = new Intent(getActivity(), PictureActivity.class);
+            intent.putExtra(PHOTO_URL, STFUConfig.HOST + "/static/personal_background/" + STFUConfig.sUser.getBg_url());
+            getActivity().startActivity(intent);
+        } else {
+            Intent intent1 = new Intent(getActivity(), LoginActivity.class);
+            startActivityForResult(intent1, LOGIN_CODE);
+        }
+
     }
 
 
@@ -126,7 +177,7 @@ public class PersonalFragment extends Fragment implements View.OnClickListener {
                     .into(mBGImageView, new Callback() {
                         @Override
                         public void onSuccess() {
-                            mBGImageView.getDrawable().setColorFilter(0x33000000, PorterDuff.Mode.SRC_ATOP);
+                            mBGImageView.getDrawable().setColorFilter(0x33000000, PorterDuff.Mode.SRC_ATOP);//小滤镜
                             mBGLayout.setBackground(mBGImageView.getDrawable());
                         }
 

@@ -7,6 +7,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 
 import com.sparetimeforu.android.sparetimeforu.R;
+import com.sparetimeforu.android.sparetimeforu.util.StatusBarUtils;
 
 import me.imid.swipebacklayout.lib.app.SwipeBackActivity;
 
@@ -27,6 +28,8 @@ public abstract class SingleSwipeBackFragmentActivity extends SwipeBackActivity 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        //设置沉浸式
+        StatusBarUtils.setColor(this, getResources().getColor(R.color.colorPrimary, null));
         setContentView(getLayoutResId());
 
         FragmentManager fm = getSupportFragmentManager();

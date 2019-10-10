@@ -3,22 +3,22 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:showIn="navigation_view">
 
-    <group android:checkableBehavior="single">
-        <item
-            android:id="@+id/slider_menu_task"
-            android:icon="@drawable/ic_task"
-            android:title="@string/task" />
+    <group android:checkableBehavior="single" />
+    <item
+        android:id="@+id/slider_menu_task"
+        android:icon="@drawable/ic_task"
+        android:title="@string/task" />
 
-        <item
-            android:id="@+id/slider_menu_personal_letter"
-            android:icon="@drawable/ic_personal_letter"
-            android:title="@string/personal_letter" />
-    </group>
+    <item
+        android:id="@+id/slider_menu_personal_letter"
+        android:icon="@drawable/ic_personal_letter"
+        android:title="@string/personal_letter" />
+
 
     <item
         android:id="@+id/slider_menu_friend"
         android:icon="@drawable/ic_login"
-        android:title="friend"/>
+        android:title="@string/friend" />
     <item
         android:id="@+id/slider_menu_login"
         android:icon="@drawable/ic_login"
