@@ -59,6 +59,7 @@ import java.util.regex.Pattern;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import cn.jpush.im.android.api.JMessageClient;
+import cn.jpush.im.android.api.model.UserInfo;
 import cn.jpush.im.api.BasicCallback;
 import okhttp3.Call;
 import okhttp3.Callback;
@@ -271,7 +272,6 @@ public class EditFragment extends Fragment {
         });
 
         builder.setNegativeButton("取消", (dialogInterface, i) -> {
-
         });
         builder.show();
     }
@@ -307,7 +307,15 @@ public class EditFragment extends Fragment {
                 am.setUserData(account, "phone", STFUConfig.sUser.getPhone());
                 am.setUserData(account, "gender", STFUConfig.sUser.getGender());
                 am.setUserData(account, "bg_url", STFUConfig.sUser.getBg_url());
+                //更新极光信息
+                UserInfo userInfo=JMessageClient.getMyInfo();
+                userInfo.setNickname(STFUConfig.sUser.getNickname());
+                JMessageClient.updateMyInfo(UserInfo.Field.all, userInfo, new BasicCallback() {
+                    @Override
+                    public void gotResult(int i, String s) {
 
+                    }
+                });
                 //更新STFUConfig.User,更新组件
                 getActivity().runOnUiThread(() -> {
                     updateWidgets();
@@ -518,6 +526,7 @@ public class EditFragment extends Fragment {
 //                        getActivity().finish();
                     }//onResponse
                 });
+
     }
 
     private void sendChangeAvatarRequest() {

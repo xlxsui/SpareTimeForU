@@ -1,18 +1,21 @@
 package com.sparetimeforu.android.sparetimeforu.entity;
 
+import org.litepal.crud.LitePalSupport;
+
 import java.io.Serializable;
 
 /**
  * Created by HQY on 2019/10/3.
  */
 
-public class SystemMessage implements Serializable{
+public class SystemMessage extends LitePalSupport implements Serializable{
     public final static int Add_Friend_Message=0;//加好友的信息
     public final static int Errand_Message=1;//任务相关的信息
     public final static int Approve_Message=2;//点赞的信息
     public final static int Comment_Message=3;//点赞的信息
 
     private int type;
+    private int Message_id;
     private String content;//信息内容
     private String date;//信息日期
     private int post_id;//相关帖子的id
@@ -21,6 +24,13 @@ public class SystemMessage implements Serializable{
     private String user_Email;
     private int is_first_time_show;
 
+    public int getMessage_id() {
+        return Message_id;
+    }
+
+    public void setMessage_id(int message_id) {
+        Message_id = message_id;
+    }
     public int getIs_first_time_show() {
         return is_first_time_show;
     }

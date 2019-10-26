@@ -25,6 +25,16 @@ public class Errand extends LitePalSupport implements Serializable {
     private int comment_number;
     private int id;
     private int is_deleted;
+    private int is_finished;
+
+    public int getIs_finished() {
+        return is_finished;
+    }
+
+    public void setIs_finished(int is_finished) {
+        this.is_finished = is_finished;
+    }
+
     private String release_time;
     private String end_time;
     private float money;

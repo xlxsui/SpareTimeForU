@@ -3,6 +3,7 @@ package com.sparetimeforu.android.sparetimeforu.adapter;
 import android.app.Activity;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
+import android.support.design.widget.Snackbar;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -13,19 +14,31 @@ import android.widget.Toast;
 
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.BaseViewHolder;
+import com.orhanobut.logger.Logger;
 import com.sparetimeforu.android.sparetimeforu.R;
 import com.sparetimeforu.android.sparetimeforu.STFUConfig;
+import com.sparetimeforu.android.sparetimeforu.ServerConnection.OkHttpUtil;
 import com.sparetimeforu.android.sparetimeforu.activity.OthersPersonalActivity;
 import com.sparetimeforu.android.sparetimeforu.activity.post.ErrandPostActivity;
 import com.sparetimeforu.android.sparetimeforu.entity.Errand;
+import com.sparetimeforu.android.sparetimeforu.entity.SystemMessage;
+import com.sparetimeforu.android.sparetimeforu.util.SystemMessageSendUtil;
 import com.squareup.picasso.Picasso;
 
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 import java.util.Random;
+
+import cn.jpush.im.android.api.JMessageClient;
+import cn.jpush.im.api.BasicCallback;
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.FormBody;
+import okhttp3.Response;
 
 /**
  * Created by Jin on 2018/11/13.
@@ -95,8 +108,9 @@ public class ErrandAdapter extends BaseQuickAdapter<Errand, BaseViewHolder> {
         ImageView p3 = (ImageView) helper.getView(R.id.errand_picture3);
         ImageView share = (ImageView) helper.getView(R.id.errand_share);
         ImageView like = (ImageView) helper.getView(R.id.errand_like);
-        Button button=(Button)helper.getView(R.id.Errand_accpet_mission);
-
+        Button accept_mission=(Button)helper.getView(R.id.Errand_accpet_mission);
+        Button finish_mission=(Button)helper.getView(R.id.Errand_finish_mission);
+        TextView mission_finished_text=(TextView)helper.getView(R.id.Errand_finished_text);
         LinearLayout comment = (LinearLayout) helper.getView(R.id.errand_comment);
 
         helper.addOnClickListener(R.id.errand_avatar)
@@ -133,13 +147,64 @@ public class ErrandAdapter extends BaseQuickAdapter<Errand, BaseViewHolder> {
                 .centerCrop()
                 .into(p3);
 
-        if(item.getIs_received()==1) {
-            button.setVisibility(View.INVISIBLE);
+        if(item.getIs_received()==1) {//任务已被接受
+            accept_mission.setVisibility(View.INVISIBLE);
+            if(false){//任务未完成
+                finish_mission.setVisibility(View.VISIBLE);
+            }else{
+                mission_finished_text.setVisibility(View.VISIBLE);
+                mission_finished_text.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        //发送请求到服务器
+                        FormBody formBody=new FormBody.Builder()
+                                .add("errand_id",item.getErrand_id()+"").build();
+
+                        OkHttpUtil.sendOkHttpPostRequest(url, formBody, new Callback() {
+                            @Override
+                            public void onFailure(Call call, IOException e) {
+                                Toast.makeText(activity,"网络请求出错",Toast.LENGTH_SHORT).show();
+                            }
+                            @Override
+                            public void onResponse(Call call, Response response) throws IOException {
+                                //发送系统通知
+                                SystemMessageSendUtil.send_System_message_errand(item.getUser_Email(),item.getErrand_id(),0,SystemMessageSendUtil.Errand_message_mode_errand_solved);
+
+                            }
+                        });
+                    }
+                });
+            }
         }else{
-            button.setOnClickListener(new View.OnClickListener() {
+            accept_mission.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
+                    //注册管理员账号
+                    JMessageClient.register(STFUConfig.manager_username, STFUConfig.manager_username + "1", new BasicCallback() {
+                        @Override
+                        public void gotResult(int i, String s) {
+                            Logger.i("管理员注册成功");
+                        }
+                    });
                     //发送请求到服务器  用户接收任务
+                    Toast.makeText(activity,"发送接收任务请求",Toast.LENGTH_SHORT).show();
+                    FormBody formBody=new FormBody.Builder()
+                            .add("user_id",STFUConfig.sUser.getUser_id()+"")
+                            .add("errand_id",item.getErrand_id()+"")
+                            .build();
+                    OkHttpUtil.sendOkHttpPostRequest(url, formBody, new Callback() {
+                        @Override
+                        public void onFailure(Call call, IOException e) {
+                            Toast.makeText(activity,"网络请求错误，请检查网络",Toast.LENGTH_SHORT).show();
+                        }
+
+                        @Override
+                        public void onResponse(Call call, Response response) throws IOException {
+                            //发送系统通知
+                            SystemMessageSendUtil.send_System_message_errand(item.getUser_Email(),item.getErrand_id(),0,SystemMessageSendUtil.Errand_message_mode_errand_accepted);
+                        }
+                    });
+
                 }
             });
         }

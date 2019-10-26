@@ -28,6 +28,7 @@ import com.sparetimeforu.android.sparetimeforu.activity.ErrandReceivedActivity;
 import com.sparetimeforu.android.sparetimeforu.adapter.FriendAdapter;
 import com.sparetimeforu.android.sparetimeforu.entity.User;
 import com.sparetimeforu.android.sparetimeforu.util.HandleMessageUtil;
+import com.sparetimeforu.android.sparetimeforu.util.SystemMessageSendUtil;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.MemoryPolicy;
 import com.squareup.picasso.NetworkPolicy;
@@ -193,11 +194,13 @@ public class OthersPersonalFragment extends Fragment implements View.OnClickList
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.others_add_friend:
+                Snackbar.make(getView(),"点击了加好友按钮",Snackbar.LENGTH_SHORT).show();
                 ContactManager.sendInvitationRequest(others_user.getEmail(), null, "交个朋友", new BasicCallback() {
                     @Override
                     public void gotResult(int i, String s) {
                         if(i==0)
-                        Toast.makeText(getContext(),"你将加"+others_user.getEmail()+"为好友",Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getContext(),"已发送好友请求",Toast.LENGTH_SHORT).show();
+                        SystemMessageSendUtil.send_System_message_add_friend(others_user.getEmail());
                     }
                 });
                 break;

@@ -48,7 +48,7 @@ public class FriendAdapter extends BaseQuickAdapter<UserInfo,BaseViewHolder>{
             }
         });
         TextView friend_name=(TextView)helper.getView(R.id.friend_nickname);
-        friend_name.setText(item.getUserName());
+        friend_name.setText(item.getNickname());
         Button start_chatting=(Button)helper.getView(R.id.friend_start_chatting);
         start_chatting.setOnClickListener(new View.OnClickListener() {
             @Override

@@ -9,31 +9,58 @@
         android:layout_height="match_parent"
         android:id="@+id/mapView">
     </com.baidu.mapapi.map.MapView>
-    <LinearLayout
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_below="@+id/mapView"
+        android:id="@+id/whole_errand_interface"
         android:layout_marginTop="-200dp"
-        android:id="@+id/imageView2"
-        android:background="@drawable/pink_background"
-        android:layout_height="wrap_content">
-        <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_centerHorizontal="true"
-            android:src="@mipmap/ic_launcher_round"/>
-    </LinearLayout>
-    <android.support.v4.widget.SwipeRefreshLayout
-        android:layout_width="400dp"
-        android:layout_below="@+id/imageView2"
-        android:layout_height="match_parent"
-        android:id="@+id/errand_flash_layout">
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/fragment_errand_list"
-        android:layout_width="match_parent"
         android:layout_height="match_parent">
-
-    </android.support.v7.widget.RecyclerView>
-    </android.support.v4.widget.SwipeRefreshLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:id="@+id/imageView2"
+            android:orientation="vertical"
+            android:weightSum="4"
+            android:layout_height="80dip">
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:id="@+id/arrow_control"
+                android:background="@drawable/gray_background"
+                android:orientation="vertical"
+                android:layout_marginBottom="5dip"
+                android:layout_height="wrap_content">
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="20dip"
+                    android:id="@+id/arrow_pic"
+                    android:layout_marginTop="5dip"
+                    android:layout_gravity="center"
+                    android:layout_marginBottom="5dip"
+                    android:src="@drawable/go_back_top"/>
+            </LinearLayout>
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:background="#fb7299"
+                android:layout_height="wrap_content">
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:id="@+id/recyclerView_top"
+                    android:layout_height="50dip"
+                    android:src="@mipmap/ic_launcher_round"/>
+            </RelativeLayout>
+        </LinearLayout>
+        <android.support.v4.widget.SwipeRefreshLayout
+            android:layout_width="400dp"
+            android:layout_below="@+id/imageView2"
+            android:layout_height="match_parent"
+            android:id="@+id/errand_flash_layout">
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/fragment_errand_list"
+                android:layout_width="match_parent"
+                android:background="#fff"
+                android:layout_height="match_parent">
+            </android.support.v7.widget.RecyclerView>
+        </android.support.v4.widget.SwipeRefreshLayout>
+    </RelativeLayout>
 
 
 </android.widget.RelativeLayout>

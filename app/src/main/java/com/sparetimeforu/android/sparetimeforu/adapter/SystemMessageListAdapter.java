@@ -58,6 +58,7 @@ public class SystemMessageListAdapter extends BaseQuickAdapter<SystemMessage,Bas
         else if(item.getType()==SystemMessage.Add_Friend_Message) hint.setText(activity.getResources().getString(R.string.system_message_list_item_hint_add_friend));
         date.setText(item.getDate());
         header.setImageDrawable(activity.getResources().getDrawable(header_resources[item.getType()]));
+        user_name.setText(item.getUser_nickname());
 
         if(item.getIs_first_time_show()!=1){
             red_point_tag.setVisibility(View.GONE);

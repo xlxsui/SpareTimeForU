@@ -1,6 +1,8 @@
 package com.sparetimeforu.android.sparetimeforu.fragment.module;
 
 import android.Manifest;
+import android.animation.LayoutTransition;
+import android.animation.ObjectAnimator;
 import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -21,6 +23,7 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -31,6 +34,7 @@ import android.view.WindowManager;
 
 import com.baidu.mapapi.animation.Animation;
 
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
@@ -92,6 +96,7 @@ class RequestErrand extends Thread {
     private Activity activityForUi;//请求失败事用于更新UI
     private int origin = 0;//初始化为任务数据库中最大的任务id
 
+
     public RequestErrand(RequestErrandCallBack callBack, String location, Activity activity) {
         mCallBack = callBack;
         mHandler = new Handler(Looper.getMainLooper());
@@ -147,7 +152,10 @@ public class ErrandFragment extends Fragment implements BaiduMap.OnMarkerClickLi
     private List<Errand> mErrands;
     private SwipeRefreshLayout mErrandRefreshLayout;
     private View view;
+    private LinearLayout arrow_control;
+    private ImageView arrow_pic;
     private LinearLayout headview;
+    private RelativeLayout whole_errand_interface;
     //map
     private LocationClient mLocationClient;
     private MapView mMapView;
@@ -171,12 +179,15 @@ public class ErrandFragment extends Fragment implements BaiduMap.OnMarkerClickLi
         view = inflater.inflate(R.layout.fragment_errand_new_main, container, false);
         initialize_Map();
         headview = (LinearLayout) view.findViewById(R.id.imageView2);
-        headview.setOnTouchListener(new MyDragListener());
         mRecyclerView = (RecyclerView) view.findViewById(R.id.fragment_errand_list);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         setupAdapter(DataServer.getErrandData(2));
+        arrow_control=(LinearLayout) view.findViewById(R.id.arrow_control);
+        arrow_control.setOnClickListener(new MyListener());
+        arrow_pic=(ImageView)view.findViewById(R.id.arrow_pic);
         mErrandRefreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.errand_flash_layout);
         mErrandRefreshLayout.setColorSchemeResources(R.color.colorPrimary, R.color.colorAccent, R.color.colorPrimaryDark);
+        whole_errand_interface=(RelativeLayout) view.findViewById(R.id.whole_errand_interface);
         initRefreshLayout();
         LitePal.initialize(getContext());
         return view;
@@ -347,6 +358,8 @@ public class ErrandFragment extends Fragment implements BaiduMap.OnMarkerClickLi
                 super.onScrolled(recyclerView, dx, dy);
             }
         });
+        //初始化layout位置
+
     }
 
     private void refresh() {
@@ -436,57 +449,114 @@ public class ErrandFragment extends Fragment implements BaiduMap.OnMarkerClickLi
 
         }
     }
-
     private float lastY = 0;
     private float marginTop;
     private int count = 0;//触发多次touchevent才移动
-    private boolean first_touche = true;
+    private boolean first_touch = true;
+    private float toolbar_height=0;
 
-    public class MyDragListener implements View.OnTouchListener {
+    private class MyListener implements View.OnClickListener{
+        private int mode;//mode是箭头控制的模式  1 点击后 布局上衣    0 点击后布局下移
+        private int height;
+        public MyListener(){
+            mode=1;
+        }
         @Override
-        public boolean onTouch(View view, MotionEvent motionEvent) {
-            int action = motionEvent.getAction();
-            switch (action) {
-                case MotionEvent.ACTION_DOWN:
-                    uiSettings.setScrollGesturesEnabled(false);
-                    RelativeLayout.LayoutParams lp1 = (RelativeLayout.LayoutParams) view.getLayoutParams();
-                    if (first_touche) {
-                        //第一次触摸屏幕获取初始鼠标值
+        public void onClick(View view) {
+            switch (view.getId()){
+                case R.id.arrow_control:
+                    if(first_touch){
+                        RelativeLayout.LayoutParams lp1 = (RelativeLayout.LayoutParams) whole_errand_interface.getLayoutParams();
                         WindowManager wm = (WindowManager) getActivity().getSystemService(Context.WINDOW_SERVICE);
                         DisplayMetrics dm = new DisplayMetrics();
+                        toolbar_height=STFUConfig.stfu_tool_bar_height;
                         wm.getDefaultDisplay().getMetrics(dm);
-                        float height = dm.heightPixels;
-                        marginTop = lp1.topMargin + height;
-                    } else {
-                        marginTop = lp1.topMargin;
+                        height = dm.heightPixels;
+                        marginTop=lp1.topMargin;
+                        first_touch=!first_touch;
                     }
-                    lastY = motionEvent.getY() + marginTop;
-                    Log.i("test1", "" + marginTop);
-                    break;
-                case MotionEvent.ACTION_MOVE:
-                    RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
-                    float currentY;
-                    currentY = motionEvent.getY() + marginTop;
-                    marginTop += ((currentY - lastY));
-                    Log.i("test1", "currentY:" + currentY + "lastY:" + lastY);
-                    Log.i("test1", "" + marginTop);
-                    if (marginTop < 0) marginTop = 0;
-                    if (marginTop > 1000) marginTop = 1000;
-                    lp.topMargin = Math.round(marginTop);
-                    lastY = currentY;
-                    headview.setLayoutParams(lp);
-                    count = 0;
-
-                    break;
-                case MotionEvent.ACTION_UP:
-                    uiSettings.setScrollGesturesEnabled(true);
-                    lastY = 0;
-                    if (first_touche)
-                        first_touche = false;
+                    switch (mode){
+                        case 0:
+                            //布局下移并更换图片
+                            //change_headview_marginTop(marginTop);
+                            change_headview_marginTop(marginTop);
+                            //更换图片
+                            arrow_pic.setImageDrawable(getResources().getDrawable(R.drawable.go_back_top));
+                            break;
+                        case 1:
+                            //布局上移并更换图片
+                            //change_headview_marginTop(-marginTop);
+                            change_headview_marginTop(-(height-toolbar_height-300));
+                            arrow_pic.setImageDrawable(getResources().getDrawable(R.drawable.go_back_bottom));
+                            break;
+                    }
                     break;
             }
-            return true;
+        }
+        private void change_headview_marginTop(float margin_Top){
+            //初始的margin值为全局变量marginTop
+            RelativeLayout.LayoutParams lp1 = (RelativeLayout.LayoutParams) whole_errand_interface.getLayoutParams();
+            float per_move_distance=0;
+            per_move_distance=(marginTop+height-toolbar_height-300)/100;
+            per_move_distance= margin_Top==marginTop? per_move_distance:-per_move_distance;  //margin_top== marginTop 下移  否则上移
+            float start_position;
+            start_position=margin_Top==marginTop?  -(height-toolbar_height-300) : marginTop ;
+            for(int i=0;i<100;i++){
+                start_position+=per_move_distance;
+                lp1.topMargin=Math.round(start_position);
+                whole_errand_interface.setLayoutParams(lp1);
+            }
+            mode=mode==0 ? 1:0;
         }
     }
+
+
+//    public class MyDragListener implements View.OnTouchListener {
+//        @Override
+//        public boolean onTouch(View view, MotionEvent motionEvent) {
+//            int action = motionEvent.getAction();
+//            switch (action) {
+//                case MotionEvent.ACTION_DOWN:
+//                    uiSettings.setScrollGesturesEnabled(false);
+//                    RelativeLayout.LayoutParams lp1 = (RelativeLayout.LayoutParams) view.getLayoutParams();
+//                    if (first_touch) {
+//                        //第一次触摸屏幕获取初始鼠标值
+//                        WindowManager wm = (WindowManager) getActivity().getSystemService(Context.WINDOW_SERVICE);
+//                        DisplayMetrics dm = new DisplayMetrics();
+//                        wm.getDefaultDisplay().getMetrics(dm);
+//                        float height = dm.heightPixels;
+//                        marginTop = lp1.topMargin + height;
+//                    } else {
+//                        marginTop = lp1.topMargin;
+//                    }
+//                    lastY = motionEvent.getY() + marginTop;
+//                    Log.i("test1", "" + marginTop);
+//                    break;
+//                case MotionEvent.ACTION_MOVE:
+//                    RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+//                    float currentY;
+//                    currentY = motionEvent.getY() + marginTop;
+//                    marginTop += ((currentY - lastY));
+//                    Log.i("test1", "currentY:" + currentY + "lastY:" + lastY);
+//                    Log.i("test1", "" + marginTop);
+//                    if (marginTop < 0) marginTop = 0;
+//                    if (marginTop > 1000) marginTop = 1000;
+//                    lp.topMargin = Math.round(marginTop);
+//                    lastY = currentY;
+//                    whole_errand_interface.setLayoutParams(lp);
+//                    count = 0;
+//
+//                    break;
+//                case MotionEvent.ACTION_UP:
+//                    uiSettings.setScrollGesturesEnabled(true);
+//                    lastY = 0;
+//                    if (first_touch)
+//                        first_touch = false;
+//                    break;
+//            }
+//            return true;
+//        }
+//    }
+
 }
 

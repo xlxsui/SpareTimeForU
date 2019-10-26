@@ -78,6 +78,7 @@ public class ChattingFragment extends Fragment implements View.OnClickListener{
     private void init_Date(){
         //初次进入该activity 根据用户名获取会话对象conversation,并初始化messages
         conversation=JMessageClient.getSingleConversation(chat_user_name,null);
+        if(conversation==null) conversation=Conversation.createSingleConversation(chat_user_name);
         messages=conversation.getAllMessage();
         position=messages.size()-conversation.getUnReadMsgCnt();
         setupAdapter();

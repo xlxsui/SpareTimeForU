@@ -10,6 +10,7 @@ import android.graphics.Bitmap;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.BottomNavigationView;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
@@ -46,6 +47,7 @@ import com.sparetimeforu.android.sparetimeforu.fragment.module.IdleThingFragment
 import com.sparetimeforu.android.sparetimeforu.fragment.module.SearchThingFragment;
 import com.sparetimeforu.android.sparetimeforu.fragment.module.StudyFragment;
 import com.sparetimeforu.android.sparetimeforu.util.StatusBarUtils;
+import com.sparetimeforu.android.sparetimeforu.util.SystemDataBaseUtil;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.MemoryPolicy;
 import com.squareup.picasso.NetworkPolicy;
@@ -62,6 +64,7 @@ import java.util.Random;
 import Listener.GlobalEventListener;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import cn.jpush.im.android.api.JMessageClient;
 import cn.jpush.im.api.BasicCallback;
 
 import static cn.jpush.im.android.api.JMessageClient.getAllUnReadMsgCount;
@@ -262,7 +265,6 @@ public class STFUFragment extends Fragment {
         STFUConfig.globalEventListener.setStfuFragment(this);
         registerEventReceiver(STFUConfig.globalEventListener);
         init_Message_point_icon();
-
         return view;
     }
 
@@ -287,6 +289,14 @@ public class STFUFragment extends Fragment {
             STFUConfig.sUser.setPhone(accountManager.getUserData(account[0], "phone"));
             STFUConfig.sUser.setSignature(accountManager.getUserData(account[0], "signature"));
             STFUConfig.sUser.setBg_url(accountManager.getUserData(account[0], "bg_url"));
+            JMessageClient.login(STFUConfig.sUser.getEmail(), STFUConfig.sUser.getEmail() + "1", new BasicCallback() {
+                @Override
+                public void gotResult(int i, String s) {
+                    if (i == 0) {
+                        com.orhanobut.logger.Logger.i("极光登陆成功");
+                    }
+                }
+            });
             //设置auth_token
             new GetAuthThread().start();
 
@@ -317,6 +327,11 @@ public class STFUFragment extends Fragment {
         if (STFUConfig.sUser != null) {
             updateViews();
         }
+        //初始化Systemmessage
+        if(STFUConfig.systemMessages==null||STFUConfig.systemMessages.size()==0){
+            STFUConfig.systemMessages= SystemDataBaseUtil.getSystemMessage_data(0);
+        }
+        if(STFUConfig.systemMessages==null) STFUConfig.systemMessages=new ArrayList<SystemMessage>();
     }
 
     @Override
@@ -352,14 +367,18 @@ public class STFUFragment extends Fragment {
         if (STFUConfig.systemMessages == null) {
             STFUConfig.systemMessages = new ArrayList<SystemMessage>();
         }
+
+        //初始化toolbar的高度
+        AppBarLayout.LayoutParams lp1=(AppBarLayout.LayoutParams)mToolbar.getLayoutParams();
+        if(STFUConfig.stfu_tool_bar_height==0) STFUConfig.stfu_tool_bar_height=lp1.height;
     }
 
 
     public void init_Message_point_icon() {
         //获取是否有未读消息
-        if (getAllUnReadMsgCount() >= 0) {
-            set_Message_point_icon(0);
-        } else set_Message_point_icon(1);
+        if (getAllUnReadMsgCount() > 0) {
+            set_Message_point_icon(1);
+        } else set_Message_point_icon(0);
     }
 
     //用mode来标识，切换图标
@@ -373,8 +392,8 @@ public class STFUFragment extends Fragment {
                 slideIcon.setImageDrawable(getResources().getDrawable(R.drawable.ic_menu_slide));
                 break;
             case 1:
-                mDrawerNavigationView.getMenu().findItem(R.id.slider_menu_personal_letter).setIcon(R.drawable.ic_menu_slide);
-                slideIcon.setImageDrawable(getResources().getDrawable(R.drawable.ic_personal_letter));
+                mDrawerNavigationView.getMenu().findItem(R.id.slider_menu_personal_letter).setIcon(R.drawable.ic_slide_message);
+                slideIcon.setImageDrawable(getResources().getDrawable(R.drawable.ic_menu_slide_red_point));
                 break;
         }
         return true;

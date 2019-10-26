@@ -104,7 +104,33 @@
                     android:gravity="center"
                     android:textColor="#fb7299"
                     android:textStyle="bold"
-                    android:text="接受任务"
+                    android:text="@string/accpet_mission"
+                    android:layout_height="30dip" />
+                <Button
+                    android:layout_marginTop="10dip"
+                    android:layout_gravity="center"
+                    android:id="@+id/Errand_finish_mission"
+                    android:layout_width="wrap_content"
+                    android:background="@drawable/button_style"
+                    android:textSize="12sp"
+                    android:gravity="center"
+                    android:visibility="gone"
+                    android:textColor="#fb7299"
+                    android:textStyle="bold"
+                    android:text="@string/finish_mission"
+                    android:layout_height="30dip" />
+                <TextView
+                    android:layout_marginTop="10dip"
+                    android:layout_gravity="center"
+                    android:id="@+id/Errand_finished_text"
+                    android:layout_width="wrap_content"
+                    android:background="@drawable/button_style"
+                    android:textSize="12sp"
+                    android:gravity="center"
+                    android:visibility="gone"
+                    android:textColor="#fb7299"
+                    android:textStyle="bold"
+                    android:text="@string/mission_finished"
                     android:layout_height="30dip" />
 
             </LinearLayout>

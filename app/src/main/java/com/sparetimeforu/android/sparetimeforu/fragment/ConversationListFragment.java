@@ -58,6 +58,12 @@ public class ConversationListFragment extends Fragment {
         return view;
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        init_data();
+    }
+
     public void init_data(){
         //初始化，获取所有conversation
         conversations=JMessageClient.getConversationList();
@@ -73,7 +79,7 @@ public class ConversationListFragment extends Fragment {
         //将conversation中的会话按未读信息数来排列， 未读信息越多，排在越前面，系统通知置顶
         //按未读信息数来排列
         for(int i=0;i<conversations.size();i++){
-            for(int j=i;j<conversations.size()-1;i++){
+            for(int j=i;j<conversations.size()-1;j++){
                 if(conversations.get(j).getUnReadMsgCnt()<conversations.get(j+1).getUnReadMsgCnt()){//冒泡
                     Conversation temp= conversations.get(j+1);
                     conversations.remove(j+1);

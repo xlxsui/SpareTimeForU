@@ -27,7 +27,6 @@ public class StudyPostFragment extends Fragment {
 
     public static StudyPostFragment newInstance() {
         StudyPostFragment fragment = new StudyPostFragment();
-
         return fragment;
     }
 
@@ -37,7 +36,6 @@ public class StudyPostFragment extends Fragment {
         View view = inflater.inflate(R.layout.post_study, container, false);
         ButterKnife.bind(this, view);
         ((AppCompatActivity) getActivity()).setSupportActionBar(mToolbar);
-
         return view;
     }
 

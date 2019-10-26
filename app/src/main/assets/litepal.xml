@@ -2,11 +2,12 @@
 <litepal>
     <!--数据库名sparetimeforu-->
    <dbname value="STFU"/>
-    <version value="8"/>
+    <version value="11"/>
     <list>
         <mapping class="com.sparetimeforu.android.sparetimeforu.entity.Errand"></mapping>
         <mapping class="com.sparetimeforu.android.sparetimeforu.entity.Study"></mapping>
         <mapping class="com.sparetimeforu.android.sparetimeforu.entity.IdleThing"></mapping>
         <mapping class="com.sparetimeforu.android.sparetimeforu.entity.SearchThing"></mapping>
+        <mapping class="com.sparetimeforu.android.sparetimeforu.entity.SystemMessage"></mapping>
     </list>
 </litepal>

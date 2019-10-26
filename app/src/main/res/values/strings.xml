@@ -1,6 +1,8 @@
 <resources>
     <string name="app_name">汕大顺手邦</string>
     <string name="accpet_mission">接受任务</string>
+    <string name="finish_mission">完成任务</string>
+    <string name="mission_finished">  任务已完成  </string>
     <string name="system_message_list_item_hint_get_more">>> 点击查看详细消息</string>
     <string name="system_message_list_item_hint_add_friend">>> 点击选择</string>
     <string name="system_message_list_item_hint_errand_message">>> 点击查看详细消息</string>

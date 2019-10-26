@@ -17,6 +17,7 @@ import com.sparetimeforu.android.sparetimeforu.STFUConfig;
 import com.sparetimeforu.android.sparetimeforu.adapter.ConversationListAdapter;
 import com.sparetimeforu.android.sparetimeforu.adapter.SystemMessageListAdapter;
 import com.sparetimeforu.android.sparetimeforu.entity.SystemMessage;
+import com.sparetimeforu.android.sparetimeforu.util.SystemDataBaseUtil;
 
 import java.util.List;
 
@@ -50,9 +51,16 @@ public class SystemMessageListFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 getActivity().finish();
+
             }
         });
         return view;
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        SystemDataBaseUtil.save_systemMessage_data(STFUConfig.systemMessages);
     }
 
     private void init_data() {

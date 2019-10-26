@@ -29,10 +29,12 @@ public class MessageAdapter extends BaseQuickAdapter<Message,BaseViewHolder>{
         super(R.layout.chat_box,messages);
         Message temp_message=null;
         //初始化两个用户头像  对方和本机用户
-        for(int i=messages.size()-1;i>0;i++){
+        for(int i=messages.size()-1;i>0;i--){
             //找到一个对方用户发送的message
-            if(!messages.get(i).getFromUser().getUserName().equals(STFUConfig.sUser.getEmail()))
+            if(!messages.get(i).getFromUser().getUserName().equals(STFUConfig.sUser.getEmail())){
                 temp_message=messages.get(i);
+                break;
+            }
         }
         if(temp_message!=null){
             JMessageClient.getUserInfo(temp_message.getFromUser().getUserName(), new GetUserInfoCallback() {

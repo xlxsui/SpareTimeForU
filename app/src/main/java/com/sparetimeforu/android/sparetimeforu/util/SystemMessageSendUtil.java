@@ -19,9 +19,10 @@ import cn.jpush.im.api.BasicCallback;
 
 public class SystemMessageSendUtil {
 //    username代表要发送信息的对象用户
-    private final static int Errand_message_mode_errand_accepted=0;//任务被接受
-    private final static int Errand_message_mode_errand_solved=1;//任务被完成
+    public final static int Errand_message_mode_errand_accepted=0;//任务被接受
+    public final static int Errand_message_mode_errand_solved=1;//任务被完成
     public static void  send_System_message_add_friend(String username){
+        JMessageClient.logout();
         JMessageClient.login(STFUConfig.manager_username, STFUConfig.manager_username + "1", new BasicCallback() {
             @Override
             public void gotResult(int i, String s) {
@@ -38,12 +39,27 @@ public class SystemMessageSendUtil {
                     systemMessage.setContent("想加您为好友");
                     systemMessage.setUser_Email(STFUConfig.sUser.getEmail());//代表此消息的源头用户
                     systemMessage.setUser_nickname(STFUConfig.sUser.getNickname());
-                    JMessageClient.createSingleTextMessage(username,null,get_Formate_Content(systemMessage));
+                    Message message=JMessageClient.createSingleTextMessage(username,null,get_Formate_Content(systemMessage));
+                    JMessageClient.sendMessage(message);
+                    message.setOnSendCompleteCallback(new BasicCallback() {
+                        @Override
+                        public void gotResult(int i, String s) {
+                            //发送系统通知完成，重新登陆用户账号
+                            JMessageClient.logout();
+                            JMessageClient.login(STFUConfig.sUser.getEmail(), STFUConfig.sUser.getEmail() + "1", new BasicCallback() {
+                                @Override
+                                public void gotResult(int i, String s) {
+
+                                }
+                            });
+                        }
+                    });
                 }
             }
         });
     }
     public static void  send_System_message_comment(String username,String comment_string,int post_id,int post_type){
+        JMessageClient.logout();
         JMessageClient.login(STFUConfig.manager_username, STFUConfig.manager_username + "1", new BasicCallback() {
             @Override
             public void gotResult(int i, String s) {
@@ -62,12 +78,27 @@ public class SystemMessageSendUtil {
                     systemMessage.setContent(comment_string);
                     systemMessage.setUser_Email(STFUConfig.sUser.getEmail());//代表此消息的源头用户
                     systemMessage.setUser_nickname(STFUConfig.sUser.getNickname());
-                    JMessageClient.createSingleTextMessage(username,null,get_Formate_Content(systemMessage));
+                    Message message=JMessageClient.createSingleTextMessage(username,null,get_Formate_Content(systemMessage));
+                    JMessageClient.sendMessage(message);
+                    message.setOnSendCompleteCallback(new BasicCallback() {
+                        @Override
+                        public void gotResult(int i, String s) {
+                            //发送系统通知完成，重新登陆用户账号
+                            JMessageClient.logout();
+                            JMessageClient.login(STFUConfig.sUser.getEmail(), STFUConfig.sUser.getEmail() + "1", new BasicCallback() {
+                                @Override
+                                public void gotResult(int i, String s) {
+
+                                }
+                            });
+                        }
+                    });
                 }
             }
         });
     }
     public static void  send_System_message_approve(String username,int post_id,int post_type){
+        JMessageClient.logout();
         JMessageClient.login(STFUConfig.manager_username, STFUConfig.manager_username + "1", new BasicCallback() {
             @Override
             public void gotResult(int i, String s) {
@@ -86,12 +117,27 @@ public class SystemMessageSendUtil {
                     systemMessage.setContent("给您的帖子点了赞");
                     systemMessage.setUser_Email(STFUConfig.sUser.getEmail());//代表此消息的源头用户
                     systemMessage.setUser_nickname(STFUConfig.sUser.getNickname());
-                    JMessageClient.createSingleTextMessage(username,null,get_Formate_Content(systemMessage));
+                    Message message=JMessageClient.createSingleTextMessage(username,null,get_Formate_Content(systemMessage));
+                    JMessageClient.sendMessage(message);
+                    message.setOnSendCompleteCallback(new BasicCallback() {
+                        @Override
+                        public void gotResult(int i, String s) {
+                            //发送系统通知完成，重新登陆用户账号
+                            JMessageClient.logout();
+                            JMessageClient.login(STFUConfig.sUser.getEmail(), STFUConfig.sUser.getEmail() + "1", new BasicCallback() {
+                                @Override
+                                public void gotResult(int i, String s) {
+
+                                }
+                            });
+                        }
+                    });
                 }
             }
         });
     }
     public static void  send_System_message_errand(String username,int post_id,int post_type,int mode){
+        JMessageClient.logout();
         JMessageClient.login(STFUConfig.manager_username, STFUConfig.manager_username + "1", new BasicCallback() {
             @Override
             public void gotResult(int i, String s) {
@@ -123,6 +169,7 @@ public class SystemMessageSendUtil {
                         @Override
                         public void gotResult(int i, String s) {
                             //发送系统通知完成，重新登陆用户账号
+                            JMessageClient.logout();
                             JMessageClient.login(STFUConfig.sUser.getEmail(), STFUConfig.sUser.getEmail() + "1", new BasicCallback() {
                                 @Override
                                 public void gotResult(int i, String s) {
@@ -138,7 +185,7 @@ public class SystemMessageSendUtil {
     public static String get_Formate_Content(SystemMessage systemMessage){
         if(systemMessage!=null){
             Gson gson=new Gson();
-            return gson.toJson(systemMessage);
+            return gson.toJson(systemMessage,SystemMessage.class);
         }
         return null;
     }

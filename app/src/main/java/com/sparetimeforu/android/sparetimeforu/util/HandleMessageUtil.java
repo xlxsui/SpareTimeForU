@@ -20,7 +20,9 @@ import com.orhanobut.logger.Logger;
 import java.util.ArrayList;
 import java.util.List;
 
+import cn.jpush.im.android.api.content.TextContent;
 import cn.jpush.im.android.api.model.Message;
+import cn.jpush.im.api.BasicCallback;
 
 /**
  * Created by HQY on 2018/11/15.
@@ -238,12 +240,17 @@ public class HandleMessageUtil {
 
     public static boolean handleSystemMessage(List<Message> messages,int un_read_message_count){
         SystemMessage systemMessage;
+        //List<SystemMessage> systemMessages=new ArrayList<SystemMessage>();
         for(int i=messages.size()-un_read_message_count;i<messages.size();i++){
             Message message=messages.get(i);
-            systemMessage=system_message_handle(message.getContent().toString());
-            if(systemMessage!=null)
-            STFUConfig.systemMessages.add(0,systemMessage);
+            systemMessage=system_message_handle(((TextContent)message.getContent()).getText());
+            if(systemMessage!=null){
+                STFUConfig.systemMessages.add(0,systemMessage);
+                //systemMessages.add(systemMessage);
+            }
         }
+
+       // STFUConfig.systemMessages=systemMessages;
         return true;
     }
     public static Errand handlePost_Errand_Message(String responseString){

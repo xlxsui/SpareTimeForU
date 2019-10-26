@@ -53,28 +53,30 @@ public class ConversationListAdapter extends BaseQuickAdapter<Conversation,BaseV
 
         if(!item.getTargetId().equals(STFUConfig.manager_username))     message_user_name.setText(((UserInfo) item.getTargetInfo()).getNickname());
         else message_user_name.setText("");
-
         int messages_count_num = item.getUnReadMsgCnt();
 
         if(messages_count_num!=0){
             if (!item.getTargetId().equals(STFUConfig.manager_username) )   message_count.setText(""+messages_count_num );
             else {
                 format1.setText("共接收到");
-                message_count.setText(""+message_count);
+                message_count.setText(""+messages_count_num);
                 format2.setText("条系统通知");
             }
         }else{
+            if (item.getTargetId().equals(STFUConfig.manager_username) ){
+                message_user_name.setText("系统消息");
+            }
             message_count.setVisibility(View.GONE);
             format1.setVisibility(View.GONE);
             format2.setVisibility(View.GONE);
         }
 
-
-        if(!!item.getTargetId().equals(STFUConfig.manager_username)){//用户发来的信息s
+        if(!item.getTargetId().equals(STFUConfig.manager_username)){//用户发来的信息s
             //修改头像
             JMessageClient.getUserInfo(item.getTargetId(), new GetUserInfoCallback() {
                 @Override
                 public void gotResult(int i, String s, UserInfo userInfo) {
+                    message_user_name.setText(userInfo.getNickname());
                     userInfo.getAvatarBitmap(new GetAvatarBitmapCallback(){
                         @Override
                         public void gotResult(int i, String s, Bitmap bitmap) {
@@ -88,6 +90,8 @@ public class ConversationListAdapter extends BaseQuickAdapter<Conversation,BaseV
                     });
                 }
             });
+        }else{
+            avatar.setImageDrawable(activity.getDrawable(R.mipmap.ic_launcher_round));
         }
 
         RelativeLayout relativeLayout = (RelativeLayout) helper.getView(R.id.conversation_list_item);
@@ -112,6 +116,7 @@ public class ConversationListAdapter extends BaseQuickAdapter<Conversation,BaseV
                     List<Message> messages=item1.getAllMessage();
                     int un_read_message_count=item1.getUnReadMsgCnt();
                     HandleMessageUtil.handleSystemMessage(messages,un_read_message_count);
+                    item1.setUnReadMessageCnt(0);
                     activity.startActivity(intent);
                 }
             });
