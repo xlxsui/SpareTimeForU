@@ -11,7 +11,7 @@ import java.util.UUID;
  * Created by Jin on 2018/11/15.
  */
 
-public class IdleThing extends LitePalSupport implements Serializable{
+public class IdleThing extends LitePalSupport implements Serializable {
     private String user_Email;
     private String user_Avatar;
     private String user_Nickname;
@@ -20,11 +20,29 @@ public class IdleThing extends LitePalSupport implements Serializable{
     private String picture_url_2;
     private String picture_url_3;
     private int comment_number;
+    private int like_number;
     private int id;
     private int is_deleted;
     private String release_time;
     private int idle_thing_id;
     private int money;
+    private int is_finished;
+
+    public int getIs_finished() {
+        return is_finished;
+    }
+
+    public void setIs_finished(int is_finished) {
+        this.is_finished = is_finished;
+    }
+
+    public int getLike_number() {
+        return like_number;
+    }
+
+    public void setLike_number(int like_number) {
+        this.like_number = like_number;
+    }
 
     public String getUser_Email() {
         return user_Email;
@@ -129,5 +147,25 @@ public class IdleThing extends LitePalSupport implements Serializable{
 
     public void setIdle_thing_id(int idlething_id) {
         this.idle_thing_id = idlething_id;
+    }
+
+    @Override
+    public String toString() {
+        return "IdleThing{" +
+                "user_Email='" + user_Email + '\'' +
+                ", user_Avatar='" + user_Avatar + '\'' +
+                ", user_Nickname='" + user_Nickname + '\'' +
+                ", content='" + content + '\'' +
+                ", picture_url_1='" + picture_url_1 + '\'' +
+                ", picture_url_2='" + picture_url_2 + '\'' +
+                ", picture_url_3='" + picture_url_3 + '\'' +
+                ", comment_number=" + comment_number +
+                ", like_number=" + like_number +
+                ", id=" + id +
+                ", is_deleted=" + is_deleted +
+                ", release_time='" + release_time + '\'' +
+                ", idle_thing_id=" + idle_thing_id +
+                ", money=" + money +
+                '}';
     }
 }

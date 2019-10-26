@@ -6,12 +6,17 @@
     android:orientation="vertical"
     android:layout_height="match_parent">
 
-    <include layout="@layout/custom_toolbar_back"></include>
+    <include layout="@layout/custom_toolbar_back"/>
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="5dp"
+        android:background="@drawable/toolbar_dropshadow" />
+
     <android.support.v7.widget.RecyclerView
         android:id="@+id/chat_item_RecyclerView"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="1"></android.support.v7.widget.RecyclerView>
+        android:layout_weight="1"/>
     <TextView
         android:layout_width="match_parent"
         android:layout_height="1dp"

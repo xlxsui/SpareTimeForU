@@ -1,28 +1,35 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.widget.RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    android:layout_height="match_parent">
 
 
-    <include layout="@layout/personal_toolbar"
-        android:id="@+id/post_released_top"/>
+    <include
+        android:id="@+id/post_released_top"
+        layout="@layout/custom_toolbar_back" />
+
+    <View
+        android:id="@+id/shadow"
+        android:layout_width="match_parent"
+        android:layout_height="5dp"
+        android:layout_below="@+id/post_released_top"
+        android:background="@drawable/toolbar_dropshadow" />
+
     <android.support.design.widget.BottomNavigationView
         android:id="@+id/post_released_select"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:background="#eee"
-        app:menu="@menu/post_released_navigation">
-    </android.support.design.widget.BottomNavigationView>
+        app:menu="@menu/post_released_navigation"/>
 
 
     <android.support.v7.widget.RecyclerView
-    android:layout_below="@+id/post_released_top"
-    android:id="@+id/post_released_recylerview"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content">
-    </android.support.v7.widget.RecyclerView>
+        android:id="@+id/post_released_recylerview"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/shadow"/>
 
 
 </android.widget.RelativeLayout>

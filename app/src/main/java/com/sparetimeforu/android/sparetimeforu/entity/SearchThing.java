@@ -25,6 +25,19 @@ public class SearchThing extends LitePalSupport implements Serializable {
     private String release_time;
     private int search_thing_id;
     private int is_found;
+    private int like_number;
+
+    public int getIs_found() {
+        return is_found;
+    }
+
+    public int getLike_number() {
+        return like_number;
+    }
+
+    public void setLike_number(int like_number) {
+        this.like_number = like_number;
+    }
 
     public int getSearch_thing_id() {
         return search_thing_id;
@@ -130,6 +143,23 @@ public class SearchThing extends LitePalSupport implements Serializable {
         this.release_time = release_time;
     }
 
-
-
+    @Override
+    public String toString() {
+        return "SearchThing{" +
+                "user_Email='" + user_Email + '\'' +
+                ", user_Avatar='" + user_Avatar + '\'' +
+                ", user_Nickname='" + user_Nickname + '\'' +
+                ", content='" + content + '\'' +
+                ", picture_url_1='" + picture_url_1 + '\'' +
+                ", picture_url_2='" + picture_url_2 + '\'' +
+                ", picture_url_3='" + picture_url_3 + '\'' +
+                ", comment_number=" + comment_number +
+                ", id=" + id +
+                ", is_deleted=" + is_deleted +
+                ", release_time='" + release_time + '\'' +
+                ", search_thing_id=" + search_thing_id +
+                ", is_found=" + is_found +
+                ", like_number=" + like_number +
+                '}';
+    }
 }

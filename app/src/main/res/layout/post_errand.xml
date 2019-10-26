@@ -10,6 +10,7 @@
     <include layout="@layout/custom_toolbar_back" />
 
     <android.support.v4.widget.SwipeRefreshLayout
+        android:id="@+id/refresh_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_marginTop="56dp"
@@ -20,6 +21,11 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="vertical">
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="5dp"
+                android:background="@drawable/toolbar_dropshadow" />
 
             <android.support.v4.widget.NestedScrollView
                 android:id="@+id/nestedScrollView"
@@ -55,8 +61,8 @@
         android:focusable="true"
         android:minHeight="56dp"
         android:orientation="horizontal"
-        android:paddingEnd="12dp"
-        android:paddingStart="12dp">
+        android:paddingStart="12dp"
+        android:paddingEnd="12dp">
 
         <EditText
             android:id="@+id/errand_post_comment"

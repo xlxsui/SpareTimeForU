@@ -7,6 +7,7 @@ import com.sparetimeforu.android.sparetimeforu.STFUConfig;
 import com.sparetimeforu.android.sparetimeforu.entity.Comment;
 import com.sparetimeforu.android.sparetimeforu.entity.Errand;
 import com.sparetimeforu.android.sparetimeforu.entity.IdleThing;
+import com.sparetimeforu.android.sparetimeforu.entity.Pagination;
 import com.sparetimeforu.android.sparetimeforu.entity.SearchThing;
 import com.sparetimeforu.android.sparetimeforu.entity.Study;
 import com.sparetimeforu.android.sparetimeforu.entity.SystemMessage;
@@ -51,18 +52,18 @@ public class HandleMessageUtil {
         }
         return null;
     }
+
     public static boolean handleErrandMessage(String responseString) {
-        List<Errand> errands=new ArrayList<Errand>();
+        List<Errand> errands = new ArrayList<Errand>();
         if (!TextUtils.isEmpty(responseString)) {
             Gson gson = new Gson();
             try {
                 JSONObject jsonObject = new JSONObject(responseString);
                 JSONObject data = new JSONObject(jsonObject.getString("data"));
-                Logger.i(data.toString());
-                int i=0;
-                while(i<data.length()){
-                    String str=(String)data.getString("post_"+i);
-                    Errand errand=gson.fromJson(str,Errand.class);
+                int i = 0;
+                while (i < data.length()) {
+                    String str = (String) data.getString("post_" + i);
+                    Errand errand = gson.fromJson(str, Errand.class);
                     errands.add(errand);
                     i++;
                 }
@@ -70,23 +71,23 @@ public class HandleMessageUtil {
             } catch (JSONException e) {
                 Logger.e(e.toString());
             }
-            return  ErrandDataBaseUtil.save_errand_data(errands);
+            return ErrandDataBaseUtil.save_errand_data(errands);
         }
         return false;
     }
 
     public static List<Errand> handleReleasedErrandMessage(String responseString) {
-        List<Errand> errands=new ArrayList<Errand>();
+        List<Errand> errands = new ArrayList<Errand>();
         if (!TextUtils.isEmpty(responseString)) {
             Gson gson = new Gson();
             try {
                 JSONObject jsonObject = new JSONObject(responseString);
                 JSONObject data = new JSONObject(jsonObject.getString("data"));
                 Logger.i(data.toString());
-                int i=0;
-                while(i<data.length()){
-                    String str=(String)data.getString("post_"+i);
-                    Errand errand=gson.fromJson(str,Errand.class);
+                int i = 0;
+                while (i < data.length()) {
+                    String str = (String) data.getString("post_" + i);
+                    Errand errand = gson.fromJson(str, Errand.class);
                     errands.add(errand);
                     i++;
                 }
@@ -94,22 +95,22 @@ public class HandleMessageUtil {
             } catch (JSONException e) {
                 Logger.e(e.toString());
             }
-            return  errands;
+            return errands;
         }
         return null;
     }
-    public static boolean handleIdleThingMessage(String responseString){
-        List<IdleThing> idleThings=new ArrayList<IdleThing>();
+
+    public static boolean handleIdleThingMessage(String responseString) {
+        List<IdleThing> idleThings = new ArrayList<IdleThing>();
         if (!TextUtils.isEmpty(responseString)) {
             Gson gson = new Gson();
             try {
                 JSONObject jsonObject = new JSONObject(responseString);
                 JSONObject data = new JSONObject(jsonObject.getString("data"));
-                Logger.i(data.toString());
-                int i=0;
-                while(i<data.length()){
-                    String str=(String)data.getString("post_"+i);
-                    IdleThing idleThing=gson.fromJson(str,IdleThing.class);
+                int i = 0;
+                while (i < data.length()) {
+                    String str = (String) data.getString("post_" + i);
+                    IdleThing idleThing = gson.fromJson(str, IdleThing.class);
                     idleThings.add(idleThing);
                     i++;
                 }
@@ -117,22 +118,22 @@ public class HandleMessageUtil {
             } catch (JSONException e) {
                 Logger.e(e.toString());
             }
-            return  IdleThingDataBaseUtil.save_idlething_data(idleThings);
+            return IdleThingDataBaseUtil.save_idlething_data(idleThings);
         }
         return false;
     }
-    public static List<IdleThing> handlePostIdleThingMessage(String responseString){
-        List<IdleThing> idleThings=new ArrayList<IdleThing>();
+
+    public static List<IdleThing> handlePostIdleThingMessage(String responseString) {
+        List<IdleThing> idleThings = new ArrayList<IdleThing>();
         if (!TextUtils.isEmpty(responseString)) {
             Gson gson = new Gson();
             try {
                 JSONObject jsonObject = new JSONObject(responseString);
                 JSONObject data = new JSONObject(jsonObject.getString("data"));
-                Logger.i(data.toString());
-                int i=0;
-                while(i<data.length()){
-                    String str=(String)data.getString("post_"+i);
-                    IdleThing idleThing=gson.fromJson(str,IdleThing.class);
+                int i = 0;
+                while (i < data.length()) {
+                    String str = (String) data.getString("post_" + i);
+                    IdleThing idleThing = gson.fromJson(str, IdleThing.class);
                     idleThings.add(idleThing);
                     i++;
                 }
@@ -140,22 +141,22 @@ public class HandleMessageUtil {
             } catch (JSONException e) {
                 Logger.e(e.toString());
             }
-            return  idleThings;
+            return idleThings;
         }
         return null;
     }
-    public static boolean handleSearchThingMessage(String responseString){
-        List<SearchThing> searchThings=new ArrayList<SearchThing>();
+
+    public static boolean handleSearchThingMessage(String responseString) {
+        List<SearchThing> searchThings = new ArrayList<SearchThing>();
         if (!TextUtils.isEmpty(responseString)) {
             Gson gson = new Gson();
             try {
                 JSONObject jsonObject = new JSONObject(responseString);
                 JSONObject data = new JSONObject(jsonObject.getString("data"));
-                Logger.i(data.toString());
-                int i=0;
-                while(i<data.length()){
-                    String str=(String)data.getString("post_"+i);
-                    SearchThing searchThing=gson.fromJson(str,SearchThing.class);
+                int i = 0;
+                while (i < data.length()) {
+                    String str = (String) data.getString("post_" + i);
+                    SearchThing searchThing = gson.fromJson(str, SearchThing.class);
                     searchThings.add(searchThing);
                     i++;
                 }
@@ -163,23 +164,22 @@ public class HandleMessageUtil {
             } catch (JSONException e) {
                 Logger.e(e.toString());
             }
-            return  SearchThingBaseUtil.save_SearchThing_data(searchThings);
+            return SearchThingBaseUtil.save_SearchThing_data(searchThings);
         }
         return false;
     }
 
-    public static List<SearchThing> handlePostSearchThingMessage(String responseString){
-        List<SearchThing> searchThings=new ArrayList<SearchThing>();
+    public static List<SearchThing> handlePostSearchThingMessage(String responseString) {
+        List<SearchThing> searchThings = new ArrayList<SearchThing>();
         if (!TextUtils.isEmpty(responseString)) {
             Gson gson = new Gson();
             try {
                 JSONObject jsonObject = new JSONObject(responseString);
                 JSONObject data = new JSONObject(jsonObject.getString("data"));
-                Logger.i(data.toString());
-                int i=0;
-                while(i<data.length()){
-                    String str=(String)data.getString("post_"+i);
-                    SearchThing searchThing=gson.fromJson(str,SearchThing.class);
+                int i = 0;
+                while (i < data.length()) {
+                    String str = (String) data.getString("post_" + i);
+                    SearchThing searchThing = gson.fromJson(str, SearchThing.class);
                     searchThings.add(searchThing);
                     i++;
                 }
@@ -187,58 +187,59 @@ public class HandleMessageUtil {
             } catch (JSONException e) {
                 Logger.e(e.toString());
             }
-            return  searchThings;
-        }
-        return null;
-    }
-    public static boolean handleStudyMessage(String responseString){
-        List<Study> studies=new ArrayList<Study>();
-        if (!TextUtils.isEmpty(responseString)) {
-            Gson gson = new Gson();
-            try {
-                JSONObject jsonObject = new JSONObject(responseString);
-                JSONObject data = new JSONObject(jsonObject.getString("data"));
-                Logger.i(data.toString());
-                int i=0;
-                while(i<data.length()){
-                    String str=(String)data.getString("post_"+i);
-                    Study study=gson.fromJson(str,Study.class);
-                    studies.add(study);
-                    i++;
-                }
-                //errands =gson.fromJson(jsonObject.getString("data"), new TypeToken<List<Errand>>(){}.getType());
-            } catch (JSONException e) {
-                Logger.e(e.toString());
-            }
-            return  StudyDataBaseUtil.save_Study_data(studies);
-        }
-        return false;
-    }
-    public static List<Study> handlePostStudyMessage(String responseString){
-        List<Study> studies=new ArrayList<Study>();
-        if (!TextUtils.isEmpty(responseString)) {
-            Gson gson = new Gson();
-            try {
-                JSONObject jsonObject = new JSONObject(responseString);
-                JSONObject data = new JSONObject(jsonObject.getString("data"));
-                Logger.i(data.toString());
-                int i=0;
-                while(i<data.length()){
-                    String str=(String)data.getString("post_"+i);
-                    Study study=gson.fromJson(str,Study.class);
-                    studies.add(study);
-                    i++;
-                }
-                //errands =gson.fromJson(jsonObject.getString("data"), new TypeToken<List<Errand>>(){}.getType());
-            } catch (JSONException e) {
-                Logger.e(e.toString());
-            }
-            return  studies;
+            return searchThings;
         }
         return null;
     }
 
-    public static boolean handleSystemMessage(List<Message> messages,int un_read_message_count){
+    public static boolean handleStudyMessage(String responseString) {
+        List<Study> studies = new ArrayList<Study>();
+        if (!TextUtils.isEmpty(responseString)) {
+            Gson gson = new Gson();
+            try {
+                JSONObject jsonObject = new JSONObject(responseString);
+                JSONObject data = new JSONObject(jsonObject.getString("data"));
+                int i = 0;
+                while (i < data.length()) {
+                    String str = (String) data.getString("post_" + i);
+                    Study study = gson.fromJson(str, Study.class);
+                    studies.add(study);
+                    i++;
+                }
+                //errands =gson.fromJson(jsonObject.getString("data"), new TypeToken<List<Errand>>(){}.getType());
+            } catch (JSONException e) {
+                Logger.e(e.toString());
+            }
+            return StudyDataBaseUtil.save_Study_data(studies);
+        }
+        return false;
+    }
+
+    public static List<Study> handlePostStudyMessage(String responseString) {
+        List<Study> studies = new ArrayList<Study>();
+        if (!TextUtils.isEmpty(responseString)) {
+            Gson gson = new Gson();
+            try {
+                JSONObject jsonObject = new JSONObject(responseString);
+                JSONObject data = new JSONObject(jsonObject.getString("data"));
+                Logger.i(data.toString());
+                int i = 0;
+                while (i < data.length()) {
+                    String str = (String) data.getString("post_" + i);
+                    Study study = gson.fromJson(str, Study.class);
+                    studies.add(study);
+                    i++;
+                }
+                //errands =gson.fromJson(jsonObject.getString("data"), new TypeToken<List<Errand>>(){}.getType());
+            } catch (JSONException e) {
+                Logger.e(e.toString());
+            }
+            return studies;
+        }
+        return null;
+    }
+
+    public static boolean handleSystemMessage(List<Message> messages, int un_read_message_count) {
         SystemMessage systemMessage;
         //List<SystemMessage> systemMessages=new ArrayList<SystemMessage>();
         for(int i=messages.size()-un_read_message_count;i<messages.size();i++){
@@ -253,49 +254,141 @@ public class HandleMessageUtil {
        // STFUConfig.systemMessages=systemMessages;
         return true;
     }
-    public static Errand handlePost_Errand_Message(String responseString){
+
+    public static Errand handlePost_Errand_Message(String responseString) {
         Errand errand;
-        if(responseString!=null){
-            Gson gson=new Gson();
-            try{
-                JSONObject jsonObject=new JSONObject(responseString);
+        if (responseString != null) {
+            Gson gson = new Gson();
+            try {
+                JSONObject jsonObject = new JSONObject(responseString);
                 JSONObject data1 = new JSONObject(jsonObject.getString("data"));
-                JSONObject data=new JSONObject(data1.getString("errand_message"));
-                String errand_data=data.getString("post_0");
-                errand=gson.fromJson(errand_data,Errand.class);
+                JSONObject data = new JSONObject(data1.getString("errand_message"));
+                String errand_data = data.getString("post_0");
+                errand = gson.fromJson(errand_data, Errand.class);
                 return errand;
-            }catch (Exception e){
+            } catch (Exception e) {
                 e.printStackTrace();
             }
         }
         return null;
     }
-    public static List<Comment> handlePost_Errand_Comment_Message(String responseString){
+
+    public static List<Comment> handlePost_Errand_Comment_Message(String responseString) {
         List<Comment> comments;
-        if(!responseString.isEmpty()){
-            Gson gson=new Gson();
-            try{
-                comments=new ArrayList<Comment>();
-                JSONObject jsonObject=new JSONObject(responseString);
+        if (!responseString.isEmpty()) {
+            Gson gson = new Gson();
+            try {
+                comments = new ArrayList<Comment>();
+                JSONObject jsonObject = new JSONObject(responseString);
                 JSONObject data = new JSONObject(jsonObject.getString("data"));
-                JSONObject comments_data=new JSONObject(data.getString("comments_message"));
-                int i=0;
-                while(i<comments_data.length()){
-                    String str=(String)comments_data.getString("comment_"+i);
-                    Comment comment=gson.fromJson(str,Comment.class);
+                JSONObject comments_data = new JSONObject(data.getString("comments_message"));
+                int i = 0;
+                while (i < comments_data.length()) {
+                    String str = (String) comments_data.getString("comment_" + i);
+                    Comment comment = gson.fromJson(str, Comment.class);
                     comments.add(comment);
                     i++;
                 }
                 return comments;
-            }catch (Exception e){
-                Logger.i(e.toString());;
+            } catch (Exception e) {
+                Logger.i(e.toString());
+                ;
             }
         }
         return null;
     }
-    private static SystemMessage system_message_handle(String jsonString){//处理系统通知的json字符串，转化成systemMessage
-        Gson gson=new Gson();
-        return gson.fromJson(jsonString,SystemMessage.class);
+
+    /**
+     * 二手帖子详情的解析
+     *
+     * @param responseString 相应字符串
+     * @return IdleThing实体
+     */
+    public static IdleThing handlePost_IdleThing_Message(String responseString) {
+        IdleThing idleThing;
+        if (responseString != null) {
+            Gson gson = new Gson();
+            try {
+                JSONObject jsonObject = new JSONObject(responseString);
+                JSONObject data1 = new JSONObject(jsonObject.getString("data"));
+                JSONObject data = new JSONObject(data1.getString("post_message"));
+                String errand_data = data.getString("post_0");
+                idleThing = gson.fromJson(errand_data, IdleThing.class);
+                return idleThing;
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+        return null;
+    }
+
+    /**
+     * 学习帖子详情
+     *
+     * @param responseString
+     * @return
+     */
+    public static Study handlePost_Study_Message(String responseString) {
+        Study study;
+        if (responseString != null) {
+            Gson gson = new Gson();
+            try {
+                JSONObject jsonObject = new JSONObject(responseString);
+                JSONObject data1 = new JSONObject(jsonObject.getString("data"));
+                JSONObject data = new JSONObject(data1.getString("post_message"));
+                String errand_data = data.getString("post_0");
+                study = gson.fromJson(errand_data, Study.class);
+                return study;
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+        return null;
+    }
+
+    /**
+     * 寻物帖子详情
+     *
+     * @param responseString
+     * @return
+     */
+    public static SearchThing handlePost_Search_Thing_Message(String responseString) {
+        SearchThing searchThing;
+        if (responseString != null) {
+            Gson gson = new Gson();
+            try {
+                JSONObject jsonObject = new JSONObject(responseString);
+                JSONObject data1 = new JSONObject(jsonObject.getString("data"));
+                JSONObject data = new JSONObject(data1.getString("post_message"));
+                String errand_data = data.getString("post_0");
+                searchThing = gson.fromJson(errand_data, SearchThing.class);
+                return searchThing;
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+        return null;
+    }
+
+    public static Pagination handlePaginationMessage(String responseString) {
+        Pagination pagination;
+        if (responseString != null) {
+            Gson gson = new Gson();
+            try {
+                JSONObject jsonObject = new JSONObject(responseString);
+                String paginationStr = jsonObject.getString("pagination");
+                pagination = gson.fromJson(paginationStr, Pagination.class);
+                return pagination;
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+        return null;
+    }
+
+    private static SystemMessage system_message_handle(String jsonString) {//处理系统通知的json字符串，转化成systemMessage
+        Gson gson = new Gson();
+        return gson.fromJson(jsonString, SystemMessage.class);
     }
 
 }

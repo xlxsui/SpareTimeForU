@@ -23,15 +23,24 @@ import com.sparetimeforu.android.sparetimeforu.activity.post.ErrandPostActivity;
 import com.sparetimeforu.android.sparetimeforu.entity.Errand;
 import com.sparetimeforu.android.sparetimeforu.entity.SystemMessage;
 import com.sparetimeforu.android.sparetimeforu.util.SystemMessageSendUtil;
+import com.sparetimeforu.android.sparetimeforu.util.HandleMessageUtil;
+import com.sparetimeforu.android.sparetimeforu.util.VerifyUtil;
 import com.squareup.picasso.Picasso;
 
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.IOException;
 import java.io.IOException;
 import java.io.InputStream;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.List;
-import java.util.Random;
+
+import okhttp3.Call;
+import okhttp3.FormBody;
+import okhttp3.Response;
+
+import static com.sparetimeforu.android.sparetimeforu.adapter.IdleThingAdapter.parseDateString;
 
 import cn.jpush.im.android.api.JMessageClient;
 import cn.jpush.im.api.BasicCallback;
@@ -50,17 +59,15 @@ public class ErrandAdapter extends BaseQuickAdapter<Errand, BaseViewHolder> {
     Activity activity;
     private String url;
 
-    public ErrandAdapter(List<Errand> errands,Activity activity) {
+    public ErrandAdapter(List<Errand> errands, Activity activity) {
         super(R.layout.item_errand, errands);
-        this.activity=activity;
+        this.activity = activity;
 
-        url= STFUConfig.HOST+"/static";
+        url = STFUConfig.HOST + "/static";
         ErrandAdapter.this.setOnItemClickListener((adapter, view, position) -> {
-            Log.d(TAG, "onItemClick: You clicked me");
-            Toast.makeText(mContext, "You clicked the item: " + position, Toast.LENGTH_SHORT).show();
             Intent intent = new Intent(mContext, ErrandPostActivity.class);
             //intent.putExtra("errand_id",((Errand)adapter.getItem(position)).getErrand_id());
-            intent.putExtra("errand_id",502);
+            intent.putExtra("errand_id", 502);
             mContext.startActivity(intent);
         });
 
@@ -69,15 +76,44 @@ public class ErrandAdapter extends BaseQuickAdapter<Errand, BaseViewHolder> {
                 case R.id.errand_avatar:
                     //进入他人界面
                     Toast.makeText(mContext, "You clicked the avatar! ", Toast.LENGTH_SHORT).show();
-                    Intent intent=new Intent(activity,OthersPersonalActivity.class);
-                    intent.putExtra("user_Email",errands.get(position).getUser_Email());
+                    Intent intent = new Intent(activity, OthersPersonalActivity.class);
+                    intent.putExtra("user_Email", errands.get(position).getUser_Email());
                     activity.startActivity(intent);
                     break;
                 case R.id.errand_share:
                     Toast.makeText(mContext, "You clicked the share! ", Toast.LENGTH_SHORT).show();
                     break;
                 case R.id.errand_like:
-                    Toast.makeText(mContext, "You clicked the like! ", Toast.LENGTH_SHORT).show();
+                    if (!VerifyUtil.isLogin(mContext)) {
+                        break;
+                    }
+                    Errand e = (Errand) adapter.getItem(position);
+                    if (e == null || STFUConfig.sUser == null) {
+                        break;
+                    }
+                    FormBody body = new FormBody.Builder()
+                            .add("post_type", 0 + "")
+                            .add("post_id", e.getErrand_id() + "")
+                            .add("auth_token", STFUConfig.sUser.getAuth_token())
+                            .build();
+                    OkHttpUtil.sendOkHttpPostRequest(STFUConfig.HOST + "/like", body, new okhttp3.Callback() {
+                        @Override
+                        public void onFailure(Call call, IOException e) {
+                        }
+
+                        @Override
+                        public void onResponse(Call call, Response response) throws IOException {
+                            String str = response.body().string();
+                            try {
+                                JSONObject jsonObject = new JSONObject(str);
+                                if (jsonObject.getString("status").equals("success")) {
+                                    refreshItem(e.getErrand_id(), position);
+                                }
+                            } catch (JSONException e) {
+                                Logger.e(e.toString());
+                            }
+                        }
+                    });
                     break;
                 case R.id.errand_comment:
                     Toast.makeText(mContext, "You clicked the comment! ", Toast.LENGTH_SHORT).show();
@@ -89,20 +125,33 @@ public class ErrandAdapter extends BaseQuickAdapter<Errand, BaseViewHolder> {
 
     @Override
     protected void convert(BaseViewHolder helper, Errand item) {
+        if (item == null || item.getContent() == null) {
+            return;
+        }
         ImageView avatar = (ImageView) helper.getView(R.id.errand_avatar);
         TextView nickName = (TextView) helper.getView(R.id.errand_nick_name);
         nickName.setText(item.getUser_Nickname());
+
         TextView date = ((TextView) helper.getView(R.id.errand_date));
+        date.setText(parseDateString(item.getRelease_time()));
+
         TextView reward = ((TextView) helper.getView(R.id.errand_reward));
-        reward.setText(item.getMoney()+"");
+        reward.setText("\uD83D\uDCB0" + item.getMoney());
+
         TextView origin = ((TextView) helper.getView(R.id.errand_origin));
-        origin.setText(item.getOrgin());
+        origin.setText(item.getOrigin());
+
         TextView destination = ((TextView) helper.getView(R.id.errand_destination));
         destination.setText(item.getDestination());
+
         TextView deadline = ((TextView) helper.getView(R.id.errand_deadline));
-        deadline.setText(item.getEnd_time());
+        if (item.getEnd_time() != null) {
+            deadline.setText(parseDateString(item.getEnd_time()));
+        }
+
         TextView caption = ((TextView) helper.getView(R.id.errand_caption));
         caption.setText(item.getContent());
+
         ImageView p1 = (ImageView) helper.getView(R.id.errand_picture1);
         ImageView p2 = (ImageView) helper.getView(R.id.errand_picture2);
         ImageView p3 = (ImageView) helper.getView(R.id.errand_picture3);
@@ -120,29 +169,23 @@ public class ErrandAdapter extends BaseQuickAdapter<Errand, BaseViewHolder> {
 
 
         //set avatar img
-        InputStream ims;
-        Drawable drawable;
-        reward.setText(item.getMoney()+"");
-       date.setText(item.getRelease_time());
-       nickName.setText(item.getUser_Nickname());
-
         Picasso.get()
-                .load(url+"/avatar/"+item.getUser_Avatar())
-                .resize(30, 30)
+                .load(url + "/avatar/" + item.getUser_Avatar())
+                .resize(100, 100)
                 .centerCrop()
                 .into(avatar);
         Picasso.get()
-                .load(url+"/mission_pictures/"+item.getPicture_url_1())
+                .load(url + "/mission_pictures/" + item.getPicture_url_1())
                 .resize(200, 200)
                 .centerCrop()
                 .into(p1);
         Picasso.get()
-                .load(url+"/mission_pictures/"+item.getPicture_url_2())
+                .load(url + "/mission_pictures/" + item.getPicture_url_2())
                 .resize(200, 200)
                 .centerCrop()
                 .into(p2);
         Picasso.get()
-                .load(url+"/mission_pictures/"+item.getPicture_url_3())
+                .load(url + "/mission_pictures/" + item.getPicture_url_3())
                 .resize(200, 200)
                 .centerCrop()
                 .into(p3);
@@ -209,6 +252,32 @@ public class ErrandAdapter extends BaseQuickAdapter<Errand, BaseViewHolder> {
             });
         }
 
+    }
+
+    /**
+     * 刷新点赞的项
+     *
+     * @param itemId   帖子的id
+     * @param position 列表的位置
+     */
+    private void refreshItem(int itemId, int position) {
+        FormBody body = new FormBody.Builder()
+                .add("errand_id", itemId + "")
+                .build();
+
+        OkHttpUtil.sendOkHttpPostRequest(STFUConfig.HOST + "/mission/get_mission_by_mission_id", body, new okhttp3.Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                Errand errand = HandleMessageUtil.handlePost_Errand_Message(response.body().string());
+                ((Activity) mContext).runOnUiThread(() -> {
+                    ErrandAdapter.this.setData(position, errand);
+                });
+            }
+        });
     }
 
 }

@@ -9,6 +9,7 @@
     <include layout="@layout/custom_toolbar_back" />
 
     <android.support.v4.widget.SwipeRefreshLayout
+        android:id="@+id/refresh_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_marginTop="56dp"
@@ -19,6 +20,10 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="vertical">
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="5dp"
+                android:background="@drawable/toolbar_dropshadow" />
 
             <android.support.v4.widget.NestedScrollView
                 android:id="@+id/nestedScrollView"
@@ -58,7 +63,7 @@
         android:paddingStart="12dp">
 
         <EditText
-            android:id="@+id/errand_post_comment"
+            android:id="@+id/post_comment_content"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
@@ -75,7 +80,7 @@
             android:layout_width="48dp"
             android:layout_height="48dp"
             android:layout_gravity="center_vertical"
-            android:background="@color/white"
+            android:background="@drawable/touch_bg"
             android:contentDescription="@string/comment_send"
             android:padding="12dp"
             android:src="@drawable/ic_comment_photo"
@@ -83,11 +88,11 @@
             tools:ignore="MissingPrefix" />
 
         <ImageButton
-            android:id="@+id/errand_post_send"
+            android:id="@+id/post_send"
             android:layout_width="48dp"
             android:layout_height="48dp"
             android:layout_gravity="center_vertical"
-            android:background="@color/white"
+            android:background="@drawable/touch_bg"
             android:contentDescription="@string/comment_send"
             android:padding="12dp"
             android:src="@drawable/ic_comment_send"

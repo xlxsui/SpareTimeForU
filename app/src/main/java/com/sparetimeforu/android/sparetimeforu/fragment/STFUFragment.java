@@ -19,9 +19,11 @@ import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
@@ -46,11 +48,11 @@ import com.sparetimeforu.android.sparetimeforu.fragment.module.ErrandFragment;
 import com.sparetimeforu.android.sparetimeforu.fragment.module.IdleThingFragment;
 import com.sparetimeforu.android.sparetimeforu.fragment.module.SearchThingFragment;
 import com.sparetimeforu.android.sparetimeforu.fragment.module.StudyFragment;
+import com.sparetimeforu.android.sparetimeforu.util.QueryPreferences;
+import com.sparetimeforu.android.sparetimeforu.util.VerifyUtil;
 import com.sparetimeforu.android.sparetimeforu.util.StatusBarUtils;
 import com.sparetimeforu.android.sparetimeforu.util.SystemDataBaseUtil;
 import com.squareup.picasso.Callback;
-import com.squareup.picasso.MemoryPolicy;
-import com.squareup.picasso.NetworkPolicy;
 import com.squareup.picasso.Picasso;
 
 import java.io.BufferedOutputStream;
@@ -101,6 +103,8 @@ public class STFUFragment extends Fragment {
 
     private static final String CURRENT_BOTTOM_ITEM = "current_bottom_item";
     private static final int REQUEST_CODE_LOGIN = 0;
+    private long mLastClickTime = 0;
+    private final int DOUBLE_CLICK_INTERVAL = 400;
 
 
     public static STFUFragment newInstance() {
@@ -123,13 +127,34 @@ public class STFUFragment extends Fragment {
         mToolbar = (Toolbar) view.findViewById(R.id.toolbar);
         ((AppCompatActivity) getActivity()).setSupportActionBar(mToolbar);
         TextView title = (TextView) view.findViewById(R.id.title_top);
-        title.setText("汕大顺手邦");
+        title.setText(R.string.app_name);
+        title.setOnClickListener((v) -> {
+            long currentClickTime = System.currentTimeMillis();
+            if (currentClickTime - mLastClickTime <= DOUBLE_CLICK_INTERVAL) {
+                // 双击
+                switch (mBottomNavigationView.getSelectedItemId()) {
+                    case R.id.navigation_errand:
+                        loadErrandFragment("");
+                        break;
+                    case R.id.navigation_second_hand:
+                        loadIdleThingFragment("");
+                        break;
+                    case R.id.navigation_study:
+                        loadStudyFragment("");
+                        break;
+                    case R.id.navigation_search:
+                        loadSearchThingFragment("");
+                        break;
+                }
+            } else {
+                mLastClickTime = System.currentTimeMillis();
+                // 单击
+            }
+
+
+        });
         slideIcon = (ImageView) view.findViewById(R.id.menu_slide_icon);
-        slideIcon.setOnClickListener(v -> mDrawerLayout.openDrawer(GravityCompat.START));
-        ImageView searchIcon = (ImageView) view.findViewById(R.id.menu_search_icon);
-        searchIcon.setOnClickListener(v -> Toast.makeText(getActivity(), "Spare time for you!",
-                Toast.LENGTH_SHORT)
-                .show());
+        setHasOptionsMenu(true);//打开填充菜单，要实现onCreateOptionsMenu方法
 
         /**
          * 主片段及其布局
@@ -145,16 +170,16 @@ public class STFUFragment extends Fragment {
                 item -> {
                     switch (item.getItemId()) {
                         case R.id.navigation_errand:
-                            loadErrandFragment();
+                            loadErrandFragment("");
                             return true;
                         case R.id.navigation_second_hand:
-                            loadIdleThingFragment();
+                            loadIdleThingFragment("");
                             return true;
                         case R.id.navigation_study:
-                            loadStudyFragment();
+                            loadStudyFragment("");
                             return true;
                         case R.id.navigation_search:
-                            loadSearchThingFragment();
+                            loadSearchThingFragment("");
                             return true;
                     }
                     return false;
@@ -202,7 +227,6 @@ public class STFUFragment extends Fragment {
                 case R.id.slider_menu_exit:
                     getActivity().finish();
                     getActivity().moveTaskToBack(true);
-                    exit(0);
             }
 
             mDrawerLayout.closeDrawer(GravityCompat.START);
@@ -223,8 +247,10 @@ public class STFUFragment extends Fragment {
             Logger.e("onCreateView: ", e);
         }
         mAvatar.setOnClickListener(v -> {
-            Intent intent = new Intent(getActivity(), PersonalActivity.class);
-            startActivity(intent);
+            if (VerifyUtil.isLogin(getActivity())) {
+                Intent intent = new Intent(getActivity(), PersonalActivity.class);
+                startActivity(intent);
+            }
         });
 
         Menu mDrawerMenuView = mDrawerNavigationView.getMenu();//侧滑栏的菜单
@@ -233,23 +259,23 @@ public class STFUFragment extends Fragment {
 
         //初次加载的界面
         if (savedInstanceState == null) {
-            loadErrandFragment();
+            loadErrandFragment("");
         } else {
             switch (savedInstanceState.getInt(CURRENT_BOTTOM_ITEM)) {
                 case R.id.navigation_errand:
-                    loadErrandFragment();
+                    loadErrandFragment("");
                     break;
                 case R.id.navigation_second_hand:
-                    loadIdleThingFragment();
+                    loadIdleThingFragment("");
                     break;
                 case R.id.navigation_study:
-                    loadStudyFragment();
+                    loadStudyFragment("");
                     break;
                 case R.id.navigation_search:
-                    loadSearchThingFragment();
+                    loadSearchThingFragment("");
                     break;
                 default:
-                    loadErrandFragment();
+                    loadErrandFragment("");
                     break;
             }
         }
@@ -268,9 +294,12 @@ public class STFUFragment extends Fragment {
         return view;
     }
 
+    /**
+     * 这里主要是从本地读取已经登录的用户
+     */
     @Override
-    public void onStart() {
-        super.onStart();
+    public void onResume() {
+        super.onResume();
 
         AccountManager accountManager = AccountManager.get(getContext());
         Account[] account = accountManager.getAccountsByType(BuildConfig.APPLICATION_ID);
@@ -326,6 +355,7 @@ public class STFUFragment extends Fragment {
         }
         if (STFUConfig.sUser != null) {
             updateViews();
+            VerifyUtil.isTokenValid(getActivity());
         }
         //初始化Systemmessage
         if(STFUConfig.systemMessages==null||STFUConfig.systemMessages.size()==0){
@@ -337,8 +367,80 @@ public class STFUFragment extends Fragment {
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        //bind the fragment with bottom navigation item
+        //将片段与底部导航项绑定
         outState.putInt(CURRENT_BOTTOM_ITEM, mBottomNavigationView.getSelectedItemId());
+    }
+
+    /**
+     * 创建搜索菜单
+     *
+     * @param menu
+     * @param inflater
+     */
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        super.onCreateOptionsMenu(menu, inflater);
+        inflater.inflate(R.menu.fragment_stfu_menu, menu);
+
+        MenuItem searchItem = menu.findItem(R.id.menu_item_search);
+        final SearchView searchView = (SearchView) searchItem.getActionView();
+
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+
+                // 最小化搜索框
+                if (!searchView.isIconified()) {
+                    searchView.setIconified(true);// 第一次清除焦点，输入内容
+                    searchView.setIconified(true);
+                }
+
+                QueryPreferences.setStoredQuery(getActivity(), query);
+                switch (mBottomNavigationView.getSelectedItemId()) {
+                    case R.id.navigation_errand:
+                        loadErrandFragment(query);
+                        return true;
+                    case R.id.navigation_second_hand:
+                        loadIdleThingFragment(query);
+                        return true;
+                    case R.id.navigation_study:
+                        loadStudyFragment(query);
+                        return true;
+                    case R.id.navigation_search:
+                        loadSearchThingFragment(query);
+                        return true;
+                }
+                return true;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                Logger.w(newText);
+                return false;
+            }
+        });
+
+        searchView.setOnSearchClickListener(v -> {
+            String query = QueryPreferences.getStoredQuery(getActivity());
+            searchView.setQuery(query, false);
+        });
+    }
+
+    /**
+     * 搜索清除
+     *
+     * @param item
+     * @return
+     */
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.menu_item_clear:
+                QueryPreferences.setStoredQuery(getActivity(), null);
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
     }
 
     @Override
@@ -389,7 +491,7 @@ public class STFUFragment extends Fragment {
         switch (mode) {
             case 0:
                 mDrawerNavigationView.getMenu().findItem(R.id.slider_menu_personal_letter).setIcon(R.drawable.ic_personal_letter);
-                slideIcon.setImageDrawable(getResources().getDrawable(R.drawable.ic_menu_slide));
+                slideIcon.setImageDrawable(getResources().getDrawable(R.drawable.ic_personal_letter));
                 break;
             case 1:
                 mDrawerNavigationView.getMenu().findItem(R.id.slider_menu_personal_letter).setIcon(R.drawable.ic_slide_message);
@@ -402,15 +504,17 @@ public class STFUFragment extends Fragment {
 
     @OnClick(R.id.fab)
     public void onFABClicked() {
-        Intent intent = new Intent(getActivity(), SendPostActivity.class);
-        intent.putExtra("current_item", mBottomNavigationView.getSelectedItemId());
-        startActivity(intent);
+        if (VerifyUtil.isLogin(getActivity())) {
+            Intent intent = new Intent(getActivity(), SendPostActivity.class);
+            intent.putExtra("current_item", mBottomNavigationView.getSelectedItemId());
+            startActivity(intent);
+        }
     }
 
     /**
      * 加载Item Fragment到main_fragment布局
      */
-    public void loadErrandFragment() {
+    public void loadErrandFragment(String query) {
         LayoutInflater inflater = (LayoutInflater) ((AppCompatActivity) getActivity())
                 .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         //把layout生成一个view对象
@@ -421,13 +525,17 @@ public class STFUFragment extends Fragment {
             //假如fragment为空，这时才重新创建一个，并且提交显示
             mErrandFragment = new ErrandFragment();
         }
+        Bundle args = new Bundle();
+        if (!query.equals("")) {
+            args.putString("query", query);
+        }
+        mErrandFragment.setArguments(args);
         mFm.beginTransaction()
                 .replace(R.id.main_fragment, mErrandFragment)
                 .commit();
-        Logger.d("load errand fragment");
     }
 
-    public void loadIdleThingFragment() {
+    public void loadIdleThingFragment(String query) {
         LayoutInflater inflater = (LayoutInflater) ((AppCompatActivity) getActivity())
                 .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         //把layout生成一个view对象
@@ -436,12 +544,17 @@ public class STFUFragment extends Fragment {
         if (mIdleThingFragment == null) {
             mIdleThingFragment = new IdleThingFragment();
         }
+        Bundle args = new Bundle();
+        if (!query.equals("")) {
+            args.putString("query", query);
+        }
+        mIdleThingFragment.setArguments(args);
         mFm.beginTransaction()
                 .replace(R.id.main_fragment, mIdleThingFragment)
                 .commit();
     }
 
-    public void loadStudyFragment() {
+    public void loadStudyFragment(String query) {
         LayoutInflater inflater = (LayoutInflater) ((AppCompatActivity) getActivity())
                 .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         //把layout生成一个view对象
@@ -450,13 +563,17 @@ public class STFUFragment extends Fragment {
         if (mStudyFragment == null) {
             mStudyFragment = new StudyFragment();
         }
-
+        Bundle args = new Bundle();
+        if (!query.equals("")) {
+            args.putString("query", query);
+        }
+        mStudyFragment.setArguments(args);
         mFm.beginTransaction()
                 .replace(R.id.main_fragment, mStudyFragment)
                 .commit();
     }
 
-    public void loadSearchThingFragment() {
+    public void loadSearchThingFragment(String query) {
         LayoutInflater inflater = (LayoutInflater) ((AppCompatActivity) getActivity())
                 .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         inflater.inflate(R.layout.fragment_search_thing, mMainFragmentLayout);
@@ -464,6 +581,11 @@ public class STFUFragment extends Fragment {
         if (mSearchThingFragment == null) {
             mSearchThingFragment = new SearchThingFragment();
         }
+        Bundle args = new Bundle();
+        if (!query.equals("")) {
+            args.putString("query", query);
+        }
+        mSearchThingFragment.setArguments(args);
         mFm.beginTransaction()
                 .replace(R.id.main_fragment, mSearchThingFragment)
                 .commit();
@@ -478,16 +600,16 @@ public class STFUFragment extends Fragment {
                     .load(STFUConfig.HOST + "/static/avatar/" + STFUConfig.sUser.getAvatar_url())
                     .resize(200, 200)
                     .centerCrop()
-                    .memoryPolicy(MemoryPolicy.NO_CACHE)
-                    .networkPolicy(NetworkPolicy.NO_CACHE)//限制Picasso从内存中加载图片  不然头像更换 不及时
+//                    .memoryPolicy(MemoryPolicy.NO_CACHE)
+//                    .networkPolicy(NetworkPolicy.NO_CACHE)//限制Picasso从内存中加载图片  不然头像更换 不及时
                     .into(mAvatar);
             //设置背景图片
             Picasso.get()
                     .load(STFUConfig.HOST + "/static/personal_background/" + STFUConfig.sUser.getBg_url())
                     .resize(1920, 1080)
                     .centerCrop()
-                    .memoryPolicy(MemoryPolicy.NO_CACHE)
-                    .networkPolicy(NetworkPolicy.NO_CACHE)//限制Picasso从内存中加载图片  不然头像更换 不及时
+//                    .memoryPolicy(MemoryPolicy.NO_CACHE)
+//                    .networkPolicy(NetworkPolicy.NO_CACHE)//限制Picasso从内存中加载图片  不然头像更换 不及时
                     .into(mBGImageView, new Callback() {
                         @Override
                         public void onSuccess() {
@@ -497,7 +619,6 @@ public class STFUFragment extends Fragment {
 
                         @Override
                         public void onError(Exception e) {
-                            Logger.e(e.toString());
                         }
                     });
 

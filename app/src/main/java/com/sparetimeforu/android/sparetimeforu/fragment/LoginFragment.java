@@ -15,6 +15,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -74,6 +75,9 @@ public class LoginFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         JMessageClient.init(getActivity().getApplicationContext());
         LoginServerUrl = STFUConfig.HOST + "/auth/login";
+        //防止截屏录屏
+        getActivity().getWindow().setFlags(WindowManager.LayoutParams.FLAG_SECURE,
+                WindowManager.LayoutParams.FLAG_SECURE);
 
         View view = inflater.inflate(R.layout.fragment_login, container, false);
         ButterKnife.bind(this, view);
@@ -138,7 +142,8 @@ public class LoginFragment extends Fragment {
                                         Toast.makeText(LoginFragment.this.getActivity(),
                                                 "用户名或者密码错误", Toast.LENGTH_SHORT).show());
                             } else {
-                                mUser = user;//给成员变量mUser赋值
+                                mUser = user;//给成员变量mUser赋值，user从json解析得来
+                                STFUConfig.sUser = user;//顺便帮全局User赋值，懒得搞
                                 Logger.i(mUser.toString());
                                 getActivity().runOnUiThread(() -> {
                                     //添加账户
@@ -146,13 +151,13 @@ public class LoginFragment extends Fragment {
                                         @Override
                                         public void gotResult(int i, String s) {
                                             if (i == 0) {
-                                                com.orhanobut.logger.Logger.i("极光登陆成功");
+                                                Logger.i("极光登陆成功");
                                             }
                                         }
                                     });
                                     addAccount();
                                     Intent intent = new Intent(getActivity(), STFUActivity.class);
-                                    intent.putExtra("user", user);
+                                    intent.putExtra("user", user);//把user返回之前的activity
                                     getActivity().setResult(Activity.RESULT_OK, intent);
                                     getActivity().finish();
                                 });

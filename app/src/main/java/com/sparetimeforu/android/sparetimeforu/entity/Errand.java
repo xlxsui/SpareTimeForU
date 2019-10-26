@@ -3,9 +3,6 @@ package com.sparetimeforu.android.sparetimeforu.entity;
 import org.litepal.crud.LitePalSupport;
 
 import java.io.Serializable;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.UUID;
 
 /**
  * Created by Jin on 2018/11/4.
@@ -19,7 +16,7 @@ public class Errand extends LitePalSupport implements Serializable {
     private String picture_url_1;
     private String picture_url_2;
     private String picture_url_3;
-    private String orgin;
+    private String origin;
     private String destination;
     private int like_number;
     private int comment_number;
@@ -116,12 +113,12 @@ public class Errand extends LitePalSupport implements Serializable {
         this.picture_url_3 = picture_url_3;
     }
 
-    public String getOrgin() {
-        return orgin;
+    public String getOrigin() {
+        return origin;
     }
 
-    public void setOrgin(String orgin) {
-        this.orgin = orgin;
+    public void setOrigin(String origin) {
+        this.origin = origin;
     }
 
     public String getDestination() {

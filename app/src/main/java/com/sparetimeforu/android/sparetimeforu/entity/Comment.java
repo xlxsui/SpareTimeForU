@@ -8,7 +8,7 @@ import java.io.Serializable;
  * Email:17wjli6@stu.edu.cn
  */
 
-public class Comment implements Serializable{
+public class Comment implements Serializable {
     //{"content":"恍惚迷离重叙旧缘","
     // disabled":0,"
     // id":3,"post_id":502,
@@ -26,6 +26,16 @@ public class Comment implements Serializable{
     private String user_avatar;
     private String user_email;
     private String user_nickname;
+    private String post_type;
+
+    public String getPost_type() {
+        return post_type;
+    }
+
+    public void setPost_type(String post_type) {
+        this.post_type = post_type;
+    }
+
     public int getId() {
         return id;
     }
@@ -96,5 +106,20 @@ public class Comment implements Serializable{
 
     public void setUser_id(int user_id) {
         this.user_id = user_id;
+    }
+
+    @Override
+    public String toString() {
+        return "Comment{" +
+                "id=" + id +
+                ", content='" + content + '\'' +
+                ", time='" + time + '\'' +
+                ", disabled=" + disabled +
+                ", post_id=" + post_id +
+                ", user_id=" + user_id +
+                ", user_avatar='" + user_avatar + '\'' +
+                ", user_email='" + user_email + '\'' +
+                ", user_nickname='" + user_nickname + '\'' +
+                '}';
     }
 }

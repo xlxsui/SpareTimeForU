@@ -43,4 +43,12 @@
     <string name="origin">Origin</string>
     <string name="price">Money</string>
     <string name="deadline">Pick your deadline</string>
+    <string name="accpet_mission">accept an errand</string>
+    <string name="comment_number">评论 %1s</string>
+    <string name="date_picker_title">deadline</string>
+    <string name="like_number">like %1s</string>
+    <string name="reached_limit">Has reached its limit</string>
+    <string name="right_content">Please enter the correct content!</string>
+    <string name="send">Send</string>
+    <string name="wish">Say what you wish for</string>
 </resources>

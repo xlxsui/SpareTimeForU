@@ -46,21 +46,14 @@
         <activity
             android:name=".activity.EditActivity"
             android:label="" />
-        <activity
-            android:name=".activity.STFUActivity">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
+        <activity android:name=".activity.STFUActivity" />
         <activity
             android:name=".activity.ErrandReceivedActivity"
             android:label="" />
-
-        <activity android:name=".activity.SystemMessageListActivity"/>
-        <activity android:name=".activity.ConversationListActivity"/>
-        <activity android:name=".activity.OthersPersonalActivity"/>
-        <activity android:name=".activity.PostReleasedActivity"/>
+        <activity android:name=".activity.SystemMessageListActivity" />
+        <activity android:name=".activity.ConversationListActivity" />
+        <activity android:name=".activity.OthersPersonalActivity" />
+        <activity android:name=".activity.PostReleasedActivity" />
         <activity android:name=".activity.LoginActivity" />
         <activity android:name=".activity.SignUpActivity" />
         <activity android:name=".activity.post.ErrandPostActivity" />
@@ -72,6 +65,15 @@
         <activity android:name=".activity.ChattingActivity" />
         <activity android:name=".activity.FriendActivity" />
         <activity android:name=".activity.post.SendPostActivity" />
+        <activity
+            android:name=".activity.SplashActivity"
+            android:theme="@style/SplashTheme">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity android:name=".activity.IntroActivity" />
 
         <service
             android:name=".account.AccountAuthenticatorService"

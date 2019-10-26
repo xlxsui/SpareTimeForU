@@ -71,22 +71,25 @@
             android:gravity="center"
             android:text="XXX" />
     </LinearLayout>
+
     <LinearLayout
         android:layout_width="0dp"
+        android:layout_height="match_parent"
         android:layout_weight="1.4"
-        android:orientation="vertical"
-        android:layout_height="match_parent">
+        android:orientation="vertical">
+
         <Button
-            android:layout_marginTop="10dip"
-            android:layout_gravity="center"
+            android:id="@+id/post_status"
             android:layout_width="wrap_content"
+            android:layout_height="30dip"
+            android:layout_gravity="center"
+            android:layout_marginTop="10dip"
             android:background="@drawable/button_style"
-            android:textSize="12sp"
             android:gravity="center"
-            android:textColor="#fb7299"
-            android:textStyle="bold"
             android:text="@string/accpet_mission"
-            android:layout_height="30dip" />
+            android:textColor="#fb7299"
+            android:textSize="12sp"
+            android:textStyle="bold" />
     </LinearLayout>
 
 </LinearLayout>

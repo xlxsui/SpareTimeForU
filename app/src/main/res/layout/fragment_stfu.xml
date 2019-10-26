@@ -22,8 +22,14 @@
             android:layout_marginTop="56dp"
             android:layout_marginBottom="56dp">
 
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="5dp"
+                android:background="@drawable/toolbar_dropshadow" />
+
             <FrameLayout
                 android:id="@+id/main_fragment"
+                android:layout_marginTop="5dp"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
 

@@ -69,7 +69,7 @@ public class PostReleasedFragment extends Fragment {
         LinearLayoutManager linearLayoutManager=new LinearLayoutManager(getContext());
         recyclerView.setLayoutManager(linearLayoutManager);
         //设置toolbar
-        toolbar = view.findViewById(R.id.personal_toolbar);
+        toolbar = view.findViewById(R.id.toolbar);
         toolbar.setTitle("");
         ((AppCompatActivity) getActivity()).setSupportActionBar(toolbar);
 

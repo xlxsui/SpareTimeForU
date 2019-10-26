@@ -1,5 +1,7 @@
 package com.sparetimeforu.android.sparetimeforu.activity;
 
+import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.view.GravityCompat;
@@ -10,6 +12,7 @@ import com.orhanobut.logger.AndroidLogAdapter;
 import com.orhanobut.logger.Logger;
 import com.sparetimeforu.android.sparetimeforu.R;
 import com.sparetimeforu.android.sparetimeforu.fragment.STFUFragment;
+import com.sparetimeforu.android.sparetimeforu.util.StatusBarUtils;
 
 
 public class STFUActivity extends SingleFragmentActivity {

@@ -25,6 +25,19 @@ public class Study extends LitePalSupport implements Serializable {
     private String release_time;
     private int study_id;
     private int is_solved;
+    private int like_number;
+
+    public int getIs_solved() {
+        return is_solved;
+    }
+
+    public int getLike_number() {
+        return like_number;
+    }
+
+    public void setLike_number(int like_number) {
+        this.like_number = like_number;
+    }
 
     public int getStudy_id() {
         return study_id;
@@ -133,5 +146,23 @@ public class Study extends LitePalSupport implements Serializable {
     }
 
 
-
+    @Override
+    public String toString() {
+        return "Study{" +
+                "user_Email='" + user_Email + '\'' +
+                ", user_Avatar='" + user_Avatar + '\'' +
+                ", user_Nickname='" + user_Nickname + '\'' +
+                ", content='" + content + '\'' +
+                ", picture_url_1='" + picture_url_1 + '\'' +
+                ", picture_url_2='" + picture_url_2 + '\'' +
+                ", picture_url_3='" + picture_url_3 + '\'' +
+                ", comment_number=" + comment_number +
+                ", id=" + id +
+                ", is_deleted=" + is_deleted +
+                ", release_time='" + release_time + '\'' +
+                ", study_id=" + study_id +
+                ", is_solved=" + is_solved +
+                ", like_number=" + like_number +
+                '}';
+    }
 }

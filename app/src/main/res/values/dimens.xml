@@ -2,8 +2,15 @@
 
 <resources>
 
+    <dimen name="dp_2">2dp</dimen>
     <dimen name="dp_4">4dp</dimen>
+    <dimen name="dp_8">8dp</dimen>
     <dimen name="dp_16">16dp</dimen>
+    <dimen name="sp_10">10sp</dimen>
+    <dimen name="sp_12">12sp</dimen>
+    <dimen name="sp_16">16sp</dimen>
+    <dimen name="sp_20">20sp</dimen>
+
     <item name="match_parent" format="integer" type="dimen">-1</item>
     <item name="wrap_content" format="integer" type="dimen">-2</item>
 

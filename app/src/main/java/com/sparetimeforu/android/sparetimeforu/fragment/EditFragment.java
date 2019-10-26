@@ -124,7 +124,7 @@ public class EditFragment extends Fragment {
 
         //设置Toolbar中返回按钮的点击事件
 
-        personal_go_back = (ImageView) view.findViewById(R.id.persnal_go_back);
+        personal_go_back = (ImageView) view.findViewById(R.id.menu_back_icon);
         personal_go_back.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -365,15 +365,15 @@ public class EditFragment extends Fragment {
                     .load(STFUConfig.HOST + "/static/avatar/" + STFUConfig.sUser.getAvatar_url())
                     .resize(600, 600)
                     .centerCrop()
-                    .memoryPolicy(MemoryPolicy.NO_CACHE)
-                    .networkPolicy(NetworkPolicy.NO_CACHE)//限制Picasso从内存中加载图片  不然头像更换 不及时
+//                    .memoryPolicy(MemoryPolicy.NO_CACHE)
+//                    .networkPolicy(NetworkPolicy.NO_CACHE)//限制Picasso从内存中加载图片  不然头像更换 不及时
                     .into(iv_edit_avatar);
             Picasso.get()
                     .load(STFUConfig.HOST + "/static/personal_background/" + STFUConfig.sUser.getBg_url())
                     .resize(960, 593)
                     .centerCrop()
-                    .memoryPolicy(MemoryPolicy.NO_CACHE)
-                    .networkPolicy(NetworkPolicy.NO_CACHE)//限制Picasso从内存中加载图片  不然头像更换 不及时
+//                    .memoryPolicy(MemoryPolicy.NO_CACHE)
+//                    .networkPolicy(NetworkPolicy.NO_CACHE)//限制Picasso从内存中加载图片  不然头像更换 不及时
                     .into(iv_edit_bg);
         }
     }

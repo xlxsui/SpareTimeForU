@@ -22,6 +22,12 @@
         android:layout_height="match_parent"
         android:fillViewport="true">
 
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="5dp"
+            android:background="@drawable/toolbar_dropshadow"
+            app:layout_constraintTop_toTopOf="parent" />
+
         <LinearLayout
             android:id="@+id/linearLayout2"
             android:layout_width="match_parent"
@@ -154,9 +160,9 @@
                 android:layout_marginTop="8dp"
                 android:layout_marginEnd="8dp"
                 android:hint="@string/price"
+                android:inputType="numberDecimal"
                 android:paddingStart="@dimen/dp_16"
-                android:paddingEnd="@dimen/dp_16"
-                android:inputType="numberDecimal" />
+                android:paddingEnd="@dimen/dp_16" />
         </LinearLayout>
 
         <Button

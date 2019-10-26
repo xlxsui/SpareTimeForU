@@ -5,14 +5,22 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
 
-    <include layout="@layout/personal_toolbar"
+    <include layout="@layout/custom_toolbar_back"
         android:id="@+id/mission_received_top"/>
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="5dp"
+        android:id="@+id/shadow"
+        android:layout_below="@+id/mission_received_top"
+        android:background="@drawable/toolbar_dropshadow" />
+
+
     <android.support.design.widget.BottomNavigationView
         android:id="@+id/mission_received_select"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:fitsSystemWindows="true"
-        android:layout_below="@+id/mission_received_top"
+        android:layout_below="@+id/shadow"
         android:background="#eee"
         app:menu="@menu/mission_received_navigation">
     </android.support.design.widget.BottomNavigationView>

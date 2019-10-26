@@ -40,6 +40,10 @@ import com.sparetimeforu.android.sparetimeforu.ServerConnection.OkHttpUtil;
 import com.sparetimeforu.android.sparetimeforu.adapter.SendPostImageAdapter;
 import com.sparetimeforu.android.sparetimeforu.entity.PhotoPopupWindow;
 import com.sparetimeforu.android.sparetimeforu.fragment.DatePickerFragment;
+import com.sparetimeforu.android.sparetimeforu.util.VerifyUtil;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.File;
 import java.io.IOException;
@@ -250,6 +254,9 @@ public class SendPostFragment extends Fragment {
 
     @OnClick(R.id.btn_confirm)
     public void sendPost() {
+        if (!VerifyUtil.isLogin(getActivity())) {
+            return;
+        }
         RequestBody body = buildRequestBody();
         String uri = "";
         switch (postType) {
@@ -277,10 +284,24 @@ public class SendPostFragment extends Fragment {
 
                 @Override
                 public void onResponse(Call call, Response response) throws IOException {
-                    getActivity().runOnUiThread(() -> {
-                        Toast.makeText(getContext(), "发布成功", Toast.LENGTH_SHORT).show();
-                        getActivity().finish();
-                    });
+                    String status = "";
+                    try {
+                        JSONObject jsonObject = new JSONObject(response.body().string());
+                        status = jsonObject.getString("status");
+                    } catch (Exception e) {
+                        Logger.e(e.toString());
+                    }
+                    if (status.equals("success")) {
+                        getActivity().runOnUiThread(() -> {
+                            Toast.makeText(getContext(), "发布成功", Toast.LENGTH_SHORT).show();
+                            getActivity().finish();
+                        });
+                    } else {
+                        getActivity().runOnUiThread(() -> {
+                            Toast.makeText(getContext(), "发布失败", Toast.LENGTH_SHORT).show();
+                        });
+                    }
+
                 }
             });
         }

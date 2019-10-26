@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.support.annotation.Nullable;
+import android.support.design.widget.BaseTransientBottomBar;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -17,20 +18,22 @@ import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.chad.library.adapter.base.BaseQuickAdapter;
+import com.orhanobut.logger.Logger;
 import com.sparetimeforu.android.sparetimeforu.R;
 import com.sparetimeforu.android.sparetimeforu.STFUConfig;
 import com.sparetimeforu.android.sparetimeforu.ServerConnection.OkHttpUtil;
 import com.sparetimeforu.android.sparetimeforu.adapter.IdleThingAdapter;
 import com.sparetimeforu.android.sparetimeforu.data.DataServer;
 import com.sparetimeforu.android.sparetimeforu.entity.IdleThing;
-import com.sparetimeforu.android.sparetimeforu.fragment.STFUFragment;
+import com.sparetimeforu.android.sparetimeforu.entity.Pagination;
 import com.sparetimeforu.android.sparetimeforu.util.HandleMessageUtil;
 import com.sparetimeforu.android.sparetimeforu.util.IdleThingDataBaseUtil;
 import com.squareup.picasso.Picasso;
 
+import org.json.JSONObject;
+
 import java.io.IOException;
 import java.util.List;
-import java.util.Random;
 
 import okhttp3.Call;
 import okhttp3.Callback;
@@ -53,22 +56,22 @@ class RequestIdleThing extends Thread {
     private Handler mHandler;
     private String url;
     private Activity activity;
-    private int orgin=0;
+    private int origin = 0;
 
 
-    public RequestIdleThing(RequestIdleThingCallBack callBack,Activity activity) {
-        url= STFUConfig.HOST+"/idle_thing/refresh_newest";
+    public RequestIdleThing(RequestIdleThingCallBack callBack, Activity activity) {
+        url = STFUConfig.HOST + "/idle_thing/refresh_newest";
         mCallBack = callBack;
         mHandler = new Handler(Looper.getMainLooper());
-        this.activity=activity;
+        this.activity = activity;
     }
 
     @Override
     public void run() {
-        FormBody formBody=new FormBody.Builder()
-                .add("request_type","二手交易").build();
+        FormBody formBody = new FormBody.Builder()
+                .add("request_type", "二手交易").build();
         //每次下拉加载都把orgin重置为0  即取数据库中最新的帖子信息
-        orgin=0;
+        origin = 0;
         OkHttpUtil.sendOkHttpPostRequest(url, formBody, new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
@@ -81,9 +84,9 @@ class RequestIdleThing extends Thread {
             public void onResponse(Call call, Response response) throws IOException {
                 //获取数据成功
                 HandleMessageUtil.handleIdleThingMessage(response.body().string());
-                final List<IdleThing> idleThings=IdleThingDataBaseUtil.getIdleThing_data(orgin);
-                if(idleThings.size()>0){
-                    orgin+=idleThings.size();
+                final List<IdleThing> idleThings = IdleThingDataBaseUtil.getIdleThing_data(origin);
+                if (idleThings.size() > 0) {
+                    origin += idleThings.size();
                 }
                 mCallBack.success(idleThings);
             }
@@ -92,24 +95,34 @@ class RequestIdleThing extends Thread {
 }
 
 
+
 public class IdleThingFragment extends Fragment {
 
     private RecyclerView mRecyclerView;
     private IdleThingAdapter mAdapter;
-    private List<IdleThing> mIdleThings;
     private SwipeRefreshLayout mIdleThingRefreshLayout;
+    private Pagination mPagination;// 分页对象，加载更多时会用到
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_idle_thing_main, container, false);
-        mRecyclerView = (RecyclerView) view.findViewById(R.id.fragment_idle_thing_main_recycler_view);
+        mRecyclerView = view.findViewById(R.id.fragment_idle_thing_main_recycler_view);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-        setupAdapter(DataServer.getIdleThingData(34));
+        setupAdapter(DataServer.getIdleThingData(0));
 
-        mIdleThingRefreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.idle_thing_refresh_layout);
+        mIdleThingRefreshLayout = view.findViewById(R.id.idle_thing_refresh_layout);
         mIdleThingRefreshLayout.setColorSchemeResources(R.color.colorPrimary, R.color.colorAccent, R.color.colorPrimaryDark);
         initRefreshLayout();
+
+        Bundle args = getArguments();
+        String query = args.getString("query", "not_query");
+        if (query.equals("not_query")) {
+            refresh();
+        } else {
+            search(query);
+        }
+
 
         return view;
     }
@@ -117,7 +130,7 @@ public class IdleThingFragment extends Fragment {
     private void setupAdapter(List<IdleThing> idleThingData) {
         mAdapter = new IdleThingAdapter(idleThingData);
         mAdapter.openLoadAnimation(BaseQuickAdapter.SLIDEIN_LEFT);
-        mAdapter.isFirstOnly(false);
+        mAdapter.isFirstOnly(true);
 
         //set main fragment header_errand
         View view = getLayoutInflater().inflate(R.layout.header_main_fragment,
@@ -128,43 +141,140 @@ public class IdleThingFragment extends Fragment {
                 .centerCrop()
                 .into(img);
         mAdapter.addHeaderView(view);
+        mAdapter.setEnableLoadMore(true);
+        mAdapter.setOnLoadMoreListener(this::loadMore, mRecyclerView);
+
 
         mRecyclerView.setAdapter(mAdapter);
     }
 
 
     private void initRefreshLayout() {
-        mIdleThingRefreshLayout.setOnRefreshListener(() -> refresh());
+        mIdleThingRefreshLayout.setOnRefreshListener(this::refresh);
     }
 
+    /**
+     * refresh new post
+     */
     private void refresh() {
+        mPagination = new Pagination();// 重来页数也要重置
         mAdapter.setEnableLoadMore(false);//这里的作用是防止下拉刷新的时候还可以上拉加载
+        mIdleThingRefreshLayout.setRefreshing(true);
         new RequestIdleThing(new RequestIdleThingCallBack() {
             @Override
             public void success(List<IdleThing> data) {
-                Snackbar.make(getView(), "Refresh finished! ", Snackbar.LENGTH_SHORT).show();
+                Snackbar.make(getView(), "Refresh finished! ",
+                        BaseTransientBottomBar.LENGTH_INDEFINITE).show();
                 //do something
-                getActivity().runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        setupAdapter(data);
-                        mAdapter.setEnableLoadMore(true);
-                        mIdleThingRefreshLayout.setRefreshing(false);
-                        Snackbar.make(getView(), "Refresh finished! ",Snackbar.LENGTH_SHORT).show();
+                getActivity().runOnUiThread(() -> {
+                    mAdapter.setNewData(data);//update data
+                    mAdapter.setEnableLoadMore(true);
+                    mIdleThingRefreshLayout.setRefreshing(false);
+                    Snackbar.make(getView(), "Refresh finished! ",
+                            BaseTransientBottomBar.LENGTH_SHORT).show();
+                    if (data.size() < 6) {
+                        mAdapter.loadMoreEnd();
                     }
                 });
             }
 
             @Override
             public void fail(Exception e) {
-                Snackbar.make(getView(), "Network error! ", Snackbar.LENGTH_SHORT).show();
-
+                Snackbar.make(getView(), "Network error! ",
+                        BaseTransientBottomBar.LENGTH_SHORT).show();
 
                 mAdapter.setEnableLoadMore(true);
                 mIdleThingRefreshLayout.setRefreshing(false);
             }
-        },getActivity()).start();
+        }, getActivity()).start();
     }
 
+    /**
+     * search post
+     *
+     * @param query the content be searched
+     */
+    private void search(String query) {
+        mIdleThingRefreshLayout.setRefreshing(true);
+
+        FormBody body = new FormBody.Builder()
+                .add("content", query)
+                .build();
+
+        OkHttpUtil.sendOkHttpPostRequest(STFUConfig.HOST + "/idle_thing/search",
+                body, new Callback() {
+                    @Override
+                    public void onFailure(Call call, IOException e) {
+                        getActivity().runOnUiThread(() -> {
+                            mIdleThingRefreshLayout.setRefreshing(false);
+                            mAdapter.setEnableLoadMore(false);// 搜索之后不能下拉加载
+                        });
+                    }
+
+                    @Override
+                    public void onResponse(Call call, Response response) throws IOException {
+                        List<IdleThing> idleThings = HandleMessageUtil
+                                .handlePostIdleThingMessage(response.body().string());
+
+                        getActivity().runOnUiThread(() -> {
+                            mIdleThingRefreshLayout.setRefreshing(false);
+                            mAdapter.setNewData(idleThings);// update data
+                            mAdapter.setEnableLoadMore(false);// 搜索之后不能下拉加载
+                        });
+                    }
+                });
+    }
+
+    /**
+     * load more
+     */
+    public void loadMore() {
+        FormBody body = new FormBody.Builder()
+                .add("page", mPagination.getNext_num() + "")
+                .build();
+
+        OkHttpUtil.sendOkHttpPostRequest(STFUConfig.HOST + "/idle_thing/load_more",
+                body, new Callback() {
+                    @Override
+                    public void onFailure(Call call, IOException e) {
+                        getActivity().runOnUiThread(() -> {
+                            mAdapter.loadMoreFail();
+
+                        });
+                    }
+
+                    @Override
+                    public void onResponse(Call call, Response response) throws IOException {
+                        String responseString = response.body().string();
+                        String status = "";
+                        try {
+                            JSONObject jsonObject = new JSONObject(responseString);
+                            status = jsonObject.getString("status");
+                        } catch (Exception e) {
+                            Logger.e(e.toString());
+                        }
+                        if (status.equals("success")) {
+                            getActivity().runOnUiThread(() -> {
+
+                                List<IdleThing> idleThings = HandleMessageUtil
+                                        .handlePostIdleThingMessage(responseString);
+                                mPagination = HandleMessageUtil
+                                        .handlePaginationMessage(responseString);
+                                if (mPagination.getPage() == mPagination.getPages()) {
+                                    mAdapter.loadMoreEnd();
+                                } else {
+                                    mAdapter.loadMoreComplete();
+                                }
+
+                                if (idleThings != null) {
+                                    mAdapter.addData(idleThings);
+                                }
+                            });
+                        } else {
+                            getActivity().runOnUiThread(() -> mAdapter.loadMoreFail());
+                        }
+                    }
+                });
+    }
 
 }

@@ -26,6 +26,7 @@ import com.sparetimeforu.android.sparetimeforu.activity.PictureActivity;
 import com.sparetimeforu.android.sparetimeforu.activity.PostReleasedActivity;
 import com.sparetimeforu.android.sparetimeforu.entity.User;
 import com.sparetimeforu.android.sparetimeforu.util.StatusBarUtils;
+import com.sparetimeforu.android.sparetimeforu.util.VerifyUtil;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.MemoryPolicy;
 import com.squareup.picasso.NetworkPolicy;
@@ -62,7 +63,6 @@ public class PersonalFragment extends Fragment implements View.OnClickListener {
 
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-
         View view = inflater.inflate(R.layout.personal_fragment, container, false);
         ButterKnife.bind(this, view);
 
@@ -158,22 +158,21 @@ public class PersonalFragment extends Fragment implements View.OnClickListener {
             personal_nickname.setText(STFUConfig.sUser.getNickname());
             personal_favourable_rate.setText(STFUConfig.sUser.getFavourable_rate() + "%");
             personal_signate.setText(STFUConfig.sUser.getSignature());
-            Logger.i(STFUConfig.sUser.toString());
             //设置头像
             Picasso.get()
                     .load(STFUConfig.HOST + "/static/avatar/" + STFUConfig.sUser.getAvatar_url())
                     .resize(200, 200)
                     .centerCrop()
-                    .memoryPolicy(MemoryPolicy.NO_CACHE)
-                    .networkPolicy(NetworkPolicy.NO_CACHE)//限制Picasso从内存中加载图片  不然头像更换 不及时
+//                    .memoryPolicy(MemoryPolicy.NO_CACHE)
+//                    .networkPolicy(NetworkPolicy.NO_CACHE)//限制Picasso从内存中加载图片  不然头像更换 不及时
                     .into(personal_avator);
             //设置背景图片
             Picasso.get()
                     .load(STFUConfig.HOST + "/static/personal_background/" + STFUConfig.sUser.getBg_url())
                     .resize(1920, 1080)
                     .centerCrop()
-                    .memoryPolicy(MemoryPolicy.NO_CACHE)
-                    .networkPolicy(NetworkPolicy.NO_CACHE)//限制Picasso从内存中加载图片  不然头像更换 不及时
+//                    .memoryPolicy(MemoryPolicy.NO_CACHE)
+//                    .networkPolicy(NetworkPolicy.NO_CACHE)//限制Picasso从内存中加载图片  不然头像更换 不及时
                     .into(mBGImageView, new Callback() {
                         @Override
                         public void onSuccess() {
@@ -203,10 +202,12 @@ public class PersonalFragment extends Fragment implements View.OnClickListener {
                 startActivity(intent1);
                 break;
             case R.id.personal_edit:
-                Intent intent2 = new Intent(getActivity(), EditActivity.class);
-                intent2.putExtra("user", STFUConfig.sUser);
-                //之后要实现获取返回值
-                startActivity(intent2);
+                if (VerifyUtil.isLogin(getActivity())) {
+                    Intent intent2 = new Intent(getActivity(), EditActivity.class);
+                    intent2.putExtra("user", STFUConfig.sUser);
+                    //之后要实现获取返回值
+                    startActivity(intent2);
+                }
                 break;
         }
     }

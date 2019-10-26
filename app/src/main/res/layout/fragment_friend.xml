@@ -4,9 +4,16 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <include layout="@layout/custom_toolbar_back"></include>
+    <include layout="@layout/custom_toolbar_back"/>
+    <View
+        android:id="@+id/shadow"
+        android:layout_width="match_parent"
+        android:layout_height="5dp"
+        android:layout_below="@+id/post_released_top"
+        android:background="@drawable/toolbar_dropshadow" />
+
     <android.support.v7.widget.RecyclerView
         android:id="@+id/friend_recyclerView"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"></android.support.v7.widget.RecyclerView>
+        android:layout_height="match_parent"/>
 </android.widget.LinearLayout>

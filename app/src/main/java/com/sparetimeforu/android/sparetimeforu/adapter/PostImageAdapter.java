@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.support.annotation.Nullable;
 import android.support.v4.view.ViewCompat;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.chad.library.adapter.base.BaseQuickAdapter;
@@ -31,7 +32,6 @@ public class PostImageAdapter extends BaseQuickAdapter<String, BaseViewHolder> {
         this.setOnItemChildClickListener((BaseQuickAdapter adapter, View v, int position) -> {
             switch (v.getId()) {
                 case R.id.post_image:
-                    Toast.makeText(mContext, "You clicked: " + position, Toast.LENGTH_SHORT).show();
                     Intent intent = new Intent(mContext, PictureActivity.class);
                     intent.putExtra(PHOTO_URL, data.get(position));
                     mContext.startActivity(intent);
@@ -46,9 +46,8 @@ public class PostImageAdapter extends BaseQuickAdapter<String, BaseViewHolder> {
     @Override
     protected void convert(BaseViewHolder helper, String item) {
         helper.addOnClickListener(R.id.post_image);
-        PhotoView photoView = ((PhotoView) helper.getView(R.id.post_image));
-        Picasso.get().load(item)
-                .into(photoView);
+        ImageView photoView = ((ImageView) helper.getView(R.id.post_image));
+        Picasso.get().load(item) .into(photoView);
 
     }
 }

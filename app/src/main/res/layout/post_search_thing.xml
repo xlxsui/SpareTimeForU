@@ -9,6 +9,7 @@
     <include layout="@layout/custom_toolbar_back" />
 
     <android.support.v4.widget.SwipeRefreshLayout
+        android:id="@+id/refresh_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_marginTop="56dp"
@@ -19,6 +20,11 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="vertical">
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="5dp"
+                android:background="@drawable/toolbar_dropshadow" />
 
             <android.support.v4.widget.NestedScrollView
                 android:id="@+id/nestedScrollView"
@@ -54,11 +60,11 @@
         android:focusable="true"
         android:minHeight="56dp"
         android:orientation="horizontal"
-        android:paddingEnd="12dp"
-        android:paddingStart="12dp">
+        android:paddingStart="12dp"
+        android:paddingEnd="12dp">
 
         <EditText
-            android:id="@+id/errand_post_comment"
+            android:id="@+id/post_comment_content"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
@@ -83,7 +89,7 @@
             tools:ignore="MissingPrefix" />
 
         <ImageButton
-            android:id="@+id/errand_post_send"
+            android:id="@+id/post_send"
             android:layout_width="48dp"
             android:layout_height="48dp"
             android:layout_gravity="center_vertical"

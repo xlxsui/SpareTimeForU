@@ -72,5 +72,8 @@ dependencies {
     implementation 'org.litepal.android:java:3.0.0'
     annotationProcessor 'com.github.hotchemi:permissionsdispatcher-processor:2.2.0'
     implementation 'top.zibin:Luban:1.1.8'
+    testImplementation('org.junit.jupiter:junit-jupiter:5.5.2')
+    implementation 'com.airbnb.android:lottie:2.1.2'
+    implementation 'com.github.AppIntro:AppIntro:4.2.3'
 
 }

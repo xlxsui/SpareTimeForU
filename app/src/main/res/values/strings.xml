@@ -50,6 +50,15 @@
     <string name="reached_limit">已达上限</string>
     <string name="wish">说出你的愿望吧！</string>
     <string name="right_content">请输入正确的内容！</string>
+    <string name="comment_number">评论 %1s</string>
+    <string name="like_number">赞 %1s</string>
+    <string name="not_solved">🔔未解决</string>
+    <string name="refresh_success">刷新成功！</string>
+    <string name="network_error">网络错误！</string>
+    <string name="search">搜索</string>
+    <string name="clear">清除记录</string>
+    <string name="login_expire">登录失效，请重新登录！</string>
+    <string name="login_request">请先登录</string>
 
 
 </resources>

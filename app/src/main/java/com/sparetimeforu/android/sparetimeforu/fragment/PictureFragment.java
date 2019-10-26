@@ -85,7 +85,7 @@ public class PictureFragment extends Fragment {
             bitmap.compress(Bitmap.CompressFormat.JPEG, 100, outStream);
             outStream.flush();
             outStream.close();
-            Toast.makeText(getActivity(), "图片保存成功", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getActivity(), "图片已经保存到/SpareTimeForU/STFU/", Toast.LENGTH_SHORT).show();
         } catch (Exception e) {
             Logger.e(e.toString());
         }

@@ -9,7 +9,7 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="200dp"
+        android:layout_height="150dp"
         android:layout_marginBottom="1dp"
         android:background="@drawable/pink_background"
         android:orientation="vertical"
@@ -19,7 +19,7 @@
             android:id="@+id/comment_header"
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_weight="1.5"
+            android:layout_weight="2"
             android:background="@drawable/touch_bg_pink"
             android:orientation="horizontal"
             android:weightSum="5">
@@ -62,7 +62,6 @@
                         android:text="@string/app_name" />
 
 
-
                 </LinearLayout>
 
                 <TextView
@@ -94,7 +93,7 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_weight="5.5"
+            android:layout_weight="5"
             android:background="@drawable/touch_bg"
             android:orientation="horizontal"
             android:weightSum="5">
@@ -111,7 +110,7 @@
                     android:id="@+id/comment_main_content"
                     android:layout_width="match_parent"
                     android:layout_height="0dp"
-                    android:layout_weight="8.5"
+                    android:layout_weight="8"
                     android:orientation="vertical"
                     android:weightSum="5">
 
@@ -119,10 +118,13 @@
                         android:id="@+id/comment_caption"
                         android:layout_width="match_parent"
                         android:layout_height="0dp"
-                        android:layout_weight="3.5"
-                        android:padding="10dip"
+                        android:layout_weight="5"
+                        android:gravity="start"
                         android:maxLines="3"
-                        android:text="hello"
+                        android:text="@string/title"
+                        android:paddingStart="64dp"
+                        android:paddingEnd="@dimen/dp_16"
+                        android:paddingTop="@dimen/dp_16"
                         android:textSize="14sp"
                         android:textStyle="bold" />
 
@@ -132,7 +134,7 @@
                     android:id="@+id/comment_footer"
                     android:layout_width="match_parent"
                     android:layout_height="0dp"
-                    android:layout_weight="1.5"
+                    android:layout_weight="2"
                     android:orientation="horizontal"
                     android:weightSum="3">
 
@@ -167,15 +169,15 @@
                         <ImageView
                             android:layout_width="match_parent"
                             android:layout_height="0dp"
-                            android:layout_weight="1.8"
+                            android:layout_weight="1.4"
                             android:src="@drawable/ic_comments" />
 
                         <TextView
                             android:layout_width="match_parent"
                             android:layout_height="0dp"
-                            android:layout_weight="1.2"
+                            android:layout_weight="1.6"
                             android:gravity="center"
-                            android:text="999"
+                            android:text="0"
                             android:textSize="6sp" />
 
                     </LinearLayout>

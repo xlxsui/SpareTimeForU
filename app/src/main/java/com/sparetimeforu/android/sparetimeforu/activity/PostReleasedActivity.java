@@ -15,19 +15,9 @@ import com.sparetimeforu.android.sparetimeforu.fragment.PostReleasedFragment;
  */
 
 
-public class PostReleasedActivity extends AppCompatActivity {
+public class PostReleasedActivity extends SingleSwipeBackFragmentActivity {
     @Override
-    protected void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_fragment);
-
-
-        FragmentManager fm=getSupportFragmentManager();
-        Fragment fragment=fm.findFragmentById(R.id.fragment_container);
-
-        if(fragment==null){
-            fragment=new PostReleasedFragment();
-            fm.beginTransaction().add(R.id.fragment_container,fragment).commit();
-        }
+    protected Fragment createFragment() {
+        return new PostReleasedFragment();
     }
 }

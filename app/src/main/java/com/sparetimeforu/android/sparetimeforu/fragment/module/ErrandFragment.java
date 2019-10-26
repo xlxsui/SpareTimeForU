@@ -65,9 +65,11 @@ import com.sparetimeforu.android.sparetimeforu.ServerConnection.OkHttpUtil;
 import com.sparetimeforu.android.sparetimeforu.adapter.ErrandAdapter;
 import com.sparetimeforu.android.sparetimeforu.data.DataServer;
 import com.sparetimeforu.android.sparetimeforu.entity.Errand;
+import com.sparetimeforu.android.sparetimeforu.entity.Pagination;
 import com.sparetimeforu.android.sparetimeforu.util.ErrandDataBaseUtil;
 import com.sparetimeforu.android.sparetimeforu.util.HandleMessageUtil;
 
+import org.json.JSONObject;
 import org.litepal.LitePal;
 
 import java.io.IOException;
@@ -170,12 +172,13 @@ public class ErrandFragment extends Fragment implements BaiduMap.OnMarkerClickLi
     private String[] MarkerName = {"德馨", "至诚", "明德", "敬一", "修远", "知行", "思源", "弘毅"};
     private static final int MarkerNum = 8;
     private String destination_location = "随机";//网络请求任务终点，初始为"随机"
+    private Pagination mPagination;// 分页对象，加载更多时会用到
+
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         SDKInitializer.initialize(getActivity().getApplicationContext());
-        Logger.d("Create the errand fragment View.");
         view = inflater.inflate(R.layout.fragment_errand_new_main, container, false);
         initialize_Map();
         headview = (LinearLayout) view.findViewById(R.id.imageView2);
@@ -190,6 +193,14 @@ public class ErrandFragment extends Fragment implements BaiduMap.OnMarkerClickLi
         whole_errand_interface=(RelativeLayout) view.findViewById(R.id.whole_errand_interface);
         initRefreshLayout();
         LitePal.initialize(getContext());
+        Bundle args = getArguments();
+        String query = args.getString("query", "not_query");
+        if (query.equals("not_query")) {
+            refresh();
+        } else {
+            search(query);
+        }
+
         return view;
     }
 
@@ -316,7 +327,7 @@ public class ErrandFragment extends Fragment implements BaiduMap.OnMarkerClickLi
 
         mAdapter = new ErrandAdapter(errands, getActivity());
         mAdapter.openLoadAnimation(BaseQuickAdapter.SLIDEIN_LEFT);
-        mAdapter.isFirstOnly(false);
+        mAdapter.isFirstOnly(true);
 
         //set main fragment header_errand
 //        View view = getLayoutInflater().inflate(R.layout.header_main_fragment,
@@ -331,6 +342,7 @@ public class ErrandFragment extends Fragment implements BaiduMap.OnMarkerClickLi
         getActivity().runOnUiThread(new Runnable() {
             @Override
             public void run() {
+                mAdapter.setOnLoadMoreListener(() -> loadMoreErrand(), mRecyclerView);
                 mRecyclerView.setAdapter(mAdapter);
             }
         });
@@ -363,6 +375,8 @@ public class ErrandFragment extends Fragment implements BaiduMap.OnMarkerClickLi
     }
 
     private void refresh() {
+        mPagination = new Pagination();// 重来页数也要重置
+
         mAdapter.setEnableLoadMore(false);//这里的作用是防止下拉刷新的时候还可以上拉加载
         new RequestErrand(new RequestErrandCallBack() {
             @Override
@@ -378,6 +392,9 @@ public class ErrandFragment extends Fragment implements BaiduMap.OnMarkerClickLi
                         mAdapter.setEnableLoadMore(true);
                         mErrandRefreshLayout.setRefreshing(false);
                         Snackbar.make(getView(), "Refresh finished! ", Snackbar.LENGTH_SHORT).show();
+                        if (data.size() < 6) {
+                            mAdapter.loadMoreEnd();
+                        }
                     }
                 });
 
@@ -385,9 +402,15 @@ public class ErrandFragment extends Fragment implements BaiduMap.OnMarkerClickLi
 
             @Override
             public void fail(Exception e) {
-                Snackbar.make(getView(), "Network error! ", Snackbar.LENGTH_SHORT).show();
-                mAdapter.setEnableLoadMore(true);
-                mErrandRefreshLayout.setRefreshing(false);
+                getActivity().runOnUiThread(()->{
+                    if (getView()!=null) {
+                        Snackbar.make(getView(), "Network error! ", Snackbar.LENGTH_SHORT).show();
+
+                    }
+                    mAdapter.setEnableLoadMore(true);
+                    mErrandRefreshLayout.setRefreshing(false);
+                });
+
             }
         }, destination_location, getActivity()).start();
     }
@@ -421,6 +444,84 @@ public class ErrandFragment extends Fragment implements BaiduMap.OnMarkerClickLi
         mBaiduMap.setMyLocationEnabled(false);
         mMapView.onDestroy();
         super.onDestroy();
+    }
+
+    private void search(String query) {
+        mErrandRefreshLayout.setRefreshing(true);
+
+        FormBody body = new FormBody.Builder()
+                .add("content", query)
+                .build();
+
+        OkHttpUtil.sendOkHttpPostRequest(STFUConfig.HOST + "/mission/search", body, new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+                getActivity().runOnUiThread(() -> {
+                    mErrandRefreshLayout.setRefreshing(false);
+                    mAdapter.setEnableLoadMore(false);// 搜索之后不能下拉加载
+
+                });
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                List<Errand> errands = HandleMessageUtil.handleReleasedErrandMessage(response.body().string());
+
+                getActivity().runOnUiThread(() -> {
+                    mErrandRefreshLayout.setRefreshing(false);
+                    setupAdapter(errands);
+                    mAdapter.setEnableLoadMore(false);// 搜索之后不能下拉加载
+                });
+            }
+        });
+    }
+
+    /**
+     * load more
+     */
+    public void loadMoreErrand() {
+        FormBody body = new FormBody.Builder()
+                .add("page", mPagination.getNext_num() + "")
+                .build();
+
+        OkHttpUtil.sendOkHttpPostRequest(STFUConfig.HOST + "/study/load_more", body, new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+                getActivity().runOnUiThread(() -> {
+                    mAdapter.loadMoreFail();
+                });
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                String responseString = response.body().string();
+                String status = "";
+                try {
+                    JSONObject jsonObject = new JSONObject(responseString);
+                    status = jsonObject.getString("status");
+                } catch (Exception e) {
+                    Logger.e(e.toString());
+                }
+                if (status.equals("success")) {
+                    getActivity().runOnUiThread(() -> {
+                        List<Errand> errands = HandleMessageUtil
+                                .handleReleasedErrandMessage(responseString);
+                        mPagination = HandleMessageUtil
+                                .handlePaginationMessage(responseString);
+                        if (mPagination.getPage() == mPagination.getPages()) {
+                            mAdapter.loadMoreEnd();
+                        } else {
+                            mAdapter.loadMoreComplete();
+                        }
+                        if (errands != null) {
+                            mAdapter.addData(errands);
+                        }
+                    });
+                } else {
+                    getActivity().runOnUiThread(() -> mAdapter.loadMoreFail());
+                }
+            }
+        });
     }
 
 
