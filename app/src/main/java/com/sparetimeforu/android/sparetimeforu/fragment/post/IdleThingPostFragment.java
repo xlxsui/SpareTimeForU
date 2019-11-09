@@ -290,7 +290,7 @@ public class IdleThingPostFragment extends Fragment {
                                 String data = responseJson.getString("data");
                                 Comment comment = gson.fromJson(data, Comment.class);
                                 refresh();
-                                Snackbar.make(getView(), "评论成功", BaseTransientBottomBar.LENGTH_SHORT).show();
+//                                Snackbar.make(getView(), "评论成功", BaseTransientBottomBar.LENGTH_SHORT).show();
                             } catch (Exception e) {
                                 Logger.e(e.toString());
                             }

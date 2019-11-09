@@ -100,6 +100,8 @@ public class ErrandPostFragment extends Fragment {
     RecyclerView mPostImageList;
     @BindView(R.id.toolbar)
     Toolbar mToolbar;
+    @BindView(R.id.post_like)
+    ImageView mLikeImageView;
 
     int postID;
 
@@ -146,7 +148,7 @@ public class ErrandPostFragment extends Fragment {
                     //显示网络状况不佳
                     getActivity().runOnUiThread(() -> {
                         mRefreshLayout.setRefreshing(false);
-                        Snackbar.make(getView(), "网络状况不佳", Snackbar.LENGTH_SHORT).show();
+                        Snackbar.make(getView(), "网络状况不佳", BaseTransientBottomBar.LENGTH_SHORT).show();
                     });
                 }
 
@@ -204,53 +206,85 @@ public class ErrandPostFragment extends Fragment {
                     errand.getLike_number() + ""));
 
             //给errand_post_send设置点击事件
-            errand_post_send.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    if (!VerifyUtil.isLogin(getActivity())) {
-                        return;
-                    }
-                    String content = errand_post_comment.getText().toString();
-                    FormBody formBody = new FormBody.Builder()
-                            .add("auth_token", STFUConfig.sUser.getAuth_token())
-                            .add("content", content)
-                            .add("post_id", errand.getErrand_id() + "").build();
-
-                    OkHttpUtil.sendOkHttpPostRequest(add_comment_url, formBody, new Callback() {
-                        @Override
-                        public void onFailure(Call call, IOException e) {
-                            getActivity().runOnUiThread(new Runnable() {
-                                @Override
-                                public void run() {
-                                    Snackbar.make(getView(), "评论失败，请检查网络", Snackbar.LENGTH_SHORT).show();
-                                }
-                            });
-                        }
-
-                        @Override
-                        public void onResponse(Call call, Response response) throws IOException {
-                            getActivity().runOnUiThread(new Runnable() {
-                                @Override
-                                public void run() {
-                                    errand_post_comment.setText("");
-                                    Gson gson = new Gson();
-                                    try {
-                                        String responseString = response.body().string();
-                                        JSONObject responseJson = new JSONObject(responseString);
-                                        String data = responseJson.getString("data");
-                                        Comment comment = gson.fromJson(data, Comment.class);
-                                        commentAdapter.addData(comment);
-                                        Snackbar.make(getView(), "评论成功", Snackbar.LENGTH_SHORT).show();
-                                    } catch (Exception e) {
-                                        e.printStackTrace();
-                                    }
-
-                                }
-                            });
-                        }
-                    });
+            errand_post_send.setOnClickListener(view -> {
+                if (!VerifyUtil.isLogin(getActivity())) {
+                    return;
                 }
+                String content = errand_post_comment.getText().toString();
+                FormBody formBody = new FormBody.Builder()
+                        .add("auth_token", STFUConfig.sUser.getAuth_token())
+                        .add("content", content)
+                        .add("post_id", errand.getErrand_id() + "").build();
+
+                OkHttpUtil.sendOkHttpPostRequest(add_comment_url, formBody, new Callback() {
+                    @Override
+                    public void onFailure(Call call, IOException e) {
+                        getActivity().runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                Snackbar.make(getView(), "评论失败，请检查网络", BaseTransientBottomBar.LENGTH_SHORT).show();
+                            }
+                        });
+                    }
+
+                    @Override
+                    public void onResponse(Call call, Response response) throws IOException {
+                        getActivity().runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                errand_post_comment.setText("");
+                                Gson gson = new Gson();
+                                try {
+                                    String responseString = response.body().string();
+                                    JSONObject responseJson = new JSONObject(responseString);
+                                    String data = responseJson.getString("data");
+                                    Comment comment = gson.fromJson(data, Comment.class);
+//                                        commentAdapter.addData(comment);
+                                    refresh();
+//                                        Snackbar.make(getView(), "评论成功", BaseTransientBottomBar.LENGTH_SHORT).show();
+                                } catch (Exception e) {
+                                    e.printStackTrace();
+                                }
+
+                            }
+                        });
+                    }
+                });
             });
+
+            if (VerifyUtil.isLoginStatus(getActivity())) {
+                FormBody body = new FormBody.Builder()
+                        .add("auth_token", STFUConfig.sUser.getAuth_token())
+                        .add("post_type", 0 + "")
+                        .add("post_id", postID + "")
+                        .build();
+
+                OkHttpUtil.sendOkHttpPostRequest(STFUConfig.HOST + "/like/is_like", body, new okhttp3.Callback() {
+                    @Override
+                    public void onFailure(Call call, IOException e) {
+                    }
+
+                    @Override
+                    public void onResponse(Call call, Response response) throws IOException {
+                        try {
+                            JSONObject jsonObject = new JSONObject(response.body().string());
+                            String status = jsonObject.getString("status");
+                            if (status.equals("success")) {
+                                if (jsonObject.getString("is_like").equals("like")) {
+                                    getActivity().runOnUiThread(
+                                            () -> mLikeImageView.setImageResource(R.drawable.ic_like));
+                                } else {
+                                    getActivity().runOnUiThread(
+                                            () -> mLikeImageView.setImageResource(R.drawable.ic_like_before));
+                                }
+                            }
+                        } catch (JSONException e) {
+                            Logger.e(e.toString());
+                        }
+                    }
+                });
+            }
+
         }
     }
 

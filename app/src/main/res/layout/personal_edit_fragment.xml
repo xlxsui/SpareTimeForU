@@ -181,7 +181,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_centerVertical="true"
-                    android:layout_marginRight="10dp"
+                    android:layout_marginRight="@dimen/dp_8"
                     android:layout_toLeftOf="@+id/continue3"
                     android:layout_weight="1"
 
@@ -220,7 +220,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_centerVertical="true"
-                    android:layout_marginEnd="10dp"
+                    android:layout_marginEnd="@dimen/dp_8"
                     android:layout_toStartOf="@+id/continue4"
 
                     android:textColor="#aaa" />
@@ -254,10 +254,11 @@
 
                 <TextView
                     android:id="@+id/tv_edit_signature"
+                    android:gravity="right"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="32dp"
-                    android:layout_marginEnd="30dp"
+                    android:layout_marginEnd="@dimen/dp_8"
                     android:layout_toStartOf="@+id/continue5"
                     android:layout_toEndOf="@+id/title_signature"
                     android:text="@string/edit_signature"

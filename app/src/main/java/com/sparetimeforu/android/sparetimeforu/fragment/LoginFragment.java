@@ -156,7 +156,7 @@ public class LoginFragment extends Fragment {
                                         @Override
                                         public void gotResult(int i, String s) {
                                             if (i == 0) {
-                                                Logger.i("极光登陆成功");
+                                                Logger.i("极光登录成功");
                                             }
                                         }
                                     });
@@ -206,7 +206,7 @@ public class LoginFragment extends Fragment {
                 BuildConfig.APPLICATION_ID);
         boolean isAdded = am.addAccountExplicitly(account, "", null);//安全起见，不存密码
         if (isAdded) {
-            Toast.makeText(getActivity(), "登陆成功", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getActivity(), "登录成功", Toast.LENGTH_SHORT).show();
             am.setAuthToken(account, "normal", mUser.getAuth_token());
         } else {
             Toast.makeText(getActivity(), "账号更新成功", Toast.LENGTH_SHORT).show();

@@ -15,6 +15,7 @@ import com.orhanobut.logger.Logger;
 import com.sparetimeforu.android.sparetimeforu.R;
 import com.sparetimeforu.android.sparetimeforu.STFUConfig;
 import com.sparetimeforu.android.sparetimeforu.ServerConnection.OkHttpUtil;
+import com.sparetimeforu.android.sparetimeforu.activity.OthersPersonalActivity;
 import com.sparetimeforu.android.sparetimeforu.activity.post.IdleThingPostActivity;
 import com.sparetimeforu.android.sparetimeforu.entity.IdleThing;
 import com.sparetimeforu.android.sparetimeforu.fragment.STFUFragment;
@@ -92,7 +93,10 @@ public class IdleThingAdapter extends BaseQuickAdapter<IdleThing, BaseViewHolder
                     });
 
                     break;
-                case R.id.idle_thing_avatar:
+                case R.id.layout_avatar:
+                    Intent intent = new Intent(mContext, OthersPersonalActivity.class);
+                    intent.putExtra("user_Email", getItem(position).getUser_Email());
+                    mContext.startActivity(intent);
                     break;
                 default:
                     break;
@@ -131,7 +135,7 @@ public class IdleThingAdapter extends BaseQuickAdapter<IdleThing, BaseViewHolder
         ImageView likeImageView = helper.getView(R.id.ic_like);
 
         helper.addOnClickListener(R.id.like_layout)
-                .addOnClickListener(R.id.idle_thing_avatar);// 点赞添加点击事件
+                .addOnClickListener(R.id.layout_avatar);// 点赞添加点击事件
 
         Picasso.get()
                 .load(STFUConfig.HOST + "/static/avatar/" + item.getUser_Avatar())

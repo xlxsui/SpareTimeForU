@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.graphics.PorterDuff;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.design.widget.BaseTransientBottomBar;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
@@ -194,7 +195,7 @@ public class OthersPersonalFragment extends Fragment implements View.OnClickList
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.others_add_friend:
-                Snackbar.make(getView(),"点击了加好友按钮",Snackbar.LENGTH_SHORT).show();
+                Snackbar.make(getView(),"点击了加好友按钮", BaseTransientBottomBar.LENGTH_SHORT).show();
                 ContactManager.sendInvitationRequest(others_user.getEmail(), null, "交个朋友", new BasicCallback() {
                     @Override
                     public void gotResult(int i, String s) {

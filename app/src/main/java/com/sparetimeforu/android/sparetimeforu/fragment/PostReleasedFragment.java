@@ -1,9 +1,9 @@
 package com.sparetimeforu.android.sparetimeforu.fragment;
 
-import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.design.widget.BaseTransientBottomBar;
 import android.support.design.widget.BottomNavigationView;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
@@ -17,7 +17,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
-import android.widget.Toast;
 
 import com.sparetimeforu.android.sparetimeforu.R;
 import com.sparetimeforu.android.sparetimeforu.STFUConfig;
@@ -54,19 +53,19 @@ public class PostReleasedFragment extends Fragment {
     private FragmentManager mFragmentManager;
     private ErrandContentFragment mErrandFragment;
     private RecyclerView recyclerView;
-    private int  user_id;
+    private int user_id;
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        view=inflater.inflate(R.layout.post_released,container,false);
+        view = inflater.inflate(R.layout.post_released, container, false);
 
-        //user_id=STFUConfig.sUser.getUser_id();
-        user_id=1;
-        mFragmentManager=getFragmentManager();
+        user_id=STFUConfig.sUser.getUser_id();
+//        user_id = 1;
+        mFragmentManager = getFragmentManager();
 
-        recyclerView=(RecyclerView)view.findViewById(R.id.post_released_recylerview);
-        LinearLayoutManager linearLayoutManager=new LinearLayoutManager(getContext());
+        recyclerView = (RecyclerView) view.findViewById(R.id.post_released_recylerview);
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
         recyclerView.setLayoutManager(linearLayoutManager);
         //设置toolbar
         toolbar = view.findViewById(R.id.toolbar);
@@ -74,11 +73,11 @@ public class PostReleasedFragment extends Fragment {
         ((AppCompatActivity) getActivity()).setSupportActionBar(toolbar);
 
         //设置导航切换界面
-        mission_received_switch=(BottomNavigationView)view.findViewById(R.id.post_released_select);
+        mission_received_switch = (BottomNavigationView) view.findViewById(R.id.post_released_select);
         mission_received_switch.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-                switch(item.getItemId()){
+                switch (item.getItemId()) {
                     case R.id.post_released_errand:
                         load_Errand_Recylerview();
                         return true;
@@ -99,55 +98,54 @@ public class PostReleasedFragment extends Fragment {
         return view;
     }
 
-    String url= STFUConfig.HOST+"/mission";
-    private void load_Errand_Recylerview(){
+    String url = STFUConfig.HOST + "/mission";
+
+    private void load_Errand_Recylerview() {
         //获取服务器数据
-        FormBody formBody=new FormBody.Builder()
-                .add("user_id",user_id+"").build();
+        FormBody formBody = new FormBody.Builder()
+                .add("user_id", user_id + "").build();
         OkHttpUtil.sendOkHttpPostRequest(url + "/get_user_posts", formBody, new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
                 getActivity().runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        Snackbar.make(getView(),"网络请求错误",Snackbar.LENGTH_SHORT).show();
+                        Snackbar.make(getView(), "网络请求错误", BaseTransientBottomBar.LENGTH_SHORT).show();
                     }
                 });
             }
+
             @Override
             public void onResponse(Call call, Response response) throws IOException {
                 List<Errand> data;
-                data= HandleMessageUtil.handleReleasedErrandMessage(response.body().string());
-                ErrandAdapter adapter=new ErrandAdapter(data,getActivity());
-                getActivity().runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        recyclerView.setAdapter(adapter);
-                    }
-                });
+                data = HandleMessageUtil.handleReleasedErrandMessage(response.body().string());
+                ErrandAdapter adapter = new ErrandAdapter(data, getActivity());
+                getActivity().runOnUiThread(() -> recyclerView.setAdapter(adapter));
             }
         });
 
     }
-    private void load_Find_Recylerview(){
+
+    private void load_Find_Recylerview() {
         //获取服务器数据
-        FormBody formBody=new FormBody.Builder()
-                .add("user_id",user_id+"").build();
+        FormBody formBody = new FormBody.Builder()
+                .add("user_id", user_id + "").build();
         OkHttpUtil.sendOkHttpPostRequest(url + "/getReleasedFind", formBody, new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
                 getActivity().runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        Snackbar.make(getView(),"网络请求错误",Snackbar.LENGTH_SHORT).show();
+                        Snackbar.make(getView(), "网络请求错误", BaseTransientBottomBar.LENGTH_SHORT).show();
                     }
                 });
             }
+
             @Override
             public void onResponse(Call call, Response response) throws IOException {
                 List<SearchThing> data;
-                data= HandleMessageUtil.handlePostSearchThingMessage(response.body().string());
-                LostAndFoundAdapter adapter=new LostAndFoundAdapter(data);
+                data = HandleMessageUtil.handlePostSearchThingMessage(response.body().string());
+                LostAndFoundAdapter adapter = new LostAndFoundAdapter(data);
                 getActivity().runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
@@ -158,25 +156,27 @@ public class PostReleasedFragment extends Fragment {
         });
 
     }
-    private void load_Study_Recylerview(){
+
+    private void load_Study_Recylerview() {
         //获取服务器数据
-        FormBody formBody=new FormBody.Builder()
-                .add("user_id",user_id+"").build();
+        FormBody formBody = new FormBody.Builder()
+                .add("user_id", user_id + "").build();
         OkHttpUtil.sendOkHttpPostRequest(url + "/getReleasedStudy", formBody, new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
                 getActivity().runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        Snackbar.make(getView(),"网络请求错误",Snackbar.LENGTH_SHORT).show();
+                        Snackbar.make(getView(), "网络请求错误", BaseTransientBottomBar.LENGTH_SHORT).show();
                     }
                 });
             }
+
             @Override
             public void onResponse(Call call, Response response) throws IOException {
                 List<Study> data;
-                data= HandleMessageUtil.handlePostStudyMessage(response.body().string());
-                StudyAdapter adapter=new StudyAdapter(data);
+                data = HandleMessageUtil.handlePostStudyMessage(response.body().string());
+                StudyAdapter adapter = new StudyAdapter(data);
                 getActivity().runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
@@ -186,25 +186,27 @@ public class PostReleasedFragment extends Fragment {
             }
         });
     }
-    private void load_Trade_Recylerview(){
+
+    private void load_Trade_Recylerview() {
         //获取服务器数据
-        FormBody formBody=new FormBody.Builder()
-                .add("user_id",user_id+"").build();
+        FormBody formBody = new FormBody.Builder()
+                .add("user_id", user_id + "").build();
         OkHttpUtil.sendOkHttpPostRequest(url + "/getReleasedTrade", formBody, new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
                 getActivity().runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        Snackbar.make(getView(),"网络请求错误",Snackbar.LENGTH_SHORT).show();
+                        Snackbar.make(getView(), "网络请求错误", BaseTransientBottomBar.LENGTH_SHORT).show();
                     }
                 });
             }
+
             @Override
             public void onResponse(Call call, Response response) throws IOException {
                 List<IdleThing> data;
-                data= HandleMessageUtil.handlePostIdleThingMessage(response.body().string());
-                IdleThingAdapter adapter=new IdleThingAdapter(data);
+                data = HandleMessageUtil.handlePostIdleThingMessage(response.body().string());
+                IdleThingAdapter adapter = new IdleThingAdapter(data);
                 getActivity().runOnUiThread(new Runnable() {
                     @Override
                     public void run() {

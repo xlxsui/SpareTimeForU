@@ -15,6 +15,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.support.annotation.Nullable;
+import android.support.design.widget.BaseTransientBottomBar;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
@@ -114,14 +115,16 @@ class RequestErrand extends Thread {
         FormBody body = new FormBody.Builder()
                 .add("destination", destination_location)
                 //.add("last_errand_id",get_Last_Errand_Id());
-                .add("biggest_id", 1 + "")
+                .add("biggest_id", 0 + "")
                 .build();
         origin = 0;//每次获取完数据库更新的任务数据，origin都设置为0，重新开始从数据库中拿数据
         OkHttpUtil.sendOkHttpPostRequest(GetErrandServerUrl, body, new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
-                activityForUi.runOnUiThread(() -> Toast.makeText(activityForUi,
-                        "无法获取任务信息，请检查网络是否正常", Toast.LENGTH_SHORT).show());
+                activityForUi.runOnUiThread(() -> {
+//                            Toast.makeText(activityForUi, "无法获取任务信息，请检查网络是否正常", Toast.LENGTH_SHORT).show();
+                        }
+                );
                 mCallBack.fail(e);
             }
 
@@ -135,7 +138,7 @@ class RequestErrand extends Thread {
                 //把orgin更新
                 if (errand_data.size() != 0)
                     origin += errand_data.size();
-                mCallBack.success((errand_data));
+                mCallBack.success(errand_data);
             }
         });
 
@@ -185,13 +188,13 @@ public class ErrandFragment extends Fragment implements BaiduMap.OnMarkerClickLi
         headview = (LinearLayout) view.findViewById(R.id.imageView2);
         mRecyclerView = (RecyclerView) view.findViewById(R.id.fragment_errand_list);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-        setupAdapter(DataServer.getErrandData(2));
-        arrow_control=(LinearLayout) view.findViewById(R.id.arrow_control);
+        setupAdapter(DataServer.getErrandData(0));
+        arrow_control = (LinearLayout) view.findViewById(R.id.arrow_control);
         arrow_control.setOnClickListener(new MyListener());
-        arrow_pic=(ImageView)view.findViewById(R.id.arrow_pic);
+        arrow_pic = (ImageView) view.findViewById(R.id.arrow_pic);
         mErrandRefreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.errand_flash_layout);
         mErrandRefreshLayout.setColorSchemeResources(R.color.colorPrimary, R.color.colorAccent, R.color.colorPrimaryDark);
-        whole_errand_interface=(RelativeLayout) view.findViewById(R.id.whole_errand_interface);
+        whole_errand_interface = (RelativeLayout) view.findViewById(R.id.whole_errand_interface);
         initRefreshLayout();
         LitePal.initialize(getContext());
         Bundle args = getArguments();
@@ -350,20 +353,17 @@ public class ErrandFragment extends Fragment implements BaiduMap.OnMarkerClickLi
 //                .centerCrop()
 //                .into(img);
 //        mAdapter.addHeaderView(view);
-
-        getActivity().runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                mAdapter.setOnLoadMoreListener(() -> loadMoreErrand(), mRecyclerView);
-                mRecyclerView.setAdapter(mAdapter);
-            }
+        if (getActivity() == null) return;
+        getActivity().runOnUiThread(() -> {
+            mAdapter.setOnLoadMoreListener(this::loadMoreErrand, mRecyclerView);
+            mRecyclerView.setAdapter(mAdapter);
         });
     }
 
 
     private void initRefreshLayout() {
         //下拉刷新部分
-        mErrandRefreshLayout.setOnRefreshListener(() -> refresh());
+        mErrandRefreshLayout.setOnRefreshListener(this::refresh);
         //上拉刷新部分
         mRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
@@ -375,7 +375,6 @@ public class ErrandFragment extends Fragment implements BaiduMap.OnMarkerClickLi
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
                 int last_visible_item = ((LinearLayoutManager) recyclerView.getLayoutManager()).findLastVisibleItemPosition();
                 int total_item_num = ((LinearLayoutManager) recyclerView.getLayoutManager()).getItemCount();
-                Log.i("test2", last_visible_item + "");
                 if (last_visible_item >= total_item_num) {
                     loadMore();//获取更多任务
                 }
@@ -391,12 +390,14 @@ public class ErrandFragment extends Fragment implements BaiduMap.OnMarkerClickLi
         mPagination = new Pagination();// 重来页数也要重置
 
         mAdapter.setEnableLoadMore(false);//这里的作用是防止下拉刷新的时候还可以上拉加载
+        mErrandRefreshLayout.setRefreshing(true);
         new RequestErrand(new RequestErrandCallBack() {
             @Override
             public void success(List<Errand> data) {
 
                 //do something
 
+                if (getActivity() == null) return;
                 getActivity().runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
@@ -409,7 +410,6 @@ public class ErrandFragment extends Fragment implements BaiduMap.OnMarkerClickLi
                         Toast.makeText(getActivity(), "获取数据成功", Toast.LENGTH_SHORT).show();
                         mAdapter.setEnableLoadMore(true);
                         mErrandRefreshLayout.setRefreshing(false);
-                        Snackbar.make(getView(), "Refresh finished! ", Snackbar.LENGTH_SHORT).show();
                         if (data.size() < 6) {
                             mAdapter.loadMoreEnd();
                         }
@@ -421,9 +421,11 @@ public class ErrandFragment extends Fragment implements BaiduMap.OnMarkerClickLi
 
             @Override
             public void fail(Exception e) {
-                getActivity().runOnUiThread(()->{
-                    if (getView()!=null) {
-                        Snackbar.make(getView(), "Network error! ", Snackbar.LENGTH_SHORT).show();
+                if (getActivity() == null) return;
+                getActivity().runOnUiThread(() -> {
+                    mErrandRefreshLayout.setRefreshing(false);
+                    if (getView() != null) {
+                        Snackbar.make(getView(), "Network error! ", BaseTransientBottomBar.LENGTH_SHORT).show();
 
                     }
                     mAdapter.setEnableLoadMore(true);
@@ -570,33 +572,36 @@ public class ErrandFragment extends Fragment implements BaiduMap.OnMarkerClickLi
 
         }
     }
+
     private float lastY = 0;
     private float marginTop;
     private int count = 0;//触发多次touchevent才移动
     private boolean first_touch = true;
-    private float toolbar_height=0;
+    private float toolbar_height = 0;
 
-    private class MyListener implements View.OnClickListener{
+    private class MyListener implements View.OnClickListener {
         private int mode;//mode是箭头控制的模式  1 点击后 布局上衣    0 点击后布局下移
         private int height;
-        public MyListener(){
-            mode=1;
+
+        public MyListener() {
+            mode = 1;
         }
+
         @Override
         public void onClick(View view) {
-            switch (view.getId()){
+            switch (view.getId()) {
                 case R.id.arrow_control:
-                    if(first_touch){
+                    if (first_touch) {
                         RelativeLayout.LayoutParams lp1 = (RelativeLayout.LayoutParams) whole_errand_interface.getLayoutParams();
                         WindowManager wm = (WindowManager) getActivity().getSystemService(Context.WINDOW_SERVICE);
                         DisplayMetrics dm = new DisplayMetrics();
-                        toolbar_height=STFUConfig.stfu_tool_bar_height;
+                        toolbar_height = STFUConfig.stfu_tool_bar_height;
                         wm.getDefaultDisplay().getMetrics(dm);
                         height = dm.heightPixels;
-                        marginTop=lp1.topMargin;
-                        first_touch=!first_touch;
+                        marginTop = lp1.topMargin;
+                        first_touch = !first_touch;
                     }
-                    switch (mode){
+                    switch (mode) {
                         case 0:
                             //布局下移并更换图片
                             //change_headview_marginTop(marginTop);
@@ -607,27 +612,28 @@ public class ErrandFragment extends Fragment implements BaiduMap.OnMarkerClickLi
                         case 1:
                             //布局上移并更换图片
                             //change_headview_marginTop(-marginTop);
-                            change_headview_marginTop(-(height-toolbar_height-300));
+                            change_headview_marginTop(-(height - toolbar_height - 300));
                             arrow_pic.setImageDrawable(getResources().getDrawable(R.drawable.go_back_bottom));
                             break;
                     }
                     break;
             }
         }
-        private void change_headview_marginTop(float margin_Top){
+
+        private void change_headview_marginTop(float margin_Top) {
             //初始的margin值为全局变量marginTop
             RelativeLayout.LayoutParams lp1 = (RelativeLayout.LayoutParams) whole_errand_interface.getLayoutParams();
-            float per_move_distance=0;
-            per_move_distance=(marginTop+height-toolbar_height-300)/100;
-            per_move_distance= margin_Top==marginTop? per_move_distance:-per_move_distance;  //margin_top== marginTop 下移  否则上移
+            float per_move_distance = 0;
+            per_move_distance = (marginTop + height - toolbar_height - 300) / 100;
+            per_move_distance = margin_Top == marginTop ? per_move_distance : -per_move_distance;  //margin_top== marginTop 下移  否则上移
             float start_position;
-            start_position=margin_Top==marginTop?  -(height-toolbar_height-300) : marginTop ;
-            for(int i=0;i<100;i++){
-                start_position+=per_move_distance;
-                lp1.topMargin=Math.round(start_position);
+            start_position = margin_Top == marginTop ? -(height - toolbar_height - 300) : marginTop;
+            for (int i = 0; i < 100; i++) {
+                start_position += per_move_distance;
+                lp1.topMargin = Math.round(start_position);
                 whole_errand_interface.setLayoutParams(lp1);
             }
-            mode=mode==0 ? 1:0;
+            mode = mode == 0 ? 1 : 0;
         }
     }
 //    public class MyDragListener implements View.OnTouchListener {

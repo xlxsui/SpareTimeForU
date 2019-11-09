@@ -19,6 +19,9 @@ public class StudyDataBaseUtil {
             if(found_Study.size()<1){//没有找到该任务，说明没有存过
                 study.save();
             }else{
+                if (study.getLike_number() == 0) {
+                    study.setToDefault("like_number");
+                }
                 study.update(found_Study.get(0).getId());//更新数据
             }
         }

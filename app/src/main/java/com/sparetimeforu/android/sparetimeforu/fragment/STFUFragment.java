@@ -38,6 +38,7 @@ import com.sparetimeforu.android.sparetimeforu.BuildConfig;
 import com.sparetimeforu.android.sparetimeforu.R;
 import com.sparetimeforu.android.sparetimeforu.STFUConfig;
 import com.sparetimeforu.android.sparetimeforu.activity.ConversationListActivity;
+import com.sparetimeforu.android.sparetimeforu.activity.ErrandReceivedActivity;
 import com.sparetimeforu.android.sparetimeforu.activity.FriendActivity;
 import com.sparetimeforu.android.sparetimeforu.activity.LoginActivity;
 import com.sparetimeforu.android.sparetimeforu.activity.PersonalActivity;
@@ -94,7 +95,7 @@ public class STFUFragment extends Fragment {
     private DrawerLayout mDrawerLayout;// 侧滑栏布局
     private NavigationView mDrawerNavigationView;// 侧滑拦view
     private TextView slider_menu_signature, slider_menu_nick_name;// 个性签名、昵称
-    private MenuItem mLoginMenuItem;// 登陆/注销选项
+    private MenuItem mLoginMenuItem;// 登录/注销选项
     private ImageView mAvatar;
     private ImageView mBGImageView;
     private LinearLayout mHeaderLinearLayout;
@@ -214,10 +215,13 @@ public class STFUFragment extends Fragment {
 
         mDrawerNavigationView = (NavigationView) view.findViewById(R.id.slider_menu);
         mDrawerNavigationView.setNavigationItemSelectedListener(item -> {
+            Intent intent;
             switch (item.getItemId()) {
                 case R.id.slider_menu_task:
-                    Toast.makeText(getActivity(), item.getTitle(), Toast.LENGTH_SHORT)
-                            .show();
+                    if (VerifyUtil.isLogin(getActivity())) {
+                        intent = new Intent(getActivity(), ErrandReceivedActivity.class);
+                        startActivity(intent);
+                    }
                     break;
                 case R.id.slider_menu_personal_letter:
                     //点击之后就把图标变回原样
@@ -238,7 +242,7 @@ public class STFUFragment extends Fragment {
                         mAccount = null;
                         updateViews();
                     }
-                    Intent intent = new Intent(getActivity(), LoginActivity.class);
+                    intent = new Intent(getActivity(), LoginActivity.class);
                     startActivityForResult(intent, REQUEST_CODE_LOGIN);
                     break;
                 case R.id.slider_menu_friend:
@@ -320,8 +324,8 @@ public class STFUFragment extends Fragment {
      * 这里主要是从本地读取已经登录的用户
      */
     @Override
-    public void onResume() {
-        super.onResume();
+    public void onCreate(Bundle onSavedInstance) {
+        super.onCreate(onSavedInstance);
 
         AccountManager accountManager = AccountManager.get(getContext());
         Account[] account = accountManager.getAccountsByType(BuildConfig.APPLICATION_ID);
@@ -344,7 +348,7 @@ public class STFUFragment extends Fragment {
                 @Override
                 public void gotResult(int i, String s) {
                     if (i == 0) {
-                        com.orhanobut.logger.Logger.i("极光登陆成功");
+                        com.orhanobut.logger.Logger.i("极光登录成功");
                     }
                 }
             });
@@ -376,14 +380,20 @@ public class STFUFragment extends Fragment {
 
         }
         if (STFUConfig.sUser != null) {
-            updateViews();
             VerifyUtil.isTokenValid(getActivity());
         }
         //初始化Systemmessage
-        if(STFUConfig.systemMessages==null||STFUConfig.systemMessages.size()==0){
-            STFUConfig.systemMessages= SystemDataBaseUtil.getSystemMessage_data(0);
+        if (STFUConfig.systemMessages == null || STFUConfig.systemMessages.size() == 0) {
+            STFUConfig.systemMessages = SystemDataBaseUtil.getSystemMessage_data(0);
         }
-        if(STFUConfig.systemMessages==null) STFUConfig.systemMessages=new ArrayList<SystemMessage>();
+        if (STFUConfig.systemMessages == null)
+            STFUConfig.systemMessages = new ArrayList<SystemMessage>();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        updateViews();
     }
 
     @Override
@@ -479,7 +489,9 @@ public class STFUFragment extends Fragment {
             STFUConfig.sUser = ((User) data.getSerializableExtra("user"));
             AccountManager accountManager = AccountManager.get(getContext());
             Account[] account = accountManager.getAccountsByType(BuildConfig.APPLICATION_ID);
-            mAccount = account[0];
+            if (account.length > 0) {
+                mAccount = account[0];
+            }
             updateViews();
         }
     }
@@ -493,8 +505,8 @@ public class STFUFragment extends Fragment {
         }
 
         //初始化toolbar的高度
-        AppBarLayout.LayoutParams lp1=(AppBarLayout.LayoutParams)mToolbar.getLayoutParams();
-        if(STFUConfig.stfu_tool_bar_height==0) STFUConfig.stfu_tool_bar_height=lp1.height;
+        AppBarLayout.LayoutParams lp1 = (AppBarLayout.LayoutParams) mToolbar.getLayoutParams();
+        if (STFUConfig.stfu_tool_bar_height == 0) STFUConfig.stfu_tool_bar_height = lp1.height;
     }
 
 

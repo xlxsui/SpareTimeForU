@@ -23,6 +23,23 @@ public class Errand extends LitePalSupport implements Serializable {
     private int id;
     private int is_deleted;
     private int is_finished;
+    private String release_time;
+    private String end_time;
+    private float money;
+    private int evaluate;
+    private int receiver_id;
+    private int is_received;
+    private int errand_id;
+
+    public int getIs_confirmed_finish() {
+        return is_confirmed_finish;
+    }
+
+    public void setIs_confirmed_finish(int is_confirmed_finish) {
+        this.is_confirmed_finish = is_confirmed_finish;
+    }
+
+    private int is_confirmed_finish;
 
     public int getIs_finished() {
         return is_finished;
@@ -31,14 +48,6 @@ public class Errand extends LitePalSupport implements Serializable {
     public void setIs_finished(int is_finished) {
         this.is_finished = is_finished;
     }
-
-    private String release_time;
-    private String end_time;
-    private float money;
-    private int evaluate;
-    private int receiver_id;
-    private int is_received;
-    private int errand_id;
 
     public String getUser_Email() {
         return user_Email;
@@ -203,6 +212,6 @@ public class Errand extends LitePalSupport implements Serializable {
 
     @Override
     public String toString() {
-        return "content:"+this.content;
+        return "content:" + this.content;
     }
 }

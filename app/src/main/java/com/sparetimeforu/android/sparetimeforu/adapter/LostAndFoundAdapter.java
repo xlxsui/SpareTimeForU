@@ -13,6 +13,7 @@ import com.orhanobut.logger.Logger;
 import com.sparetimeforu.android.sparetimeforu.R;
 import com.sparetimeforu.android.sparetimeforu.STFUConfig;
 import com.sparetimeforu.android.sparetimeforu.ServerConnection.OkHttpUtil;
+import com.sparetimeforu.android.sparetimeforu.activity.OthersPersonalActivity;
 import com.sparetimeforu.android.sparetimeforu.activity.post.LostAndFoundPostActivity;
 import com.sparetimeforu.android.sparetimeforu.entity.SearchThing;
 import com.sparetimeforu.android.sparetimeforu.util.HandleMessageUtil;
@@ -84,6 +85,11 @@ public class LostAndFoundAdapter extends BaseQuickAdapter<SearchThing, BaseViewH
                         }
                     });
                     break;
+                case R.id.layout_avatar:
+                    Intent intent = new Intent(mContext, OthersPersonalActivity.class);
+                    intent.putExtra("user_Email", getItem(position).getUser_Email());
+                    mContext.startActivity(intent);
+                    break;
             }
         }));
 
@@ -143,15 +149,8 @@ public class LostAndFoundAdapter extends BaseQuickAdapter<SearchThing, BaseViewH
             picture1.setVisibility(View.GONE);
         }
 
-        helper.addOnClickListener(R.id.like_layout);
-
-        avatar.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                //进入他人界面
-
-            }
-        });
+        helper.addOnClickListener(R.id.like_layout)
+                .addOnClickListener(R.id.layout_avatar);
 
         if (VerifyUtil.isLoginStatus(mContext)) {
             FormBody body = new FormBody.Builder()

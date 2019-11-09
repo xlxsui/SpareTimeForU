@@ -23,6 +23,9 @@ public class IdleThingDataBaseUtil {
             if (found_idlething.size() < 1) {//没有找到该任务，说明没有存过
                 idlething.save();
             } else {
+                if (idlething.getLike_number() == 0) {
+                    idlething.setToDefault("like_number");
+                }
                 idlething.update(found_idlething.get(0).getId());//更新数据
             }
         }
@@ -39,9 +42,9 @@ public class IdleThingDataBaseUtil {
         idlethings = LitePal
                 .order("idle_thing_id desc")
                 .limit(6)
+                .where("is_deleted=0")
                 .offset(origin - 1)
                 .find(IdleThing.class);
-        List<IdleThing> idlethings2 = LitePal.findAll(IdleThing.class);
         return idlethings;
     }
 

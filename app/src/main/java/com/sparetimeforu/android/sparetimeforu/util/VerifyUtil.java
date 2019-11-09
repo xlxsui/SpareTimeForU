@@ -55,7 +55,7 @@ public class VerifyUtil {
     public static boolean isLoginStatus(Context context) {
         if (STFUConfig.sUser != null) {
             if (STFUConfig.sUser.getUser_id() != 0
-                    && STFUConfig.sUser.getEmail() != null && isTokenValid(context)) {
+                    && STFUConfig.sUser.getEmail() != null) {
                 return true;
             }
         }
@@ -70,6 +70,9 @@ public class VerifyUtil {
      */
     public static boolean isTokenValid(Context context) {
         if (STFUConfig.sUser != null) {
+            if (STFUConfig.sUser.getAuth_token() == null) {
+                return false;
+            }
             FormBody body = new FormBody.Builder()
                     .add("auth_token", STFUConfig.sUser.getAuth_token())
                     .build();

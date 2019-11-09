@@ -142,12 +142,7 @@ public class LostAndFoundPostFragment extends Fragment {
             OkHttpUtil.sendOkHttpPostRequest(COMMENT_URL + "add", formBody, new Callback() {
                 @Override
                 public void onFailure(Call call, IOException e) {
-                    getActivity().runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            Snackbar.make(getView(), "评论失败，请检查网络", BaseTransientBottomBar.LENGTH_SHORT).show();
-                        }
-                    });
+                    getActivity().runOnUiThread(() -> Snackbar.make(getView(), "评论失败，请检查网络", BaseTransientBottomBar.LENGTH_SHORT).show());
                 }
 
                 @Override
@@ -169,7 +164,7 @@ public class LostAndFoundPostFragment extends Fragment {
                                 String data = responseJson.getString("data");
                                 Comment comment = gson.fromJson(data, Comment.class);
                                 refresh();
-                                Snackbar.make(getView(), "评论成功", BaseTransientBottomBar.LENGTH_SHORT).show();
+//                                Snackbar.make(getView(), "评论成功", BaseTransientBottomBar.LENGTH_SHORT).show();
                             } catch (Exception e) {
                                 Logger.e(e.toString());
                             }

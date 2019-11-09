@@ -85,8 +85,10 @@ class RequestIdleThing extends Thread {
             @Override
             public void onResponse(Call call, Response response) throws IOException {
                 //获取数据成功
-                HandleMessageUtil.handleIdleThingMessage(response.body().string());
-                final List<IdleThing> idleThings = IdleThingDataBaseUtil.getIdleThing_data(origin);
+//                HandleMessageUtil.handleIdleThingMessage(response.body().string());
+//                final List<IdleThing> idleThings = IdleThingDataBaseUtil.getIdleThing_data(origin);
+                final List<IdleThing> idleThings =
+                        HandleMessageUtil.handlePostIdleThingMessage(response.body().string());
                 if (idleThings.size() > 0) {
                     origin += idleThings.size();
                 }
@@ -95,7 +97,6 @@ class RequestIdleThing extends Thread {
         });
     }
 }
-
 
 
 public class IdleThingFragment extends Fragment {
@@ -175,17 +176,16 @@ public class IdleThingFragment extends Fragment {
         new RequestIdleThing(new RequestIdleThingCallBack() {
             @Override
             public void success(List<IdleThing> data) {
-                Snackbar.make(getView(), "Refresh finished! ",
-                        BaseTransientBottomBar.LENGTH_INDEFINITE).show();
                 //do something
+                if (getActivity() == null) return;
                 getActivity().runOnUiThread(() -> {
                     loadingLayout.setStatus(LoadingLayout.Success);
                     mAdapter.setNewData(data);//update data
                     if(data.size()==0) loadingLayout.setStatus(LoadingLayout.Empty);
                     mAdapter.setEnableLoadMore(true);
                     mIdleThingRefreshLayout.setRefreshing(false);
-                    Snackbar.make(getView(), "Refresh finished! ",
-                            BaseTransientBottomBar.LENGTH_SHORT).show();
+//                    Snackbar.make(getView(), R.string.refresh_finished,
+//                            BaseTransientBottomBar.LENGTH_SHORT).show();
                     if (data.size() < 6) {
                         mAdapter.loadMoreEnd();
                     }
@@ -225,6 +225,7 @@ public class IdleThingFragment extends Fragment {
                 body, new Callback() {
                     @Override
                     public void onFailure(Call call, IOException e) {
+                        if (getActivity() == null) return;
                         getActivity().runOnUiThread(() -> {
                             mIdleThingRefreshLayout.setRefreshing(false);
                             mAdapter.setEnableLoadMore(false);// 搜索之后不能下拉加载
@@ -236,6 +237,7 @@ public class IdleThingFragment extends Fragment {
                         List<IdleThing> idleThings = HandleMessageUtil
                                 .handlePostIdleThingMessage(response.body().string());
 
+                        if (getActivity() == null) return;
                         getActivity().runOnUiThread(() -> {
                             mIdleThingRefreshLayout.setRefreshing(false);
                             mAdapter.setNewData(idleThings);// update data
@@ -257,6 +259,7 @@ public class IdleThingFragment extends Fragment {
                 body, new Callback() {
                     @Override
                     public void onFailure(Call call, IOException e) {
+                        if (getActivity() == null) return;
                         getActivity().runOnUiThread(() -> {
                             mAdapter.loadMoreFail();
 
@@ -274,6 +277,7 @@ public class IdleThingFragment extends Fragment {
                             Logger.e(e.toString());
                         }
                         if (status.equals("success")) {
+                            if (getActivity() == null) return;
                             getActivity().runOnUiThread(() -> {
 
                                 List<IdleThing> idleThings = HandleMessageUtil
@@ -291,6 +295,7 @@ public class IdleThingFragment extends Fragment {
                                 }
                             });
                         } else {
+                            if (getActivity() == null) return;
                             getActivity().runOnUiThread(() -> mAdapter.loadMoreFail());
                         }
                     }

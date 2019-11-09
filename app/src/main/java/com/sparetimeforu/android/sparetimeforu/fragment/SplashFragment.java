@@ -41,7 +41,7 @@ public class SplashFragment extends Fragment {
         mLottieAnimationView.playAnimation();
 
 
-        new CountDownTime(3000, 1000).start();
+        new CountDownTime(2300, 1000).start();
         return view;
     }
 

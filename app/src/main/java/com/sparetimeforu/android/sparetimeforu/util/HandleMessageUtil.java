@@ -32,7 +32,7 @@ import cn.jpush.im.api.BasicCallback;
 public class HandleMessageUtil {
 
     /**
-     * 解析返回的登陆信息用户数据
+     * 解析返回的登录信息用户数据
      *
      * @param responseString
      * @return

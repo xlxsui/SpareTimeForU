@@ -30,7 +30,7 @@ public class SystemMessageSendUtil {
         JMessageClient.login(STFUConfig.manager_username, STFUConfig.manager_username + "1", new BasicCallback() {
             @Override
             public void gotResult(int i, String s) {
-                //登陆管理员账号,发送添加好友信息
+                //登录管理员账号,发送添加好友信息
                 if(i==0){
                     //创建System_message
                     Date dNow = new Date( );
@@ -48,7 +48,7 @@ public class SystemMessageSendUtil {
                     message.setOnSendCompleteCallback(new BasicCallback() {
                         @Override
                         public void gotResult(int i, String s) {
-                            //发送系统通知完成，重新登陆用户账号
+                            //发送系统通知完成，重新登录用户账号
                             JMessageClient.logout();
                             JMessageClient.login(STFUConfig.sUser.getEmail(), STFUConfig.sUser.getEmail() + "1", new BasicCallback() {
                                 @Override
@@ -67,7 +67,7 @@ public class SystemMessageSendUtil {
         JMessageClient.login(STFUConfig.manager_username, STFUConfig.manager_username + "1", new BasicCallback() {
             @Override
             public void gotResult(int i, String s) {
-                //登陆管理员账号,发送添加好友信息
+                //登录管理员账号,发送添加好友信息
                 if(i==0){
                     //创建System_message
                     Date dNow = new Date( );
@@ -87,7 +87,7 @@ public class SystemMessageSendUtil {
                     message.setOnSendCompleteCallback(new BasicCallback() {
                         @Override
                         public void gotResult(int i, String s) {
-                            //发送系统通知完成，重新登陆用户账号
+                            //发送系统通知完成，重新登录用户账号
                             JMessageClient.logout();
                             JMessageClient.login(STFUConfig.sUser.getEmail(), STFUConfig.sUser.getEmail() + "1", new BasicCallback() {
                                 @Override
@@ -106,7 +106,7 @@ public class SystemMessageSendUtil {
         JMessageClient.login(STFUConfig.manager_username, STFUConfig.manager_username + "1", new BasicCallback() {
             @Override
             public void gotResult(int i, String s) {
-                //登陆管理员账号,发送添加好友信息
+                //登录管理员账号,发送添加好友信息
                 if(i==0){
                     //创建System_message
                     Date dNow = new Date( );
@@ -126,7 +126,7 @@ public class SystemMessageSendUtil {
                     message.setOnSendCompleteCallback(new BasicCallback() {
                         @Override
                         public void gotResult(int i, String s) {
-                            //发送系统通知完成，重新登陆用户账号
+                            //发送系统通知完成，重新登录用户账号
                             JMessageClient.logout();
                             JMessageClient.login(STFUConfig.sUser.getEmail(), STFUConfig.sUser.getEmail() + "1", new BasicCallback() {
                                 @Override
@@ -145,7 +145,7 @@ public class SystemMessageSendUtil {
         JMessageClient.login(STFUConfig.manager_username, STFUConfig.manager_username + "1", new BasicCallback() {
             @Override
             public void gotResult(int i, String s) {
-                //登陆管理员账号,发送添加好友信息
+                //登录管理员账号,发送添加好友信息
                 if(i==0){
                     //创建System_message
                     Date dNow = new Date( );
@@ -181,7 +181,7 @@ public class SystemMessageSendUtil {
                     message.setOnSendCompleteCallback(new BasicCallback() {
                         @Override
                         public void gotResult(int i, String s) {
-                            //发送系统通知完成，重新登陆用户账号
+                            //发送系统通知完成，重新登录用户账号
                             JMessageClient.logout();
                             JMessageClient.login(STFUConfig.sUser.getEmail(), STFUConfig.sUser.getEmail() + "1", new BasicCallback() {
                                 @Override

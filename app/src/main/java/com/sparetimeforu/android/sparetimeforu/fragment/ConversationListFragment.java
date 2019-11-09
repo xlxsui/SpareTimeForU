@@ -51,13 +51,13 @@ public class ConversationListFragment extends Fragment {
         mRecyclerView=(RecyclerView)view.findViewById(R.id.friend_recyclerView);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         init_data();
-        if(STFUConfig.globalEventListener!=null){
+        if (STFUConfig.globalEventListener != null) {
             STFUConfig.globalEventListener.setConversationListFragment(this);
             JMessageClient.registerEventReceiver(STFUConfig.globalEventListener);
         }
-        Toolbar toolbar=view.findViewById(R.id.toolbar);
-        ((AppCompatActivity)getActivity()).setSupportActionBar(toolbar);
-        menu_back=(ImageView)view.findViewById(R.id.menu_back_icon);
+        Toolbar toolbar = view.findViewById(R.id.toolbar);
+        ((AppCompatActivity) getActivity()).setSupportActionBar(toolbar);
+        menu_back = (ImageView) view.findViewById(R.id.menu_back_icon);
         menu_back.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -74,7 +74,7 @@ public class ConversationListFragment extends Fragment {
         init_data();
     }
 
-    public void init_data(){
+    public void init_data() {
         //初始化，获取所有conversation
         conversations=JMessageClient.getConversationList();
         if(conversations==null) loadingLayout.setStatus(LoadingLayout.Error);
@@ -92,30 +92,32 @@ public class ConversationListFragment extends Fragment {
             mRecyclerView.setAdapter(new ConversationListAdapter(conversations,getActivity()));
         }
     }
-    private void sort_Conversations(List<Conversation> conversations){
+
+    private void sort_Conversations(List<Conversation> conversations) {
         //将conversation中的会话按未读信息数来排列， 未读信息越多，排在越前面，系统通知置顶
         //按未读信息数来排列
-        for(int i=0;i<conversations.size();i++){
-            for(int j=i;j<conversations.size()-1;j++){
-                if(conversations.get(j).getUnReadMsgCnt()<conversations.get(j+1).getUnReadMsgCnt()){//冒泡
-                    Conversation temp= conversations.get(j+1);
-                    conversations.remove(j+1);
-                    conversations.add(j,temp);
+        if (conversations == null) return;
+        for (int i = 0; i < conversations.size(); i++) {
+            for (int j = i; j < conversations.size() - 1; j++) {
+                if (conversations.get(j).getUnReadMsgCnt() < conversations.get(j + 1).getUnReadMsgCnt()) {//冒泡
+                    Conversation temp = conversations.get(j + 1);
+                    conversations.remove(j + 1);
+                    conversations.add(j, temp);
                 }
             }
         }
         //置顶系统通知
 
-        int i=0;
-        while(i<conversations.size()){
-            if(conversations.get(i).getTargetId()==STFUConfig.manager_username)
+        int i = 0;
+        while (i < conversations.size()) {
+            if (conversations.get(i).getTargetId() == STFUConfig.manager_username)
                 break;
             i++;
         }
         if(i<conversations.size()){//找到了系统通知
             Conversation  conversation=conversations.get(i);
             conversations.remove(i);
-            conversations.add(0,conversation);
+            conversations.add(0, conversation);
         }
     }
 

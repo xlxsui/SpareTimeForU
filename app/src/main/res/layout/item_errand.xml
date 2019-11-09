@@ -25,6 +25,7 @@
             android:weightSum="5">
 
             <LinearLayout
+                android:id="@+id/layout_avatar"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_margin="0.5dp"
@@ -62,7 +63,6 @@
                         android:text="@string/app_name" />
 
 
-
                 </LinearLayout>
 
                 <TextView
@@ -86,54 +86,104 @@
                     android:layout_height="match_parent"
                     android:layout_margin="10dp"
                     android:gravity="center"
-                    android:text="￥2" />
+                    android:text="￥2"
+                    android:textColor="@color/white" />
             </LinearLayout>
+
 
             <LinearLayout
                 android:layout_width="0dp"
+                android:layout_height="match_parent"
                 android:layout_weight="1.4"
-                android:orientation="vertical"
-                android:layout_height="match_parent">
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
                 <Button
-                    android:layout_marginTop="10dip"
-                    android:layout_gravity="center"
                     android:id="@+id/Errand_accpet_mission"
                     android:layout_width="wrap_content"
+                    android:layout_height="30dip"
                     android:background="@drawable/button_style"
-                    android:textSize="12sp"
-                    android:gravity="center"
-                    android:textColor="#fb7299"
-                    android:textStyle="bold"
                     android:text="@string/accpet_mission"
-                    android:layout_height="30dip" />
-                <Button
-                    android:layout_marginTop="10dip"
-                    android:layout_gravity="center"
-                    android:id="@+id/Errand_finish_mission"
-                    android:layout_width="wrap_content"
-                    android:background="@drawable/button_style"
-                    android:textSize="12sp"
-                    android:gravity="center"
-                    android:visibility="gone"
                     android:textColor="#fb7299"
-                    android:textStyle="bold"
+                    android:textSize="12sp"
+                    android:textStyle="bold" />
+
+                <Button
+                    android:id="@+id/Errand_finish_mission"
+                    android:layout_width="@dimen/dp_40"
+                    android:layout_height="30dip"
+                    android:layout_margin="@dimen/dp_2"
+                    android:background="@drawable/button_style"
                     android:text="@string/finish_mission"
-                    android:layout_height="30dip" />
+                    android:textColor="#fb7299"
+                    android:textSize="12sp"
+                    android:textStyle="bold"
+                    android:visibility="gone" />
+
+                <Button
+                    android:id="@+id/errand_cancel"
+                    android:layout_width="@dimen/dp_40"
+                    android:layout_height="30dp"
+                    android:layout_margin="@dimen/dp_2"
+                    android:background="@drawable/button_style"
+                    android:text="@string/cancel"
+                    android:textColor="#fb7299"
+                    android:textSize="12sp"
+                    android:textStyle="bold"
+                    android:visibility="gone" />
+
+                <Button
+                    android:id="@+id/confirm_finish_mission"
+                    android:layout_width="48dp"
+                    android:layout_height="30dip"
+                    android:background="@drawable/button_style"
+                    android:text="@string/finish_mission"
+                    android:textColor="#fb7299"
+                    android:textSize="12sp"
+                    android:textStyle="bold"
+                    android:visibility="gone" />
+
+                <Button
+                    android:id="@+id/errand_not_finish"
+                    android:layout_width="48dp"
+                    android:layout_height="30dip"
+                    android:layout_margin="@dimen/dp_2"
+                    android:background="@drawable/button_style"
+                    android:text="@string/cancel"
+                    android:textColor="#fb7299"
+                    android:textSize="12sp"
+                    android:textStyle="bold"
+                    android:visibility="gone" />
+
+                <Button
+                    android:id="@+id/Errand_delete"
+                    android:layout_width="wrap_content"
+                    android:layout_height="30dip"
+                    android:layout_margin="@dimen/dp_2"
+                    android:background="@drawable/button_style"
+                    android:text="@string/delete_mission"
+                    android:textColor="#fb7299"
+                    android:textSize="12sp"
+                    android:textStyle="bold"
+                    android:visibility="gone" />
+
                 <TextView
-                    android:layout_marginTop="10dip"
-                    android:layout_gravity="center"
                     android:id="@+id/Errand_finished_text"
                     android:layout_width="wrap_content"
-                    android:background="@drawable/button_style"
-                    android:textSize="12sp"
+                    android:layout_height="30dip"
+                    android:layout_gravity="center"
+                    android:background="@color/white"
                     android:gravity="center"
-                    android:visibility="gone"
-                    android:textColor="#fb7299"
-                    android:textStyle="bold"
+                    android:padding="@dimen/dp_2"
                     android:text="@string/mission_finished"
-                    android:layout_height="30dip" />
+                    android:textColor="#fb7299"
+                    android:textSize="12sp"
+                    android:textStyle="bold"
+                    android:visibility="gone" />
 
             </LinearLayout>
+
+
         </LinearLayout>
 
         <LinearLayout
@@ -179,7 +229,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="0.7"
                     android:gravity="center"
-                    android:text="Deadline:" />
+                    android:text="@string/deadline" />
 
                 <TextView
                     android:id="@+id/errand_deadline"
@@ -199,60 +249,42 @@
                 android:orientation="vertical"
                 android:weightSum="10">
 
-                <LinearLayout
+                <android.support.constraint.ConstraintLayout
                     android:id="@+id/errand_main_content"
                     android:layout_width="match_parent"
                     android:layout_height="0dp"
                     android:layout_weight="8.5"
-                    android:orientation="vertical"
-                    android:weightSum="5">
+                    android:orientation="vertical">
 
                     <TextView
                         android:id="@+id/errand_caption"
                         android:layout_width="match_parent"
-                        android:layout_height="0dp"
-                        android:layout_weight="2"
-                        android:gravity="center"
-                        android:maxLines="3"
-                        android:singleLine="false"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="@dimen/dp_8"
+                        android:layout_marginEnd="@dimen/dp_8"
                         android:maxEms="15"
+                        android:maxLines="1"
+                        android:singleLine="false"
                         android:textSize="14sp"
-                        android:textStyle="bold" />
-
-                    <LinearLayout
-                        android:id="@+id/errand_pictures"
-                        android:layout_width="match_parent"
-                        android:layout_height="0dp"
-                        android:layout_weight="2.9"
-                        android:orientation="horizontal"
-                        android:weightSum="3.01">
-
-                        <ImageView
-                            android:id="@+id/errand_picture1"
-                            android:layout_width="0dp"
-                            android:layout_height="match_parent"
-                            android:layout_margin="2dp"
-                            android:layout_weight="1" />
-
-                        <ImageView
-                            android:id="@+id/errand_picture2"
-                            android:layout_width="0dp"
-                            android:layout_height="match_parent"
-                            android:layout_margin="2dp"
-                            android:layout_weight="1" />
-
-                        <ImageView
-                            android:id="@+id/errand_picture3"
-                            android:layout_width="0dp"
-                            android:layout_height="match_parent"
-                            android:layout_margin="2dp"
-                            android:layout_weight="1" />
+                        android:textStyle="bold"
+                        app:layout_constraintBottom_toTopOf="@+id/errand_picture1"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
 
 
-                    </LinearLayout>
+                    <ImageView
+                        android:id="@+id/errand_picture1"
+                        android:layout_width="wrap_content"
+                        android:layout_height="120dp"
+                        android:layout_margin="2dp"
+                        android:layout_marginStart="@dimen/dp_32"
+                        android:visibility="gone"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintStart_toStartOf="parent" />
 
 
-                </LinearLayout>
+                </android.support.constraint.ConstraintLayout>
 
                 <LinearLayout
                     android:id="@+id/errand_footer"
@@ -265,29 +297,47 @@
                     <ImageView
                         android:id="@+id/errand_share"
                         android:layout_width="0dp"
-                        android:padding="6dp"
                         android:layout_height="match_parent"
                         android:layout_weight="1"
                         android:background="@drawable/touch_bg"
+                        android:padding="6dp"
                         android:src="@drawable/ic_share" />
 
-                    <ImageView
-                        android:id="@+id/errand_like"
-                        android:layout_width="0dp"
-                        android:padding="6dp"
-                        android:layout_height="match_parent"
-                        android:layout_weight="1"
-                        android:background="@drawable/touch_bg"
-                        android:src="@drawable/ic_like_before" />
-
                     <LinearLayout
-                        android:id="@+id/errand_comment"
+                        android:id="@+id/like_layout"
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
                         android:layout_weight="1"
-                        android:padding="6dp"
                         android:background="@drawable/touch_bg"
                         android:orientation="vertical"
+                        android:padding="4dp"
+                        android:weightSum="3">
+
+                        <ImageView
+                            android:id="@+id/ic_like"
+                            android:layout_width="match_parent"
+                            android:layout_height="0dp"
+                            android:layout_weight="1.6"
+                            android:src="@drawable/ic_like_before" />
+
+                        <TextView
+                            android:id="@+id/errand_like"
+                            android:layout_width="match_parent"
+                            android:layout_height="0dp"
+                            android:layout_weight="1.4"
+                            android:gravity="center"
+                            android:text="999"
+                            android:textSize="6sp" />
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:background="@drawable/touch_bg"
+                        android:orientation="vertical"
+                        android:padding="6dp"
                         android:weightSum="3">
 
                         <ImageView
@@ -297,6 +347,7 @@
                             android:src="@drawable/ic_comments" />
 
                         <TextView
+                            android:id="@+id/errand_comment"
                             android:layout_width="match_parent"
                             android:layout_height="0dp"
                             android:layout_weight="1.2"

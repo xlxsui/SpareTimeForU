@@ -80,6 +80,7 @@ class RequestSearchThing extends Thread {
         OkHttpUtil.sendOkHttpPostRequest(url, formBody, new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
+
                 activity.runOnUiThread(() -> Toast.makeText(activity,
                         "无法获取任务信息，请检查网络是否正常", Toast.LENGTH_SHORT).show());
                 mCallBack.fail(e);
@@ -176,10 +177,9 @@ public class SearchThingFragment extends Fragment {
         new RequestSearchThing(new RequestSearchThingCallBack() {
             @Override
             public void success(List<SearchThing> data) {
-                Snackbar.make(getView(), "Refresh finished! ", BaseTransientBottomBar.LENGTH_SHORT).show();
-
                 //do something
 
+                if (getActivity() == null) return;
                 getActivity().runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
@@ -187,7 +187,6 @@ public class SearchThingFragment extends Fragment {
                         mAdapter.setNewData(data);//update data
                         mAdapter.setEnableLoadMore(true);
                         mSearchThingRefreshLayout.setRefreshing(false);
-                        Snackbar.make(getView(), "Refresh finished! ", BaseTransientBottomBar.LENGTH_SHORT).show();
                         if (data.size() < 6) {
                             mAdapter.loadMoreEnd();
                         }
@@ -197,6 +196,7 @@ public class SearchThingFragment extends Fragment {
 
             @Override
             public void fail(Exception e) {
+                if (getActivity() == null) return;
                 getActivity().runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
@@ -221,7 +221,7 @@ public class SearchThingFragment extends Fragment {
         OkHttpUtil.sendOkHttpPostRequest(STFUConfig.HOST + "/search_thing/search", body, new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
-
+                if (getActivity() == null) return;
                 getActivity().runOnUiThread(() -> {
                     mSearchThingRefreshLayout.setRefreshing(false);
                     mAdapter.setEnableLoadMore(false);// 防止可以上拉加载
@@ -233,7 +233,7 @@ public class SearchThingFragment extends Fragment {
             public void onResponse(Call call, Response response) throws IOException {
                 List<SearchThing> searchThings = HandleMessageUtil
                         .handlePostSearchThingMessage(response.body().string());
-
+                if (getActivity() == null) return;
                 getActivity().runOnUiThread(() -> {
                     mSearchThingRefreshLayout.setRefreshing(false);
                     mAdapter.setNewData(searchThings);//update data
@@ -255,6 +255,7 @@ public class SearchThingFragment extends Fragment {
         OkHttpUtil.sendOkHttpPostRequest(STFUConfig.HOST + "/search_thing/load_more", body, new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
+                if (getActivity() == null) return;
                 getActivity().runOnUiThread(() -> {
                     mAdapter.loadMoreFail();
                 });
@@ -271,6 +272,7 @@ public class SearchThingFragment extends Fragment {
                     Logger.e(e.toString());
                 }
                 if (status.equals("success")) {
+                    if (getActivity() == null) return;
                     getActivity().runOnUiThread(() -> {
                         List<SearchThing> searchThings = HandleMessageUtil
                                 .handlePostSearchThingMessage(responseString);
@@ -286,6 +288,7 @@ public class SearchThingFragment extends Fragment {
                         }
                     });
                 } else {
+                    if (getActivity() == null) return;
                     getActivity().runOnUiThread(() -> mAdapter.loadMoreFail());
                 }
             }

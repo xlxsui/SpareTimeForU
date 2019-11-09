@@ -37,7 +37,7 @@ public class AccountAuthenticator extends AbstractAccountAuthenticator {
      * @param authTokenType
      * @param requiredFeatures
      * @param options
-     * @return Bundle 里面包含一个登陆的intent，用此intent可以打开登陆activity，然后activity里面会调用addAccountExplicitly()增加新的账号。
+     * @return Bundle 里面包含一个登录的intent，用此intent可以打开登录activity，然后activity里面会调用addAccountExplicitly()增加新的账号。
      * @throws NetworkErrorException
      */
     @Override

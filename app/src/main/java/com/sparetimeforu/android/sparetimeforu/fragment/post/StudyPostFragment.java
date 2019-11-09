@@ -161,6 +161,7 @@ public class StudyPostFragment extends Fragment {
                         Logger.e(e.toString());
                     }
                     if (status.equals("success")) {
+
                         getActivity().runOnUiThread(() -> {
                             mCommentEditText.setText("");
                             Gson gson = new Gson();
@@ -169,7 +170,7 @@ public class StudyPostFragment extends Fragment {
                                 String data = responseJson.getString("data");
                                 Comment comment = gson.fromJson(data, Comment.class);
                                 refresh();
-                                Snackbar.make(getView(), "评论成功", BaseTransientBottomBar.LENGTH_SHORT).show();
+//                                Snackbar.make(getView(), "评论成功", BaseTransientBottomBar.LENGTH_SHORT).show();
                             } catch (Exception e) {
                                 Logger.e(e.toString());
                             }

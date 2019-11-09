@@ -170,12 +170,8 @@ public class SignUpFragment extends Fragment {
         OkHttpUtil.sendOkHttpPostRequest(url, body, new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
-                getActivity().runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        Toast.makeText(getActivity(), "网络请求错误", Toast.LENGTH_SHORT).show();
-                    }
-                });
+                if (getActivity() == null) return;
+                getActivity().runOnUiThread(() -> Toast.makeText(getActivity(), "网络请求错误", Toast.LENGTH_SHORT).show());
             }
 
             @Override
@@ -229,12 +225,7 @@ public class SignUpFragment extends Fragment {
                 new Callback() {
                     @Override
                     public void onFailure(Call call, IOException e) {
-                        getActivity().runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                Toast.makeText(getActivity(), "网络请求错误", Toast.LENGTH_SHORT).show();
-                            }
-                        });
+                        getActivity().runOnUiThread(() -> Toast.makeText(getActivity(), "网络请求错误", Toast.LENGTH_SHORT).show());
                     }
 
                     @Override

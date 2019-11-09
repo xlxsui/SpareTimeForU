@@ -173,15 +173,13 @@ public class StudyFragment extends Fragment {
         new RequestStudy(new RequestStudyCallBack() {
             @Override
             public void success(List<Study> data) {
-                Snackbar.make(getView(), "Refresh finished! ", BaseTransientBottomBar.LENGTH_SHORT).show();
-                //do something
+                if (getActivity() == null) return;
                 getActivity().runOnUiThread(() -> {
                     loadingLayout.setStatus(LoadingLayout.Success);
                     mAdapter.setNewData(data);//update data
                     if(data.size()==0) loadingLayout.setStatus(LoadingLayout.Empty);
                     mAdapter.setEnableLoadMore(true);
                     mStudyRefreshLayout.setRefreshing(false);
-                    Snackbar.make(getView(), "Refresh finished! ", BaseTransientBottomBar.LENGTH_SHORT).show();
                     if (data.size() < 6) {
                         mAdapter.loadMoreEnd();
                     }
@@ -190,6 +188,7 @@ public class StudyFragment extends Fragment {
 
             @Override
             public void fail(Exception e) {
+                if (getActivity() == null) return;
                 getActivity().runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
@@ -199,6 +198,8 @@ public class StudyFragment extends Fragment {
                         mStudyRefreshLayout.setRefreshing(false);
                     }
                 });
+
+
 
             }
         }, getActivity()).start();
