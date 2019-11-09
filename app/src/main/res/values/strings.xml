@@ -1,6 +1,10 @@
 <resources>
     <string name="app_name">汕大顺手邦</string>
     <string name="accpet_mission">接受任务</string>
+    <string name="my_money">我的积分</string>\
+    <string name="recharge">充值</string>
+    <string name="cash">提现</string>
+    <string name="network_reflash">网络请求失败，点击刷新重试</string>
     <string name="finish_mission">完成任务</string>
     <string name="mission_finished">  任务已完成  </string>
     <string name="system_message_list_item_hint_get_more">>> 点击查看详细消息</string>

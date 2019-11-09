@@ -21,6 +21,10 @@ public class SystemMessageSendUtil {
 //    username代表要发送信息的对象用户
     public final static int Errand_message_mode_errand_accepted=0;//任务被接受
     public final static int Errand_message_mode_errand_solved=1;//任务被完成
+    public final static int Errand_message_mode_errand_canceled=2;//任务被接收者取消
+    public final static int Errand_message_mode_errand_solved_agree=3;//任务同意完成
+    public final static int Errand_message_mode_errand_solved_rejected=4;//任务同意失败
+
     public static void  send_System_message_add_friend(String username){
         JMessageClient.logout();
         JMessageClient.login(STFUConfig.manager_username, STFUConfig.manager_username + "1", new BasicCallback() {
@@ -159,6 +163,15 @@ public class SystemMessageSendUtil {
                             break;
                         case SystemMessageSendUtil.Errand_message_mode_errand_solved:
                             systemMessage.setContent("完成了您的任务");
+                            break;
+                        case SystemMessageSendUtil.Errand_message_mode_errand_canceled:
+                            systemMessage.setContent("放弃了您的任务");
+                            break;
+                        case SystemMessageSendUtil.Errand_message_mode_errand_solved_agree:
+                            systemMessage.setContent("同意了任务已完成，合作愉快");
+                            break;
+                        case SystemMessageSendUtil.Errand_message_mode_errand_solved_rejected:
+                            systemMessage.setContent("拒绝了任务已完成，已提交后台审核");
                             break;
                     }
                     systemMessage.setUser_Email(STFUConfig.sUser.getEmail());//代表此消息的源头用户

@@ -28,6 +28,7 @@ import com.sparetimeforu.android.sparetimeforu.entity.Study;
 import com.sparetimeforu.android.sparetimeforu.util.HandleMessageUtil;
 import com.sparetimeforu.android.sparetimeforu.util.StudyDataBaseUtil;
 import com.squareup.picasso.Picasso;
+import com.weavey.loading.lib.LoadingLayout;
 
 import org.json.JSONObject;
 
@@ -101,7 +102,7 @@ public class StudyFragment extends Fragment {
     private List<Study> mStudies;
     private SwipeRefreshLayout mStudyRefreshLayout;
     private Pagination mPagination;// 分页对象，加载更多时会用到
-
+    private LoadingLayout loadingLayout;
 
     @Nullable
     @Override
@@ -112,6 +113,14 @@ public class StudyFragment extends Fragment {
         List<Study> list = new ArrayList<>();
         setupAdapter(list);
 
+        loadingLayout=(LoadingLayout)view.findViewById(R.id.study_loading_layout);
+        loadingLayout.setEmptyText("空空如也呢，快来发布学习上的问题吧");
+        loadingLayout.setOnReloadListener(new LoadingLayout.OnReloadListener() {
+            @Override
+            public void onReload(View v) {
+                refresh();
+            }
+        });
         mStudyRefreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.study_refresh_layout);
         mStudyRefreshLayout.setColorSchemeResources(R.color.colorPrimary);
         initRefreshLayout();
@@ -157,6 +166,7 @@ public class StudyFragment extends Fragment {
     }
 
     private void refresh() {
+        loadingLayout.setStatus(LoadingLayout.Loading);
         mPagination = new Pagination();// 重来页数也要重置
         mAdapter.setEnableLoadMore(false);//这里的作用是防止下拉刷新的时候还可以上拉加载
         mStudyRefreshLayout.setRefreshing(true);
@@ -166,7 +176,9 @@ public class StudyFragment extends Fragment {
                 Snackbar.make(getView(), "Refresh finished! ", BaseTransientBottomBar.LENGTH_SHORT).show();
                 //do something
                 getActivity().runOnUiThread(() -> {
+                    loadingLayout.setStatus(LoadingLayout.Success);
                     mAdapter.setNewData(data);//update data
+                    if(data.size()==0) loadingLayout.setStatus(LoadingLayout.Empty);
                     mAdapter.setEnableLoadMore(true);
                     mStudyRefreshLayout.setRefreshing(false);
                     Snackbar.make(getView(), "Refresh finished! ", BaseTransientBottomBar.LENGTH_SHORT).show();
@@ -178,10 +190,15 @@ public class StudyFragment extends Fragment {
 
             @Override
             public void fail(Exception e) {
-                Snackbar.make(getView(), "Network error! ", BaseTransientBottomBar.LENGTH_SHORT).show();
-
-                mAdapter.setEnableLoadMore(true);
-                mStudyRefreshLayout.setRefreshing(false);
+                getActivity().runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        Snackbar.make(getView(), "Network error! ", BaseTransientBottomBar.LENGTH_SHORT).show();
+                        loadingLayout.setStatus(LoadingLayout.Error);
+                        mAdapter.setEnableLoadMore(true);
+                        mStudyRefreshLayout.setRefreshing(false);
+                    }
+                });
 
             }
         }, getActivity()).start();

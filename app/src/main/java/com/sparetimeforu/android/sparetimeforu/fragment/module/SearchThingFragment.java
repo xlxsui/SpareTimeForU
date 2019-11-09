@@ -31,6 +31,7 @@ import com.sparetimeforu.android.sparetimeforu.util.HandleMessageUtil;
 import com.sparetimeforu.android.sparetimeforu.util.IdleThingDataBaseUtil;
 import com.sparetimeforu.android.sparetimeforu.util.SearchThingBaseUtil;
 import com.squareup.picasso.Picasso;
+import com.weavey.loading.lib.LoadingLayout;
 
 import org.json.JSONObject;
 
@@ -104,6 +105,7 @@ public class SearchThingFragment extends Fragment {
     private SwipeRefreshLayout mSearchThingRefreshLayout;
     private List<SearchThing> mSearchThings;
     private Pagination mPagination;// 分页对象，加载更多时会用到
+    private LoadingLayout loadingLayout;
 
     @Nullable
     @Override
@@ -113,6 +115,15 @@ public class SearchThingFragment extends Fragment {
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         List<SearchThing> list = new ArrayList<>();
         setupAdapter(list);
+
+        loadingLayout=(LoadingLayout)view.findViewById(R.id.search_loading_layout);
+        loadingLayout.setEmptyText("空空如也呢");
+        loadingLayout.setOnReloadListener(new LoadingLayout.OnReloadListener() {
+            @Override
+            public void onReload(View v) {
+                refresh();
+            }
+        });
 
         mSearchThingRefreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.search_thing_refresh_layout);
         mSearchThingRefreshLayout.setColorSchemeResources(R.color.colorPrimary);
@@ -159,7 +170,7 @@ public class SearchThingFragment extends Fragment {
 
     private void refresh() {
         mPagination = new Pagination();// 重来页数也要重置
-
+        loadingLayout.setStatus(LoadingLayout.Loading);
         mAdapter.setEnableLoadMore(false);//这里的作用是防止下拉刷新的时候还可以上拉加载
         mSearchThingRefreshLayout.setRefreshing(true);
         new RequestSearchThing(new RequestSearchThingCallBack() {
@@ -172,6 +183,7 @@ public class SearchThingFragment extends Fragment {
                 getActivity().runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
+                        loadingLayout.setStatus(LoadingLayout.Success);
                         mAdapter.setNewData(data);//update data
                         mAdapter.setEnableLoadMore(true);
                         mSearchThingRefreshLayout.setRefreshing(false);
@@ -185,10 +197,16 @@ public class SearchThingFragment extends Fragment {
 
             @Override
             public void fail(Exception e) {
-                Snackbar.make(getView(), "Network error! ", BaseTransientBottomBar.LENGTH_SHORT).show();
+                getActivity().runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        Snackbar.make(getView(), "Network error! ", BaseTransientBottomBar.LENGTH_SHORT).show();
+                        loadingLayout.setStatus(LoadingLayout.Error);
+                        mAdapter.setEnableLoadMore(true);
+                        mSearchThingRefreshLayout.setRefreshing(false);
+                    }
+                });
 
-                mAdapter.setEnableLoadMore(true);
-                mSearchThingRefreshLayout.setRefreshing(false);
             }
         }, getActivity()).start();
     }

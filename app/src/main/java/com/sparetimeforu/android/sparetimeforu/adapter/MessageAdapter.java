@@ -1,5 +1,6 @@
 package com.sparetimeforu.android.sparetimeforu.adapter;
 
+import android.app.Activity;
 import android.graphics.Bitmap;
 import android.view.View;
 import android.widget.TextView;
@@ -25,39 +26,12 @@ import de.hdodenhof.circleimageview.CircleImageView;
 
 public class MessageAdapter extends BaseQuickAdapter<Message,BaseViewHolder>{
     Bitmap bitmap_self_avatar,bitmap_other_side_avatar;
-    public MessageAdapter(List<Message> messages){
+    Activity activity;
+    public MessageAdapter(List<Message> messages, Activity activity,Bitmap bitmap_self_avatar,Bitmap bitmap_other_side_avatar){
         super(R.layout.chat_box,messages);
-        Message temp_message=null;
-        //初始化两个用户头像  对方和本机用户
-        for(int i=messages.size()-1;i>0;i--){
-            //找到一个对方用户发送的message
-            if(!messages.get(i).getFromUser().getUserName().equals(STFUConfig.sUser.getEmail())){
-                temp_message=messages.get(i);
-                break;
-            }
-        }
-        if(temp_message!=null){
-            JMessageClient.getUserInfo(temp_message.getFromUser().getUserName(), new GetUserInfoCallback() {
-                @Override
-                public void gotResult(int i, String s, UserInfo userInfo) {
-                    userInfo.getAvatarBitmap(new GetAvatarBitmapCallback() {
-                        @Override
-                        public void gotResult(int i, String s, Bitmap bitmap) {
-                            bitmap_other_side_avatar=bitmap;
-                        }
-                    });
-                }
-            });
-        }
-
-        //获取本机用户头像
-        JMessageClient.getMyInfo().getAvatarBitmap(new GetAvatarBitmapCallback() {
-            @Override
-            public void gotResult(int i, String s, Bitmap bitmap) {
-                bitmap_self_avatar=bitmap;
-            }
-        });
-
+        this.activity=activity;
+        this.bitmap_self_avatar=bitmap_self_avatar;
+        this.bitmap_other_side_avatar=bitmap_other_side_avatar;
     }
 
     @Override
@@ -72,6 +46,7 @@ public class MessageAdapter extends BaseQuickAdapter<Message,BaseViewHolder>{
         //以下开始根据对方发送信息以及我方发送信息来显示
         if(item.getFromUser()!=null){
             if(item.getFromUser().getUserName().equals(STFUConfig.sUser.getEmail())){//我发送的信息,显示右侧头像，向右边靠拢
+                content.setBackground(activity.getDrawable(R.drawable.chatting_box_right));
                 tc2.setVisibility(View.GONE);
                 tc1.setVisibility(View.VISIBLE);
                 avatar1.setVisibility(View.GONE);
@@ -81,6 +56,8 @@ public class MessageAdapter extends BaseQuickAdapter<Message,BaseViewHolder>{
                 if (message_text!=null)
                 content.setText(message_text);
             }else{
+
+                content.setBackground(activity.getDrawable(R.drawable.chatting_box_left));
                 tc1.setVisibility(View.GONE);
                 tc2.setVisibility(View.VISIBLE);
                 avatar2.setVisibility(View.GONE);

@@ -41,6 +41,7 @@ import com.sparetimeforu.android.sparetimeforu.activity.ConversationListActivity
 import com.sparetimeforu.android.sparetimeforu.activity.FriendActivity;
 import com.sparetimeforu.android.sparetimeforu.activity.LoginActivity;
 import com.sparetimeforu.android.sparetimeforu.activity.PersonalActivity;
+import com.sparetimeforu.android.sparetimeforu.activity.PersonalMoneyActivity;
 import com.sparetimeforu.android.sparetimeforu.activity.post.SendPostActivity;
 import com.sparetimeforu.android.sparetimeforu.entity.SystemMessage;
 import com.sparetimeforu.android.sparetimeforu.entity.User;
@@ -54,6 +55,7 @@ import com.sparetimeforu.android.sparetimeforu.util.StatusBarUtils;
 import com.sparetimeforu.android.sparetimeforu.util.SystemDataBaseUtil;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
+import com.weavey.loading.lib.LoadingLayout;
 
 import java.io.BufferedOutputStream;
 import java.io.File;
@@ -97,6 +99,7 @@ public class STFUFragment extends Fragment {
     private ImageView mBGImageView;
     private LinearLayout mHeaderLinearLayout;
     private ImageView slideIcon;
+    private LoadingLayout loadingLayout;
 
     FragmentManager mFm;
     Account mAccount;
@@ -119,7 +122,6 @@ public class STFUFragment extends Fragment {
         final View view = inflater.inflate(R.layout.fragment_stfu, container, false);
         ButterKnife.bind(this, view);
         mFm = getActivity().getSupportFragmentManager();
-
 
         /**
          * 工具栏及其组件
@@ -155,6 +157,20 @@ public class STFUFragment extends Fragment {
         });
         slideIcon = (ImageView) view.findViewById(R.id.menu_slide_icon);
         setHasOptionsMenu(true);//打开填充菜单，要实现onCreateOptionsMenu方法
+
+
+        /*
+        * 网络加载界面
+        * */
+        LoadingLayout.getConfig().setErrorText("出错啦~请稍后重试！")
+                .setNoNetworkText("无网络连接，请检查您的网络···")
+                .setEmptyImage(R.drawable.loading_failed)
+                .setNoNetworkImage(R.drawable.loading_failed)
+                .setReloadButtonText("点我重试哦")
+                .setReloadButtonTextSize(14)
+                .setReloadButtonTextColor(R.color.gray_color);
+
+
 
         /**
          * 主片段及其布局
@@ -210,6 +226,11 @@ public class STFUFragment extends Fragment {
                     Intent intent1 = new Intent(getContext(), ConversationListActivity.class);
                     getActivity().startActivity(intent1);
                     break;
+                case R.id.slider_menu_money:
+                    Intent intent3=new Intent(getContext(), PersonalMoneyActivity.class);
+                    Toast.makeText(getContext(),"你点击了我的积分",Toast.LENGTH_SHORT).show();
+                    startActivity(intent3);
+                    break;
                 case R.id.slider_menu_login:
                     if (mAccount != null) {
                         AccountManager.get(getContext()).removeAccountExplicitly(mAccount);
@@ -224,6 +245,7 @@ public class STFUFragment extends Fragment {
                     Intent intent2 = new Intent(getContext(), FriendActivity.class);
                     startActivity(intent2);
                     break;
+
                 case R.id.slider_menu_exit:
                     getActivity().finish();
                     getActivity().moveTaskToBack(true);
@@ -491,11 +513,20 @@ public class STFUFragment extends Fragment {
         switch (mode) {
             case 0:
                 mDrawerNavigationView.getMenu().findItem(R.id.slider_menu_personal_letter).setIcon(R.drawable.ic_personal_letter);
-                slideIcon.setImageDrawable(getResources().getDrawable(R.drawable.ic_personal_letter));
+                //slideIcon.setImageDrawable(getResources().getDrawable(R.drawable.ic_personal_letter));
+                slideIcon.setVisibility(View.INVISIBLE);
                 break;
             case 1:
                 mDrawerNavigationView.getMenu().findItem(R.id.slider_menu_personal_letter).setIcon(R.drawable.ic_slide_message);
                 slideIcon.setImageDrawable(getResources().getDrawable(R.drawable.ic_menu_slide_red_point));
+                slideIcon.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        set_Message_point_icon(0);
+                        Intent intent1 = new Intent(getContext(), ConversationListActivity.class);
+                        getActivity().startActivity(intent1);
+                    }
+                });
                 break;
         }
         return true;

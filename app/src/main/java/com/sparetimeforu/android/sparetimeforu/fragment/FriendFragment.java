@@ -15,6 +15,7 @@ import android.widget.ImageView;
 
 import com.sparetimeforu.android.sparetimeforu.R;
 import com.sparetimeforu.android.sparetimeforu.adapter.FriendAdapter;
+import com.weavey.loading.lib.LoadingLayout;
 
 import java.util.List;
 
@@ -35,6 +36,7 @@ public class FriendFragment extends Fragment {
     public Toolbar toolbar;
     public ImageView imageView;
     public RecyclerView friend_recyclerview;//朋友列表
+    private LoadingLayout loadingLayout;
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         JMessageClient.init(getActivity().getApplicationContext());
@@ -43,18 +45,30 @@ public class FriendFragment extends Fragment {
         friend_recyclerview.setLayoutManager(new LinearLayoutManager(getContext()));
         ((AppCompatActivity)getActivity()).setSupportActionBar(toolbar);
         imageView=(ImageView)view.findViewById(R.id.menu_back_icon);
+        loadingLayout=(LoadingLayout)view.findViewById(R.id.loading_layout);
+        loadingLayout.setEmptyText("空空如也呢，快去加好友吧！");
+        loadingLayout.setOnReloadListener(new LoadingLayout.OnReloadListener() {
+            @Override
+            public void onReload(View v) {
+                setupAdapter();
+            }
+        });
         imageView.setOnClickListener(new View.OnClickListener() {@Override public void onClick(View view) {getActivity().finish();}});
         setupAdapter();
         return view;
     }
 
     private void setupAdapter(){
+        loadingLayout.setStatus(LoadingLayout.Loading);
         ContactManager.getFriendList(new GetUserInfoListCallback() {
             @Override
             public void gotResult(int i, String s, List<UserInfo> list) {
                 if(i==0){//获取朋友列表成功
                     friend_recyclerview.setAdapter(new FriendAdapter(list,getActivity()));
+                    if(list.size()==0) loadingLayout.setStatus(LoadingLayout.Empty);
+                    else  loadingLayout.setStatus(LoadingLayout.Success);
                 }else{
+                    loadingLayout.setStatus(LoadingLayout.Error);
                     Snackbar.make(getView(),"网络请求错误，请检查您的设备",Snackbar.LENGTH_SHORT).show();
                 }
             }

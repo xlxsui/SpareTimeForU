@@ -50,6 +50,8 @@
         <activity
             android:name=".activity.ErrandReceivedActivity"
             android:label="" />
+
+        <activity android:name=".activity.PersonalMoneyActivity"/>
         <activity android:name=".activity.SystemMessageListActivity" />
         <activity android:name=".activity.ConversationListActivity" />
         <activity android:name=".activity.OthersPersonalActivity" />

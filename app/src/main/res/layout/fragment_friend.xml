@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.widget.LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
+<android.widget.LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical">
 
     <include layout="@layout/custom_toolbar_back"/>
@@ -12,8 +13,14 @@
         android:layout_below="@+id/post_released_top"
         android:background="@drawable/toolbar_dropshadow" />
 
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/friend_recyclerView"
+    <com.weavey.loading.lib.LoadingLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
+        app:isFirstVisible="true"
+        android:id="@+id/loading_layout"
+        android:layout_height="wrap_content">
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/friend_recyclerView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"/>
+    </com.weavey.loading.lib.LoadingLayout>
 </android.widget.LinearLayout>

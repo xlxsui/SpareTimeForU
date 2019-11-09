@@ -15,6 +15,7 @@ import android.widget.ImageView;
 import com.sparetimeforu.android.sparetimeforu.R;
 import com.sparetimeforu.android.sparetimeforu.STFUConfig;
 import com.sparetimeforu.android.sparetimeforu.adapter.ConversationListAdapter;
+import com.weavey.loading.lib.LoadingLayout;
 
 import java.util.Comparator;
 import java.util.List;
@@ -33,11 +34,20 @@ public class ConversationListFragment extends Fragment {
     RecyclerView mRecyclerView;
     ImageView menu_back;
     List<Conversation> conversations;
+    LoadingLayout loadingLayout;
     @Override
 
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         JMessageClient.init(getActivity().getApplicationContext());
         View view=inflater.inflate(R.layout.fragment_friend,container,false);//可以和好友界面公用一个布局，只是recyclerView中的item布局不同
+        loadingLayout=(LoadingLayout)view.findViewById(R.id.loading_layout);
+        loadingLayout.setEmptyText("没有人给你发消息呢");
+        loadingLayout.setOnReloadListener(new LoadingLayout.OnReloadListener() {
+            @Override
+            public void onReload(View v) {
+                init_data();
+            }
+        });
         mRecyclerView=(RecyclerView)view.findViewById(R.id.friend_recyclerView);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         init_data();
@@ -67,13 +77,20 @@ public class ConversationListFragment extends Fragment {
     public void init_data(){
         //初始化，获取所有conversation
         conversations=JMessageClient.getConversationList();
-        setAdapter(conversations);
+        if(conversations==null) loadingLayout.setStatus(LoadingLayout.Error);
+        else{
+            if(conversations.size()==0) loadingLayout.setStatus(LoadingLayout.Empty);
+            else if(conversations==null) loadingLayout.setStatus(LoadingLayout.Error);
+            else loadingLayout.setStatus(LoadingLayout.Success);
+            setAdapter(conversations);
+        }
     }
 
     public void setAdapter(List<Conversation> conversations){
-
-        sort_Conversations(conversations);
-        mRecyclerView.setAdapter(new ConversationListAdapter(conversations,getActivity()));
+        if (conversations!=null){
+            sort_Conversations(conversations);
+            mRecyclerView.setAdapter(new ConversationListAdapter(conversations,getActivity()));
+        }
     }
     private void sort_Conversations(List<Conversation> conversations){
         //将conversation中的会话按未读信息数来排列， 未读信息越多，排在越前面，系统通知置顶

@@ -68,6 +68,7 @@ import com.sparetimeforu.android.sparetimeforu.entity.Errand;
 import com.sparetimeforu.android.sparetimeforu.entity.Pagination;
 import com.sparetimeforu.android.sparetimeforu.util.ErrandDataBaseUtil;
 import com.sparetimeforu.android.sparetimeforu.util.HandleMessageUtil;
+import com.weavey.loading.lib.LoadingLayout;
 
 import org.json.JSONObject;
 import org.litepal.LitePal;
@@ -173,7 +174,7 @@ public class ErrandFragment extends Fragment implements BaiduMap.OnMarkerClickLi
     private static final int MarkerNum = 8;
     private String destination_location = "随机";//网络请求任务终点，初始为"随机"
     private Pagination mPagination;// 分页对象，加载更多时会用到
-
+    private LoadingLayout loadingLayout;
 
     @Nullable
     @Override
@@ -195,11 +196,22 @@ public class ErrandFragment extends Fragment implements BaiduMap.OnMarkerClickLi
         LitePal.initialize(getContext());
         Bundle args = getArguments();
         String query = args.getString("query", "not_query");
+        loadingLayout=(LoadingLayout)view.findViewById(R.id.errand_Loading_layout);
+        if(!destination_location.equals("随机"))
+            loadingLayout.setEmptyText("没有到"+destination_location+"的任务哦，找找别的吧");
+        else loadingLayout.setEmptyText("空空如也呢，快来发布任务吧!");
+        loadingLayout.setOnReloadListener(new LoadingLayout.OnReloadListener() {
+            @Override
+            public void onReload(View v) {
+                refresh();
+            }
+        });
         if (query.equals("not_query")) {
             refresh();
         } else {
             search(query);
         }
+
 
         return view;
     }
@@ -375,6 +387,7 @@ public class ErrandFragment extends Fragment implements BaiduMap.OnMarkerClickLi
     }
 
     private void refresh() {
+        loadingLayout.setStatus(LoadingLayout.Loading);
         mPagination = new Pagination();// 重来页数也要重置
 
         mAdapter.setEnableLoadMore(false);//这里的作用是防止下拉刷新的时候还可以上拉加载
@@ -387,6 +400,11 @@ public class ErrandFragment extends Fragment implements BaiduMap.OnMarkerClickLi
                 getActivity().runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
+                        loadingLayout.setStatus(LoadingLayout.Success);
+
+                        if(data.size()==0){
+                            loadingLayout.setStatus(LoadingLayout.Empty);
+                        }
                         setupAdapter(data);
                         Toast.makeText(getActivity(), "获取数据成功", Toast.LENGTH_SHORT).show();
                         mAdapter.setEnableLoadMore(true);
@@ -395,6 +413,7 @@ public class ErrandFragment extends Fragment implements BaiduMap.OnMarkerClickLi
                         if (data.size() < 6) {
                             mAdapter.loadMoreEnd();
                         }
+
                     }
                 });
 
@@ -409,6 +428,7 @@ public class ErrandFragment extends Fragment implements BaiduMap.OnMarkerClickLi
                     }
                     mAdapter.setEnableLoadMore(true);
                     mErrandRefreshLayout.setRefreshing(false);
+                    loadingLayout.setStatus(LoadingLayout.Error);
                 });
 
             }
@@ -610,8 +630,6 @@ public class ErrandFragment extends Fragment implements BaiduMap.OnMarkerClickLi
             mode=mode==0 ? 1:0;
         }
     }
-
-
 //    public class MyDragListener implements View.OnTouchListener {
 //        @Override
 //        public boolean onTouch(View view, MotionEvent motionEvent) {

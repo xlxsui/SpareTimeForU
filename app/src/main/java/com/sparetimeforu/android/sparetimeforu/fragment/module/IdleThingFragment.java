@@ -15,6 +15,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.chad.library.adapter.base.BaseQuickAdapter;
@@ -29,6 +30,7 @@ import com.sparetimeforu.android.sparetimeforu.entity.Pagination;
 import com.sparetimeforu.android.sparetimeforu.util.HandleMessageUtil;
 import com.sparetimeforu.android.sparetimeforu.util.IdleThingDataBaseUtil;
 import com.squareup.picasso.Picasso;
+import com.weavey.loading.lib.LoadingLayout;
 
 import org.json.JSONObject;
 
@@ -102,6 +104,7 @@ public class IdleThingFragment extends Fragment {
     private IdleThingAdapter mAdapter;
     private SwipeRefreshLayout mIdleThingRefreshLayout;
     private Pagination mPagination;// 分页对象，加载更多时会用到
+    private LoadingLayout loadingLayout;
 
     @Nullable
     @Override
@@ -111,6 +114,14 @@ public class IdleThingFragment extends Fragment {
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         setupAdapter(DataServer.getIdleThingData(0));
 
+        loadingLayout=(LoadingLayout)view.findViewById(R.id.idle_loading_layout);
+        loadingLayout.setEmptyText("空空如也呢，快来发布闲置物品信息吧");
+        loadingLayout.setOnReloadListener(new LoadingLayout.OnReloadListener() {
+            @Override
+            public void onReload(View v) {
+                refresh();
+            }
+        });
         mIdleThingRefreshLayout = view.findViewById(R.id.idle_thing_refresh_layout);
         mIdleThingRefreshLayout.setColorSchemeResources(R.color.colorPrimary, R.color.colorAccent, R.color.colorPrimaryDark);
         initRefreshLayout();
@@ -157,6 +168,7 @@ public class IdleThingFragment extends Fragment {
      * refresh new post
      */
     private void refresh() {
+        loadingLayout.setStatus(LoadingLayout.Loading);
         mPagination = new Pagination();// 重来页数也要重置
         mAdapter.setEnableLoadMore(false);//这里的作用是防止下拉刷新的时候还可以上拉加载
         mIdleThingRefreshLayout.setRefreshing(true);
@@ -167,7 +179,9 @@ public class IdleThingFragment extends Fragment {
                         BaseTransientBottomBar.LENGTH_INDEFINITE).show();
                 //do something
                 getActivity().runOnUiThread(() -> {
+                    loadingLayout.setStatus(LoadingLayout.Success);
                     mAdapter.setNewData(data);//update data
+                    if(data.size()==0) loadingLayout.setStatus(LoadingLayout.Empty);
                     mAdapter.setEnableLoadMore(true);
                     mIdleThingRefreshLayout.setRefreshing(false);
                     Snackbar.make(getView(), "Refresh finished! ",
@@ -180,11 +194,17 @@ public class IdleThingFragment extends Fragment {
 
             @Override
             public void fail(Exception e) {
-                Snackbar.make(getView(), "Network error! ",
-                        BaseTransientBottomBar.LENGTH_SHORT).show();
+                getActivity().runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        Snackbar.make(getView(), "Network error! ",
+                                BaseTransientBottomBar.LENGTH_SHORT).show();
+                        loadingLayout.setStatus(LoadingLayout.Error);
+                        mAdapter.setEnableLoadMore(true);
+                        mIdleThingRefreshLayout.setRefreshing(false);
+                    }
+                });
 
-                mAdapter.setEnableLoadMore(true);
-                mIdleThingRefreshLayout.setRefreshing(false);
             }
         }, getActivity()).start();
     }

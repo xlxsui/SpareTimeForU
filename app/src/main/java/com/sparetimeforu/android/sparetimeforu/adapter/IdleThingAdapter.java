@@ -217,47 +217,49 @@ public class IdleThingAdapter extends BaseQuickAdapter<IdleThing, BaseViewHolder
     }
 
     public static String parseDateString(String s) {
-        Date time = null;
-        try {
-            time = new SimpleDateFormat("EEE, dd MMM yyyy kk:mm:ss", Locale.ENGLISH)
-                    .parse(s);// 从字符串得到一个Date
-        } catch (ParseException e) {
-            Logger.e(e.toString());
-        }
+        if(s!=null){
+            Date time = null;
+            try {
+                time = new SimpleDateFormat("EEE, dd MMM yyyy kk:mm:ss", Locale.ENGLISH)
+                        .parse(s);// 从字符串得到一个Date
+            } catch (ParseException e) {
+                Logger.e(e.toString());
+            }
 
-        Calendar today = Calendar.getInstance(); // 今天
-        Calendar yesterday = Calendar.getInstance();
-        yesterday.add(Calendar.DAY_OF_YEAR, -1); // 昨天
-        Calendar bYesterday = Calendar.getInstance();
-        bYesterday.add(Calendar.DAY_OF_YEAR, -2); // 前天
-        Calendar tomorrow = Calendar.getInstance();
-        tomorrow.add(Calendar.DAY_OF_YEAR, 1); // 明天
-        Calendar aTomorrow = Calendar.getInstance();
-        aTomorrow.add(Calendar.DAY_OF_YEAR, 1); // 后天
+            Calendar today = Calendar.getInstance(); // 今天
+            Calendar yesterday = Calendar.getInstance();
+            yesterday.add(Calendar.DAY_OF_YEAR, -1); // 昨天
+            Calendar bYesterday = Calendar.getInstance();
+            bYesterday.add(Calendar.DAY_OF_YEAR, -2); // 前天
+            Calendar tomorrow = Calendar.getInstance();
+            tomorrow.add(Calendar.DAY_OF_YEAR, 1); // 明天
+            Calendar aTomorrow = Calendar.getInstance();
+            aTomorrow.add(Calendar.DAY_OF_YEAR, 1); // 后天
 
-        Calendar postDay = Calendar.getInstance();
-        postDay.setTime(time); // your date
+            Calendar postDay = Calendar.getInstance();
+            postDay.setTime(time); // your date
 
-        String timeString;
+            String timeString;
 
-        if (today.get(Calendar.YEAR) == postDay.get(Calendar.YEAR)
-                && today.get(Calendar.DAY_OF_YEAR) == postDay.get(Calendar.DAY_OF_YEAR)) {
-            timeString = new SimpleDateFormat("今天 kk:mm", Locale.ENGLISH).format(time);
-        } else if (yesterday.get(Calendar.YEAR) == postDay.get(Calendar.YEAR)
-                && yesterday.get(Calendar.DAY_OF_YEAR) == postDay.get(Calendar.DAY_OF_YEAR)) {
-            timeString = new SimpleDateFormat("昨天 kk:mm", Locale.ENGLISH).format(time);
-        } else if (bYesterday.get(Calendar.YEAR) == postDay.get(Calendar.YEAR)
-                && bYesterday.get(Calendar.DAY_OF_YEAR) == postDay.get(Calendar.DAY_OF_YEAR)) {
-            timeString = new SimpleDateFormat("前天 kk:mm", Locale.ENGLISH).format(time);
-        } else if (tomorrow.get(Calendar.YEAR) == postDay.get(Calendar.YEAR)
-                && tomorrow.get(Calendar.DAY_OF_YEAR) == postDay.get(Calendar.DAY_OF_YEAR)) {
-            timeString = new SimpleDateFormat("明天 kk:mm", Locale.ENGLISH).format(time);
-        } else if (aTomorrow.get(Calendar.YEAR) == postDay.get(Calendar.YEAR)
-                && aTomorrow.get(Calendar.DAY_OF_YEAR) == postDay.get(Calendar.DAY_OF_YEAR)) {
-            timeString = new SimpleDateFormat("后天 kk:mm", Locale.ENGLISH).format(time);
-        } else {
-            timeString = new SimpleDateFormat("MM-dd kk:mm", Locale.ENGLISH).format(time);
-        }
-        return timeString;
+            if (today.get(Calendar.YEAR) == postDay.get(Calendar.YEAR)
+                    && today.get(Calendar.DAY_OF_YEAR) == postDay.get(Calendar.DAY_OF_YEAR)) {
+                timeString = new SimpleDateFormat("今天 kk:mm", Locale.ENGLISH).format(time);
+            } else if (yesterday.get(Calendar.YEAR) == postDay.get(Calendar.YEAR)
+                    && yesterday.get(Calendar.DAY_OF_YEAR) == postDay.get(Calendar.DAY_OF_YEAR)) {
+                timeString = new SimpleDateFormat("昨天 kk:mm", Locale.ENGLISH).format(time);
+            } else if (bYesterday.get(Calendar.YEAR) == postDay.get(Calendar.YEAR)
+                    && bYesterday.get(Calendar.DAY_OF_YEAR) == postDay.get(Calendar.DAY_OF_YEAR)) {
+                timeString = new SimpleDateFormat("前天 kk:mm", Locale.ENGLISH).format(time);
+            } else if (tomorrow.get(Calendar.YEAR) == postDay.get(Calendar.YEAR)
+                    && tomorrow.get(Calendar.DAY_OF_YEAR) == postDay.get(Calendar.DAY_OF_YEAR)) {
+                timeString = new SimpleDateFormat("明天 kk:mm", Locale.ENGLISH).format(time);
+            } else if (aTomorrow.get(Calendar.YEAR) == postDay.get(Calendar.YEAR)
+                    && aTomorrow.get(Calendar.DAY_OF_YEAR) == postDay.get(Calendar.DAY_OF_YEAR)) {
+                timeString = new SimpleDateFormat("后天 kk:mm", Locale.ENGLISH).format(time);
+            } else {
+                timeString = new SimpleDateFormat("MM-dd kk:mm", Locale.ENGLISH).format(time);
+            }
+            return timeString;
+        }else return null;
     }
 }

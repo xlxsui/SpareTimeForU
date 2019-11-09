@@ -4,7 +4,9 @@ import android.accounts.Account;
 import android.accounts.AccountManager;
 import android.app.Activity;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.os.Bundle;
+import android.os.Environment;
 import android.support.annotation.Nullable;
 import android.support.design.widget.BaseTransientBottomBar;
 import android.support.design.widget.Snackbar;
@@ -21,6 +23,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
 import com.orhanobut.logger.Logger;
 import com.sparetimeforu.android.sparetimeforu.BuildConfig;
 import com.sparetimeforu.android.sparetimeforu.R;
@@ -32,6 +35,7 @@ import com.sparetimeforu.android.sparetimeforu.activity.SignUpActivity;
 import com.sparetimeforu.android.sparetimeforu.entity.User;
 import com.sparetimeforu.android.sparetimeforu.util.HandleMessageUtil;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.Objects;
 
@@ -40,6 +44,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import cn.jpush.im.android.api.JMessageClient;
+import cn.jpush.im.android.api.callback.GetAvatarBitmapCallback;
 import cn.jpush.im.api.BasicCallback;
 import okhttp3.Call;
 import okhttp3.Callback;
@@ -155,6 +160,7 @@ public class LoginFragment extends Fragment {
                                             }
                                         }
                                     });
+                                    check_init_avatar();
                                     addAccount();
                                     Intent intent = new Intent(getActivity(), STFUActivity.class);
                                     intent.putExtra("user", user);//把user返回之前的activity
@@ -169,6 +175,25 @@ public class LoginFragment extends Fragment {
         }
     }
 
+    private void check_init_avatar(){
+        //看是否需要重置头像
+        JMessageClient.getMyInfo().getAvatarBitmap(new GetAvatarBitmapCallback() {
+            @Override
+            public void gotResult(int i, String s, Bitmap bitmap) {
+                if(bitmap==null){
+                    try{
+                        File mFile = Glide.with(getContext()).asFile().load(STFUConfig.HOST + "/static" + "/avatar/" + STFUConfig.sUser.getAvatar_url()).submit().get();
+                        JMessageClient.updateUserAvatar(mFile, new GetAvatarBitmapCallback() {
+                            @Override
+                            public void gotResult(int i, String s, Bitmap bitmap) {
+                            }
+                        });
+                    }catch (Exception e){
+                    }
+                }
+            }
+        });
+    }
     @OnClick(R.id.login_forget_pw)
     public void forgetPW() {
         Intent intent = new Intent(getActivity(), ChangePWActivity.class);

@@ -31,7 +31,7 @@
             android:padding="10dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="TextView" />
+            android:text="textview" />
 
         <de.hdodenhof.circleimageview.CircleImageView
             android:id="@+id/chat_box_avatar2"

@@ -3,6 +3,7 @@ package com.sparetimeforu.android.sparetimeforu.adapter;
 import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AlertDialog;
 import android.view.View;
@@ -15,6 +16,7 @@ import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.BaseViewHolder;
 import com.sparetimeforu.android.sparetimeforu.R;
 import com.sparetimeforu.android.sparetimeforu.STFUConfig;
+import com.sparetimeforu.android.sparetimeforu.activity.PostReleasedActivity;
 import com.sparetimeforu.android.sparetimeforu.entity.SystemMessage;
 
 import java.util.List;
@@ -101,6 +103,9 @@ public class SystemMessageListAdapter extends BaseQuickAdapter<SystemMessage,Bas
                         red_point_tag.setVisibility(View.GONE);
                         item.setIs_first_time_show(0);
                         //跳转到帖子信息界面
+                        if(item.getContent().equals("完成了您的任务")) hint.setText("点击确认完成任务");
+                        Intent intent=new Intent(activity, PostReleasedActivity.class);
+                        activity.startActivity(intent);
                     }
                 });
                 break;

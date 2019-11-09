@@ -1,5 +1,6 @@
 package com.sparetimeforu.android.sparetimeforu.fragment;
 
+import android.graphics.Bitmap;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -26,8 +27,11 @@ import java.util.List;
 import Listener.GlobalEventListener;
 import butterknife.BindView;
 import cn.jpush.im.android.api.JMessageClient;
+import cn.jpush.im.android.api.callback.GetAvatarBitmapCallback;
+import cn.jpush.im.android.api.callback.GetUserInfoCallback;
 import cn.jpush.im.android.api.model.Conversation;
 import cn.jpush.im.android.api.model.Message;
+import cn.jpush.im.android.api.model.UserInfo;
 import cn.jpush.im.api.BasicCallback;
 
 import static cn.jpush.im.android.api.jmrtc.JMRTCInternalUse.getApplicationContext;
@@ -48,6 +52,7 @@ public class ChattingFragment extends Fragment implements View.OnClickListener{
     private Conversation conversation;//当前会话
     private List<Message> messages;//会话信息
     private int position;
+    private Bitmap bitmap_self_avatar,bitmap_other_side_avatar;
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
         JMessageClient.init(getActivity().getApplicationContext());
@@ -81,7 +86,7 @@ public class ChattingFragment extends Fragment implements View.OnClickListener{
         if(conversation==null) conversation=Conversation.createSingleConversation(chat_user_name);
         messages=conversation.getAllMessage();
         position=messages.size()-conversation.getUnReadMsgCnt();
-        setupAdapter();
+        getAvatar_Bitmap();
     }
     public void setConversation_Messages_Position(Conversation conversation,List<Message> messages,int position){//GlobalEventListener 接收信息后调用该函数，用以设置此recyclerview的参数
         this.conversation=conversation;
@@ -89,9 +94,42 @@ public class ChattingFragment extends Fragment implements View.OnClickListener{
         this.position=position;
         setupAdapter();
     }
+    public void getAvatar_Bitmap(){
+        //初始化两个用户头像  对方和本机用户
+        Message temp_message=null;
+        for(int i=messages.size()-1;i>0;i--){
+            //找到一个对方用户发送的message
+            if(!messages.get(i).getFromUser().getUserName().equals(STFUConfig.sUser.getEmail())){
+                temp_message=messages.get(i);
+                break;
+            }
+        }
+        if(temp_message!=null){
+            JMessageClient.getUserInfo(temp_message.getFromUser().getUserName(), new GetUserInfoCallback() {
+                @Override
+                public void gotResult(int i, String s, UserInfo userInfo) {
+                    userInfo.getAvatarBitmap(new GetAvatarBitmapCallback() {
+                        @Override
+                        public void gotResult(int i, String s, Bitmap bitmap) {
+                            bitmap_other_side_avatar=bitmap;
+                            //获取本机用户头像
+                            JMessageClient.getMyInfo().getAvatarBitmap(new GetAvatarBitmapCallback() {
+                                @Override
+                                public void gotResult(int i, String s, Bitmap bitmap) {
+                                    bitmap_self_avatar=bitmap;
+                                    setupAdapter();
+                                }
+                            });
+                        }
+                    });
+                }
+            });
+        }
+
+    }
     public void setupAdapter(){//根据Messages 设置Recyclerview  的数据
         if(messages!=null){
-            MessageAdapter messageAdapter=new MessageAdapter(messages);
+            MessageAdapter messageAdapter=new MessageAdapter(messages,getActivity(),bitmap_self_avatar,bitmap_other_side_avatar);
             messageAdapter.isFirstOnly(false);
             message_recyclerview.setAdapter(messageAdapter);
             message_recyclerview.scrollToPosition(position-1);
@@ -106,21 +144,26 @@ public class ChattingFragment extends Fragment implements View.OnClickListener{
             String send_content=message_content_edittext.getText().toString();
             if (!send_content.equals("")){
                 final Message message=JMessageClient.createSingleTextMessage(chat_user_name,null,send_content);
-                JMessageClient.sendMessage(message);
-                message.setOnSendCompleteCallback(new BasicCallback() {
-                    @Override
-                    public void gotResult(int i, String s) {
-                        if(i==0){
-                            Toast.makeText(getApplicationContext(),"发送成功",Toast.LENGTH_SHORT);
-                            messages.add(message);
-                            position++;
-                            setupAdapter();
-                            message_content_edittext.setText("");
-                        }else{
-                            Toast.makeText(getApplicationContext(),"发送失败，请检查您的网络",Toast.LENGTH_SHORT);
+                if(message!=null){
+                    JMessageClient.sendMessage(message);
+                    message.setOnSendCompleteCallback(new BasicCallback() {
+                        @Override
+                        public void gotResult(int i, String s) {
+                            if(i==0){
+                                Toast.makeText(getApplicationContext(),"发送成功",Toast.LENGTH_SHORT);
+                                messages.add(message);
+                                position++;
+                                setupAdapter();
+                                message_content_edittext.setText("");
+                            }else{
+                                Toast.makeText(getApplicationContext(),"发送失败，请检查您的网络",Toast.LENGTH_SHORT);
+                            }
                         }
-                    }
-                });
+                    });
+                }else {
+                    Toast.makeText(getApplicationContext(),"消息发送失败，请重试",Toast.LENGTH_SHORT);
+                }
+
             }else{
                 Toast.makeText(getApplicationContext(),"请输入内容",Toast.LENGTH_SHORT).show();
             }

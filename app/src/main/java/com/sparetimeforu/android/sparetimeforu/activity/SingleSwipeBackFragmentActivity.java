@@ -20,6 +20,7 @@ import me.imid.swipebacklayout.lib.app.SwipeBackActivity;
 public abstract class SingleSwipeBackFragmentActivity extends SwipeBackActivity {
     protected abstract Fragment createFragment();
 
+
     @LayoutRes
     protected int getLayoutResId() {
         return R.layout.activity_fragment;
@@ -41,4 +42,5 @@ public abstract class SingleSwipeBackFragmentActivity extends SwipeBackActivity 
 
         }
     }
+
 }
