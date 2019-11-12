@@ -223,23 +223,10 @@
                     android:layout_weight="3.3"
                     android:gravity="center"
                     android:text="修远" />
-
                 <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="0.7"
-                    android:gravity="center"
-                    android:text="@string/deadline" />
-
-                <TextView
-                    android:id="@+id/errand_deadline"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="0.7"
-                    android:gravity="center"
-                    android:text="18:30"
-                    android:textColor="@android:color/holo_blue_dark" />
-
+                    android:layout_width="wrap_content"
+                    android:layout_weight="1.4"
+                    android:layout_height="0dp" />
 
             </LinearLayout>
 
@@ -250,32 +237,40 @@
                 android:orientation="vertical"
                 android:weightSum="10">
 
-                <android.support.constraint.ConstraintLayout
-                    android:id="@+id/errand_main_content"
+                <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="0dp"
                     android:layout_weight="7.5"
-                    android:orientation="horizontal">
-
+                    android:weightSum="10"
+                    android:orientation="horizontal"
+                    android:layout_height="0dp">
                     <TextView
                         android:id="@+id/errand_caption"
-                        android:layout_width="wrap_content"
+                        android:layout_width="0dp"
+                        android:layout_weight="7"
                         android:layout_height="wrap_content"
-                        android:layout_margin="@dimen/dp_8"
+                        android:layout_marginTop="10dp"
+                        android:layout_marginLeft="5dp"
                         android:maxEms="10"
+                        android:ellipsize="end"
                         android:maxLines="4"
                         android:text="一款互助性质的软件，面向汕大师生群体。主打功能是打包、拿快递、帮买东西。 通过悬赏者发布任务内容和赏金（金钱）、“赏金猎人”通过完成任务获得赏金的形式工作。"
                         android:textSize="16sp"
-                        android:textStyle="bold"
-                        app:layout_constraintEnd_toStartOf="@+id/errand_picture1"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="parent" />
-
+                        android:textStyle="bold" />
+                    <ImageView
+                        android:id="@+id/errand_share"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:background="@drawable/touch_bg"
+                        android:padding="6dp"
+                        android:src="@drawable/ic_share"
+                        android:visibility="gone" />
 
                     <ImageView
                         android:id="@+id/errand_picture1"
-                        android:layout_width="wrap_content"
-                        android:layout_height="64dp"
+                        android:layout_width="0dp"
+                        android:layout_weight="3"
+                        android:layout_height="wrap_content"
                         android:layout_margin="@dimen/dp_8"
                         android:src="@drawable/ic_33"
                         android:visibility="visible"
@@ -283,8 +278,7 @@
                         app:layout_constraintStart_toEndOf="@+id/errand_caption"
                         app:layout_constraintTop_toTopOf="parent" />
 
-
-                </android.support.constraint.ConstraintLayout>
+                </LinearLayout>
 
                 <LinearLayout
                     android:id="@+id/errand_footer"
@@ -294,21 +288,31 @@
                     android:orientation="horizontal"
                     android:weightSum="3">
 
-                    <ImageView
-                        android:id="@+id/errand_share"
+                    <LinearLayout
                         android:layout_width="0dp"
-                        android:layout_height="match_parent"
-                        android:layout_weight="1"
-                        android:background="@drawable/touch_bg"
-                        android:padding="6dp"
-                        android:src="@drawable/ic_share"
-                        android:visibility="invisible" />
+                        android:layout_weight="1.5"
+                        android:orientation="horizontal"
+                        android:layout_height="wrap_content">
+                        <TextView
+                            android:layout_marginLeft="5dp"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:gravity="center"
+                            android:text="@string/deadline" />
 
+                        <TextView
+                            android:id="@+id/errand_deadline"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:gravity="center"
+                            android:text="18:30"
+                            android:textColor="@android:color/holo_blue_dark" />
+                    </LinearLayout>
                     <LinearLayout
                         android:id="@+id/like_layout"
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
-                        android:layout_weight="1"
+                        android:layout_weight="0.75"
                         android:background="@drawable/touch_bg"
                         android:orientation="vertical"
                         android:padding="4dp"
@@ -335,7 +339,7 @@
                     <LinearLayout
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
-                        android:layout_weight="1"
+                        android:layout_weight="0.75"
                         android:background="@drawable/touch_bg"
                         android:orientation="vertical"
                         android:padding="6dp"
