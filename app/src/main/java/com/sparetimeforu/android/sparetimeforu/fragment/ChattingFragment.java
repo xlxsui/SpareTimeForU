@@ -47,6 +47,8 @@ public class ChattingFragment extends Fragment implements View.OnClickListener{
     public RecyclerView message_recyclerview;
     public ImageView chat_go_back;
     public TextView title_top;
+    private boolean get_my_avatar=false;
+    private boolean get_other_avatar=false;
     private String chat_user_name;//跟你对话的人的名字
     private String chat_user_Nickname;
     private Conversation conversation;//当前会话
@@ -112,22 +114,28 @@ public class ChattingFragment extends Fragment implements View.OnClickListener{
                         @Override
                         public void gotResult(int i, String s, Bitmap bitmap) {
                             bitmap_other_side_avatar=bitmap;
-                            //获取本机用户头像
-                            JMessageClient.getMyInfo().getAvatarBitmap(new GetAvatarBitmapCallback() {
-                                @Override
-                                public void gotResult(int i, String s, Bitmap bitmap) {
-                                    bitmap_self_avatar=bitmap;
-                                    setupAdapter();
-                                }
-                            });
+                            get_other_avatar=true;
+                            setupAdapter();
                         }
                     });
                 }
             });
+        }else {
+            get_other_avatar=true;
         }
+        //获取本机用户头像
+        JMessageClient.getMyInfo().getAvatarBitmap(new GetAvatarBitmapCallback() {
+            @Override
+            public void gotResult(int i, String s, Bitmap bitmap) {
+                bitmap_self_avatar=bitmap;
+                get_my_avatar=true;
+                setupAdapter();
+            }
+        });
 
     }
     public void setupAdapter(){//根据Messages 设置Recyclerview  的数据
+        if(get_other_avatar&&get_other_avatar)
         if(messages!=null){
             MessageAdapter messageAdapter=new MessageAdapter(messages,getActivity(),bitmap_self_avatar,bitmap_other_side_avatar);
             messageAdapter.isFirstOnly(false);

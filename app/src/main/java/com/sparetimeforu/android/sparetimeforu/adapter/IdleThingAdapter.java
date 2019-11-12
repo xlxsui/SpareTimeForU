@@ -116,6 +116,7 @@ public class IdleThingAdapter extends BaseQuickAdapter<IdleThing, BaseViewHolder
         TextView caption = helper.getView(R.id.idle_thing_caption);
         caption.setText(item.getContent());
 
+
         ImageView picture1 = helper.getView(R.id.idle_thing_picture1);
         TextView price = helper.getView(R.id.idle_thing_price);
         price.setText("\uD83D\uDCB0" + item.getMoney());

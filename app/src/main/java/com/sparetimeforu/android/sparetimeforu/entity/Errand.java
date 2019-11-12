@@ -28,8 +28,26 @@ public class Errand extends LitePalSupport implements Serializable {
     private float money;
     private int evaluate;
     private int receiver_id;
+    private String receiver_email;
+    private String receiver_nickname;
     private int is_received;
     private int errand_id;
+
+    public String getReceiver_email() {
+        return receiver_email;
+    }
+
+    public void setReceiver_email(String receiver_email) {
+        this.receiver_email = receiver_email;
+    }
+
+    public String getReceiver_nickname() {
+        return receiver_nickname;
+    }
+
+    public void setReceiver_nickname(String receiver_nickname) {
+        this.receiver_nickname = receiver_nickname;
+    }
 
     public int getIs_confirmed_finish() {
         return is_confirmed_finish;

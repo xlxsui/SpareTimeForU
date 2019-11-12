@@ -24,6 +24,7 @@ import com.sparetimeforu.android.sparetimeforu.activity.post.ErrandPostActivity;
 import com.sparetimeforu.android.sparetimeforu.entity.Errand;
 import com.sparetimeforu.android.sparetimeforu.util.ErrandDataBaseUtil;
 import com.sparetimeforu.android.sparetimeforu.util.HandleMessageUtil;
+import com.sparetimeforu.android.sparetimeforu.util.SystemDataBaseUtil;
 import com.sparetimeforu.android.sparetimeforu.util.SystemMessageSendUtil;
 import com.sparetimeforu.android.sparetimeforu.util.VerifyUtil;
 import com.squareup.picasso.Picasso;
@@ -718,6 +719,7 @@ public class ErrandAdapter extends BaseQuickAdapter<Errand, BaseViewHolder> {
                             try {
                                 JSONObject jsonObject = new JSONObject(response.body().string());
                                 String status = jsonObject.getString("status");
+                                SystemMessageSendUtil.send_System_message_errand(item.getUser_Email(),item.getErrand_id(),0,SystemMessageSendUtil.Errand_message_mode_errand_canceled);
                                 if (status.equals("success")) {
                                     ((Activity) mContext).runOnUiThread(() -> {
                                         Toast.makeText(mContext, "任务已经取消！", Toast.LENGTH_SHORT).show();
@@ -751,6 +753,7 @@ public class ErrandAdapter extends BaseQuickAdapter<Errand, BaseViewHolder> {
                             try {
                                 JSONObject jsonObject = new JSONObject(response.body().string());
                                 String status = jsonObject.getString("status");
+                                SystemMessageSendUtil.send_System_message_errand(item.getReceiver_email(),item.getErrand_id(),0,SystemMessageSendUtil.Errand_message_mode_errand_solved_agree);
                                 if (status.equals("success")) {
                                     ((Activity) mContext).runOnUiThread(() -> {
                                         Toast.makeText(mContext, "悬赏者已确认，钱已经到对面账户了！", Toast.LENGTH_SHORT).show();
@@ -774,6 +777,7 @@ public class ErrandAdapter extends BaseQuickAdapter<Errand, BaseViewHolder> {
                 case R.id.errand_not_finish:
                     //发送请求到服务器  用户未真正完成任务
                     Toast.makeText(mContext, "我们会对对方进行审批！", Toast.LENGTH_SHORT).show();
+                    SystemMessageSendUtil.send_System_message_errand(item.getReceiver_email(),item.getErrand_id(),0,SystemMessageSendUtil.Errand_message_mode_errand_solved_rejected);
                     break;
                 case R.id.Errand_delete:
                     ErrandDataBaseUtil.deleteErrandNow(item.getErrand_id());

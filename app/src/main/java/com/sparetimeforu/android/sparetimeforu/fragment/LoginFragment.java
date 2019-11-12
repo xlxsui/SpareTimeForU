@@ -45,6 +45,7 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import cn.jpush.im.android.api.JMessageClient;
 import cn.jpush.im.android.api.callback.GetAvatarBitmapCallback;
+import cn.jpush.im.android.api.model.UserInfo;
 import cn.jpush.im.api.BasicCallback;
 import okhttp3.Call;
 import okhttp3.Callback;
@@ -177,22 +178,26 @@ public class LoginFragment extends Fragment {
 
     private void check_init_avatar(){
         //看是否需要重置头像
-        JMessageClient.getMyInfo().getAvatarBitmap(new GetAvatarBitmapCallback() {
-            @Override
-            public void gotResult(int i, String s, Bitmap bitmap) {
-                if(bitmap==null){
-                    try{
-                        File mFile = Glide.with(getContext()).asFile().load(STFUConfig.HOST + "/static" + "/avatar/" + STFUConfig.sUser.getAvatar_url()).submit().get();
-                        JMessageClient.updateUserAvatar(mFile, new GetAvatarBitmapCallback() {
-                            @Override
-                            public void gotResult(int i, String s, Bitmap bitmap) {
-                            }
-                        });
-                    }catch (Exception e){
+        UserInfo userInfo=JMessageClient.getMyInfo();
+        if(userInfo!=null){
+            userInfo.getAvatarBitmap(new GetAvatarBitmapCallback() {
+                @Override
+                public void gotResult(int i, String s, Bitmap bitmap) {
+                    if(bitmap==null){
+                        try{
+                            File mFile = Glide.with(getContext()).asFile().load(STFUConfig.HOST + "/static" + "/avatar/" + STFUConfig.sUser.getAvatar_url()).submit().get();
+                            JMessageClient.updateUserAvatar(mFile, new GetAvatarBitmapCallback() {
+                                @Override
+                                public void gotResult(int i, String s, Bitmap bitmap) {
+                                }
+                            });
+                        }catch (Exception e){
+                        }
                     }
                 }
-            }
-        });
+            });
+        }
+
     }
     @OnClick(R.id.login_forget_pw)
     public void forgetPW() {
