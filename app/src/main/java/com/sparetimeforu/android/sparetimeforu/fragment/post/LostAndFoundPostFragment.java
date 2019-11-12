@@ -89,6 +89,8 @@ public class LostAndFoundPostFragment extends Fragment {
     SwipeRefreshLayout mRefreshLayout;
     @BindView(R.id.post_like)
     ImageView mLikeImageView;
+    @BindView(R.id.confirm_finish)
+    Button mConfirmBottom;
 
     PostImageAdapter mPostImageAdapter;
     CommentAdapter mCommentAdapter;
@@ -218,6 +220,40 @@ public class LostAndFoundPostFragment extends Fragment {
         });
     }
 
+    @OnClick(R.id.confirm_finish)
+    public void confirm() {
+        if (!VerifyUtil.isLogin(getActivity())) {
+            return;
+        }
+        if (postID == 0 || STFUConfig.sUser == null) {
+            return;
+        }
+        FormBody body = new FormBody.Builder()
+                .add("post_id", postID + "")
+                .add("auth_token", STFUConfig.sUser.getAuth_token())
+                .build();
+        OkHttpUtil.sendOkHttpPostRequest(STFUConfig.HOST + "/search_thing/confirm_finish", body, new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                try {
+                    JSONObject jsonObject = new JSONObject(response.body().string());
+                    String status = jsonObject.getString("status");
+                    if (status.equals("success")) {
+                        if (getActivity() == null) return;
+                        getActivity().runOnUiThread(() -> refresh());
+                    }
+                } catch (JSONException e) {
+                    Logger.e(e.toString());
+                }
+            }
+        });
+
+    }
+
     private void initPost() {
         mRefreshLayout.setRefreshing(true);
         FormBody body = new FormBody.Builder()
@@ -267,6 +303,8 @@ public class LostAndFoundPostFragment extends Fragment {
         mNicknameTextView.setText(searchThing.getUser_Nickname());
         mDateTextView.setText(parseDateString(searchThing.getRelease_time()));
         mMoneyTextView.setText("");
+        mStatusButton.setVisibility(View.VISIBLE);
+        mConfirmBottom.setVisibility(View.GONE);
         if (searchThing.getIs_found() == 0) {
             mStatusButton.setText("未找到");
         } else {
@@ -330,6 +368,13 @@ public class LostAndFoundPostFragment extends Fragment {
                     }
                 }
             });
+        }
+        if (VerifyUtil.isLoginStatus(getActivity())) {
+            // 主人 + 未完成
+            if (searchThing.getUser_Email().equals(STFUConfig.sUser.getEmail()) && searchThing.getIs_found() == 0) {
+                mStatusButton.setVisibility(View.GONE);
+                mConfirmBottom.setVisibility(View.VISIBLE);
+            }
         }
 
     }

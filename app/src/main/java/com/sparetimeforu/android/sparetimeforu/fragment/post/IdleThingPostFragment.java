@@ -209,7 +209,7 @@ public class IdleThingPostFragment extends Fragment {
     @BindView(R.id.post_like)
     ImageView mLikeImageView;
     @BindView(R.id.confirm_finish)
-    Button mConfirmBotton;
+    Button mConfirmBottom;
 
     PostImageAdapter mPostImageAdapter;
     CommentAdapter mCommentAdapter;
@@ -369,7 +369,8 @@ public class IdleThingPostFragment extends Fragment {
                     JSONObject jsonObject = new JSONObject(response.body().string());
                     String status = jsonObject.getString("status");
                     if (status.equals("success")) {
-
+                        if (getActivity() == null) return;
+                        getActivity().runOnUiThread(() -> refresh());
                     }
                 } catch (JSONException e) {
                     Logger.e(e.toString());
@@ -428,6 +429,8 @@ public class IdleThingPostFragment extends Fragment {
         mNicknameTextView.setText(idleThing.getUser_Nickname());
         mDateTextView.setText(parseDateString(idleThing.getRelease_time()));
         mMoneyTextView.setText(idleThing.getMoney() + "元");
+        mStatusButton.setVisibility(View.VISIBLE);
+        mConfirmBottom.setVisibility(View.GONE);
         if (idleThing.getIs_finished() == 0) {
             mStatusButton.setText("待售");
         } else {
@@ -495,7 +498,7 @@ public class IdleThingPostFragment extends Fragment {
             // 主人 + 未完成
             if (idleThing.getUser_Email().equals(STFUConfig.sUser.getEmail()) && idleThing.getIs_finished() == 0) {
                 mStatusButton.setVisibility(View.GONE);
-                mConfirmBotton.setVisibility(View.VISIBLE);
+                mConfirmBottom.setVisibility(View.VISIBLE);
             }
         }
 
@@ -508,6 +511,7 @@ public class IdleThingPostFragment extends Fragment {
             @Override
             public void success(IdleThing idleThing, List<Comment> comments) {
                 //do something
+                if (getView() == null) return;
                 Snackbar.make(getView(), R.string.refresh_success, BaseTransientBottomBar.LENGTH_SHORT).show();
                 if (getActivity() == null) return;
                 getActivity().runOnUiThread(() -> {
@@ -520,6 +524,7 @@ public class IdleThingPostFragment extends Fragment {
 
             @Override
             public void fail(Exception e) {
+                if (getView() == null) return;
                 Snackbar.make(getView(), R.string.network_error, BaseTransientBottomBar.LENGTH_SHORT).show();
                 mCommentAdapter.setEnableLoadMore(true);
                 mRefreshLayout.setRefreshing(false);

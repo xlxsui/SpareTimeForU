@@ -89,6 +89,8 @@ public class StudyPostFragment extends Fragment {
     SwipeRefreshLayout mRefreshLayout;
     @BindView(R.id.post_like)
     ImageView mLikeImageView;
+    @BindView(R.id.confirm_finish)
+    Button mConfirmBottom;
 
     PostImageAdapter mPostImageAdapter;
     CommentAdapter mCommentAdapter;
@@ -143,7 +145,7 @@ public class StudyPostFragment extends Fragment {
                 @Override
                 public void onFailure(Call call, IOException e) {
                     if (getActivity() == null) return;
-                getActivity().runOnUiThread(new Runnable() {
+                    getActivity().runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
                             Snackbar.make(getView(), "评论失败，请检查网络", BaseTransientBottomBar.LENGTH_SHORT).show();
@@ -164,7 +166,7 @@ public class StudyPostFragment extends Fragment {
                     if (status.equals("success")) {
 
                         if (getActivity() == null) return;
-                getActivity().runOnUiThread(() -> {
+                        getActivity().runOnUiThread(() -> {
                             mCommentEditText.setText("");
                             Gson gson = new Gson();
                             try {
@@ -215,13 +217,47 @@ public class StudyPostFragment extends Fragment {
                     JSONObject jsonObject = new JSONObject(str);
                     if (jsonObject.getString("status").equals("success")) {
                         if (getActivity() == null) return;
-                getActivity().runOnUiThread(() -> refresh());
+                        getActivity().runOnUiThread(() -> refresh());
                     }
                 } catch (JSONException e) {
                     Logger.e(e.toString());
                 }
             }
         });
+    }
+
+    @OnClick(R.id.confirm_finish)
+    public void confirm() {
+        if (!VerifyUtil.isLogin(getActivity())) {
+            return;
+        }
+        if (postID == 0 || STFUConfig.sUser == null) {
+            return;
+        }
+        FormBody body = new FormBody.Builder()
+                .add("post_id", postID + "")
+                .add("auth_token", STFUConfig.sUser.getAuth_token())
+                .build();
+        OkHttpUtil.sendOkHttpPostRequest(STFUConfig.HOST + "/study/confirm_finish", body, new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                try {
+                    JSONObject jsonObject = new JSONObject(response.body().string());
+                    String status = jsonObject.getString("status");
+                    if (status.equals("success")) {
+                        if (getActivity() == null) return;
+                        getActivity().runOnUiThread(() -> refresh());
+                    }
+                } catch (JSONException e) {
+                    Logger.e(e.toString());
+                }
+            }
+        });
+
     }
 
     private void initPost() {
@@ -254,7 +290,7 @@ public class StudyPostFragment extends Fragment {
                     Study study = HandleMessageUtil.handlePost_Study_Message(responseString);
                     List<Comment> comments = HandleMessageUtil.handlePost_Errand_Comment_Message(responseString);//获取评论信息
                     if (getActivity() == null) return;
-                getActivity().runOnUiThread(() -> {
+                    getActivity().runOnUiThread(() -> {
                         mRefreshLayout.setRefreshing(false);
                         updateViews(study, comments);
                     });
@@ -273,6 +309,8 @@ public class StudyPostFragment extends Fragment {
         mNicknameTextView.setText(study.getUser_Nickname());
         mDateTextView.setText(parseDateString(study.getRelease_time()));
         mMoneyTextView.setText("");
+        mStatusButton.setVisibility(View.VISIBLE);
+        mConfirmBottom.setVisibility(View.GONE);
         if (study.getIs_solved() == 0) {
             mStatusButton.setText("待解决");
         } else {
@@ -322,11 +360,11 @@ public class StudyPostFragment extends Fragment {
                         if (status.equals("success")) {
                             if (jsonObject.getString("is_like").equals("like")) {
                                 if (getActivity() == null) return;
-                getActivity().runOnUiThread(
+                                getActivity().runOnUiThread(
                                         () -> mLikeImageView.setImageResource(R.drawable.ic_like));
                             } else {
                                 if (getActivity() == null) return;
-                getActivity().runOnUiThread(
+                                getActivity().runOnUiThread(
                                         () -> mLikeImageView.setImageResource(R.drawable.ic_like_before));
                             }
                         }
@@ -336,7 +374,13 @@ public class StudyPostFragment extends Fragment {
                 }
             });
         }
-
+        if (VerifyUtil.isLoginStatus(getActivity())) {
+            // 主人 + 未完成
+            if (study.getUser_Email().equals(STFUConfig.sUser.getEmail()) && study.getIs_solved() == 0) {
+                mStatusButton.setVisibility(View.GONE);
+                mConfirmBottom.setVisibility(View.VISIBLE);
+            }
+        }
     }
 
     private void refresh() {
@@ -346,6 +390,7 @@ public class StudyPostFragment extends Fragment {
             @Override
             public void success(Study study, List<Comment> comments) {
                 //do something
+                if (getView() == null) return;
                 Snackbar.make(getView(), R.string.refresh_success, BaseTransientBottomBar.LENGTH_SHORT).show();
                 if (getActivity() == null) return;
                 getActivity().runOnUiThread(() -> {
@@ -358,6 +403,7 @@ public class StudyPostFragment extends Fragment {
 
             @Override
             public void fail(Exception e) {
+                if (getView() == null) return;
                 Snackbar.make(getView(), R.string.network_error, BaseTransientBottomBar.LENGTH_SHORT).show();
                 mCommentAdapter.setEnableLoadMore(true);
                 mRefreshLayout.setRefreshing(false);
