@@ -3,6 +3,7 @@ package com.sparetimeforu.android.sparetimeforu.fragment;
 import android.Manifest;
 import android.accounts.Account;
 import android.accounts.AccountManager;
+import android.app.Activity;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -277,16 +278,16 @@ public class EditFragment extends Fragment {
     }
 
 
-    private void updateNativeUser() {
+    public static void updateNativeUser(Activity context) {
         FormBody body = new FormBody.Builder()
                 .add("auth_token", STFUConfig.sUser.getAuth_token())
                 .build();
 
-        OkHttpUtil.sendOkHttpPostRequest(url + "/refresh", body, new Callback() {
+        OkHttpUtil.sendOkHttpPostRequest(STFUConfig.HOST + "/user/refresh", body, new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
-                getActivity().runOnUiThread(() -> {
-                    Toast.makeText(getContext(), "更新用户信息失败", Toast.LENGTH_SHORT).show();
+                context.runOnUiThread(() -> {
+                    Toast.makeText(context, "更新用户信息失败", Toast.LENGTH_SHORT).show();
                 });
             }
 
@@ -294,7 +295,8 @@ public class EditFragment extends Fragment {
             public void onResponse(Call call, Response response) throws IOException {
                 //获取新的user，并存到本地AccountManger数据库
                 STFUConfig.sUser = (HandleMessageUtil.handleLoginMessage(response.body().string()));
-                AccountManager am = AccountManager.get(getContext());
+                AccountManager am = AccountManager.get(context);
+                if (STFUConfig.sUser == null) return;
                 Account account = new Account(STFUConfig.sUser.getEmail(), BuildConfig.APPLICATION_ID);
                 boolean isAdded = am.addAccountExplicitly(account, "", null);//安全起见，不存密码
                 am.setAuthToken(account, "normal", STFUConfig.sUser.getAuth_token());
@@ -307,19 +309,16 @@ public class EditFragment extends Fragment {
                 am.setUserData(account, "phone", STFUConfig.sUser.getPhone());
                 am.setUserData(account, "gender", STFUConfig.sUser.getGender());
                 am.setUserData(account, "bg_url", STFUConfig.sUser.getBg_url());
+                am.setUserData(account, "money", STFUConfig.sUser.getMoney() + "");
                 //更新极光信息
-                UserInfo userInfo=JMessageClient.getMyInfo();
-                userInfo.setNickname(STFUConfig.sUser.getNickname());
+                UserInfo userInfo = JMessageClient.getMyInfo();
+                if (userInfo != null) {
+                    userInfo.setNickname(STFUConfig.sUser.getNickname());
+                }
                 JMessageClient.updateMyInfo(UserInfo.Field.all, userInfo, new BasicCallback() {
                     @Override
                     public void gotResult(int i, String s) {
-
                     }
-                });
-                //更新STFUConfig.User,更新组件
-                getActivity().runOnUiThread(() -> {
-                    updateWidgets();
-                    Toast.makeText(getContext(), "更新用户信息成功", Toast.LENGTH_SHORT).show();
                 });
             }
         });
@@ -360,7 +359,6 @@ public class EditFragment extends Fragment {
             tv_edit_phonecall.setText(STFUConfig.sUser.getPhone());
             tv_edit_sex.setText(STFUConfig.sUser.getGender());
             tv_edit_signature.setText(STFUConfig.sUser.getSignature());
-            Logger.i(STFUConfig.sUser.toString());
             Picasso.get()
                     .load(STFUConfig.HOST + "/static/avatar/" + STFUConfig.sUser.getAvatar_url())
                     .resize(600, 600)
@@ -511,6 +509,7 @@ public class EditFragment extends Fragment {
                     @Override
                     public void onFailure(Call call, IOException e) {
                         Logger.i(e.toString());
+                        if (getActivity() == null) return;
                         getActivity().runOnUiThread(() -> {
                             Toast.makeText(getContext(), "网络请求错误", Toast.LENGTH_SHORT).show();
                         });
@@ -519,9 +518,11 @@ public class EditFragment extends Fragment {
                     @Override
                     public void onResponse(Call call, Response response) throws IOException {
 
+                        if (getActivity() == null) return;
                         getActivity().runOnUiThread(() -> {
                             Toast.makeText(getContext(), "修改成功", Toast.LENGTH_SHORT).show();
-                            updateNativeUser();
+                            updateNativeUser(getActivity());
+                            updateWidgets();
                         });
 //                        getActivity().finish();
                     }//onResponse
@@ -542,6 +543,7 @@ public class EditFragment extends Fragment {
             @Override
             public void onFailure(Call call, IOException e) {
                 Logger.i(e.toString());
+                if (getActivity() == null) return;
                 getActivity().runOnUiThread(() -> {
                     Toast.makeText(getContext(), "修改头像失败", Toast.LENGTH_SHORT).show();
                 });
@@ -549,6 +551,7 @@ public class EditFragment extends Fragment {
 
             @Override
             public void onResponse(Call call, Response response) throws IOException {
+                if (getActivity() == null) return;
                 getActivity().runOnUiThread(() -> {
                     Toast.makeText(getContext(), "修改头像成功", Toast.LENGTH_SHORT).show();
                     JMessageClient.updateUserAvatar(compressFile, new BasicCallback() {
@@ -557,7 +560,8 @@ public class EditFragment extends Fragment {
                             Logger.i("更换头像成功");
                         }
                     });
-                    updateNativeUser();
+                    updateNativeUser(getActivity());
+//                    updateWidgets();
                 });
             }
         });
@@ -576,6 +580,7 @@ public class EditFragment extends Fragment {
             @Override
             public void onFailure(Call call, IOException e) {
                 Logger.i(e.toString());
+                if (getActivity() == null) return;
                 getActivity().runOnUiThread(() -> {
                     Toast.makeText(getContext(), "修改背景失败", Toast.LENGTH_SHORT).show();
                 });
@@ -583,9 +588,11 @@ public class EditFragment extends Fragment {
 
             @Override
             public void onResponse(Call call, Response response) throws IOException {
+                if (getActivity() == null) return;
                 getActivity().runOnUiThread(() -> {
                     Toast.makeText(getContext(), "修改背景成功", Toast.LENGTH_SHORT).show();
-                    updateNativeUser();
+                    updateNativeUser(getActivity());
+//                    updateWidgets();
                 });
             }
         });

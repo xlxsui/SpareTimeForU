@@ -38,7 +38,6 @@ public class HandleMessageUtil {
      * @return
      */
     public static User handleLoginMessage(String responseString) {
-        Logger.i(responseString);
         if (!TextUtils.isEmpty(responseString)) {
             Gson gson = new Gson();
             User user = null;
@@ -83,7 +82,6 @@ public class HandleMessageUtil {
             try {
                 JSONObject jsonObject = new JSONObject(responseString);
                 JSONObject data = new JSONObject(jsonObject.getString("data"));
-                Logger.i(data.toString());
                 int i = 0;
                 while (i < data.length()) {
                     String str = (String) data.getString("post_" + i);

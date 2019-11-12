@@ -28,27 +28,27 @@ public class IntroActivity extends AppIntro {
         SliderPage sliderPage = new SliderPage();
         sliderPage.setTitle("赏金");
         sliderPage.setDescription("任何人都可以为你解决小需求");
-        sliderPage.setImageDrawable(R.drawable.ic_22);
-        sliderPage.setBgColor(getColor(R.color.colorPrimaryDark));
+        sliderPage.setImageDrawable(R.drawable.intro_errand);
+        sliderPage.setBgColor(getColor(R.color.colorPrimary));
         addSlide(AppIntroFragment.newInstance(sliderPage));
 
         sliderPage.setTitle("闲置");
         sliderPage.setDescription("来体验一下汕大版闲鱼");
-        sliderPage.setImageDrawable(R.drawable.ic_22_hide);
+        sliderPage.setImageDrawable(R.drawable.intro_idle);
         addSlide(AppIntroFragment.newInstance(sliderPage));
 
         sliderPage.setTitle("问答");
         sliderPage.setDescription("有疑惑，问问大家看看");
-        sliderPage.setImageDrawable(R.drawable.ic_33);
+        sliderPage.setImageDrawable(R.drawable.intro_study);
         addSlide(AppIntroFragment.newInstance(sliderPage));
 
         sliderPage.setTitle("寻物");
         sliderPage.setDescription("啥，东西丢了，大家帮忙找找，报酬你说");
-        sliderPage.setImageDrawable(R.drawable.ic_33_hide);
+        sliderPage.setImageDrawable(R.drawable.intro_search);
         addSlide(AppIntroFragment.newInstance(sliderPage));
         sliderPage.setTitle("权限申请");
-        sliderPage.setDescription("我们需要这些权限才能正常工作");
-        sliderPage.setImageDrawable(R.drawable.ic_22);
+        sliderPage.setDescription("顺手邦需要这些权限才能正常工作");
+        sliderPage.setImageDrawable(R.drawable.intro_errand);
         addSlide(AppIntroFragment.newInstance(sliderPage));
 
         askForPermissions(new String[]{Manifest.permission.CAMERA,

@@ -23,29 +23,30 @@ import com.weavey.loading.lib.LoadingLayout;
  * Created by HQY on 2019/11/6.
  */
 
-public class PersonalMoneyFragment  extends Fragment implements View.OnClickListener{
+public class PersonalMoneyFragment extends Fragment implements View.OnClickListener {
     TextView money_value;
-    Button cash,recharge;//提现、充值
+    Button cash, recharge;//提现、充值
     Toolbar toolbar;
     ImageView imageView;
+
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view=inflater.inflate(R.layout.fragment_money,null);
+        View view = inflater.inflate(R.layout.fragment_money, null);
 
-        imageView=(ImageView)view.findViewById(R.id.menu_back_icon);
-        toolbar=(Toolbar)view.findViewById(R.id.toolbar);
+        imageView = (ImageView) view.findViewById(R.id.menu_back_icon);
+        toolbar = (Toolbar) view.findViewById(R.id.toolbar);
         imageView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 getActivity().finish();
             }
         });
-        ((AppCompatActivity)getActivity()).setSupportActionBar(toolbar);
-        money_value=(TextView)view.findViewById(R.id.my_money_value);
+        ((AppCompatActivity) getActivity()).setSupportActionBar(toolbar);
+        money_value = (TextView) view.findViewById(R.id.my_money_value);
         //money_value.setText(STFUConfig.sUser.getMoney());
-        money_value.setText("165");
-        cash=(Button)view.findViewById(R.id.cash_button);
-        recharge=(Button)view.findViewById(R.id.recharge_button);
+        money_value.setText(String.format("%s", STFUConfig.sUser.getMoney()));
+        cash = (Button) view.findViewById(R.id.cash_button);
+        recharge = (Button) view.findViewById(R.id.recharge_button);
         cash.setOnClickListener(this);
         recharge.setOnClickListener(this);
         return view;
@@ -53,7 +54,7 @@ public class PersonalMoneyFragment  extends Fragment implements View.OnClickList
 
     @Override
     public void onClick(View view) {
-        switch (view.getId()){
+        switch (view.getId()) {
             case R.id.cash_button:
                 cash_function();
                 break;
@@ -62,29 +63,30 @@ public class PersonalMoneyFragment  extends Fragment implements View.OnClickList
                 break;
         }
     }
-    private boolean cash_function(){
+
+    private boolean cash_function() {
         //弹出dialog
-        AlertDialog.Builder builder=new AlertDialog.Builder(getContext());
+        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
         builder.setNegativeButton("否", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
-                Toast.makeText(getActivity(),"您取消了提现",Toast.LENGTH_SHORT).show();
+                Toast.makeText(getActivity(), "您取消了提现", Toast.LENGTH_SHORT).show();
             }
         });
         builder.setPositiveButton("是", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
                 //发送请求到服务器
-                Toast.makeText(getActivity(),"提交请求成功，后台审核中，耐心等待哦",Toast.LENGTH_SHORT).show();
+                Toast.makeText(getActivity(), "提交请求成功，后台审核中，耐心等待哦", Toast.LENGTH_SHORT).show();
             }
         });
-        builder.setTitle("提现可得"+12+"元，您确定要提现吗?");
-        AlertDialog alertDialog=builder.create();
+        builder.setTitle("提现可得" + STFUConfig.sUser.getMoney() + "元，您确定要提现吗?");
+        AlertDialog alertDialog = builder.create();
         alertDialog.show();
         return true;
     }
 
-    private boolean recharge_function(){
+    private boolean recharge_function() {
         //弹出dialog 充值数额
 
         //发送请求到服务器

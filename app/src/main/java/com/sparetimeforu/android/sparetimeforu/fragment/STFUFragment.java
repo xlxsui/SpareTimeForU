@@ -70,6 +70,7 @@ import Listener.GlobalEventListener;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import cn.jpush.im.android.api.JMessageClient;
+import cn.jpush.im.android.api.model.UserInfo;
 import cn.jpush.im.api.BasicCallback;
 
 import static cn.jpush.im.android.api.JMessageClient.getAllUnReadMsgCount;
@@ -119,7 +120,6 @@ public class STFUFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater,
                              ViewGroup container,
                              Bundle savedInstanceState) {
-        init(getContext());
         final View view = inflater.inflate(R.layout.fragment_stfu, container, false);
         ButterKnife.bind(this, view);
         mFm = getActivity().getSupportFragmentManager();
@@ -161,8 +161,8 @@ public class STFUFragment extends Fragment {
 
 
         /*
-        * 网络加载界面
-        * */
+         * 网络加载界面
+         * */
         LoadingLayout.getConfig().setErrorText("出错啦~请稍后重试！")
                 .setNoNetworkText("无网络连接，请检查您的网络···")
                 .setEmptyImage(R.drawable.loading_failed)
@@ -170,7 +170,6 @@ public class STFUFragment extends Fragment {
                 .setReloadButtonText("点我重试哦")
                 .setReloadButtonTextSize(14)
                 .setReloadButtonTextColor(R.color.gray_color);
-
 
 
         /**
@@ -224,16 +223,20 @@ public class STFUFragment extends Fragment {
                     }
                     break;
                 case R.id.slider_menu_personal_letter:
-                    //点击之后就把图标变回原样
-                    set_Message_point_icon(0);
-                    //进入消息通知界面
-                    Intent intent1 = new Intent(getContext(), ConversationListActivity.class);
-                    getActivity().startActivity(intent1);
+                    if (VerifyUtil.isLogin(getActivity())) {
+                        //点击之后就把图标变回原样
+                        set_Message_point_icon(0);
+                        //进入消息通知界面
+                        Intent intent1 = new Intent(getContext(), ConversationListActivity.class);
+                        getActivity().startActivity(intent1);
+                    }
+
                     break;
                 case R.id.slider_menu_money:
-                    Intent intent3=new Intent(getContext(), PersonalMoneyActivity.class);
-                    Toast.makeText(getContext(),"你点击了我的积分",Toast.LENGTH_SHORT).show();
-                    startActivity(intent3);
+                    if (VerifyUtil.isLogin(getActivity())) {
+                        Intent intent3 = new Intent(getContext(), PersonalMoneyActivity.class);
+                        startActivity(intent3);
+                    }
                     break;
                 case R.id.slider_menu_login:
                     if (mAccount != null) {
@@ -242,12 +245,19 @@ public class STFUFragment extends Fragment {
                         mAccount = null;
                         updateViews();
                     }
+                    if (mAccount == null && VerifyUtil.isLoginStatus(getActivity())) {
+                        STFUConfig.sUser = null;
+                        updateViews();
+                    }
                     intent = new Intent(getActivity(), LoginActivity.class);
                     startActivityForResult(intent, REQUEST_CODE_LOGIN);
                     break;
                 case R.id.slider_menu_friend:
-                    Intent intent2 = new Intent(getContext(), FriendActivity.class);
-                    startActivity(intent2);
+                    if (VerifyUtil.isLogin(getActivity())) {
+                        Intent intent2 = new Intent(getContext(), FriendActivity.class);
+                        startActivity(intent2);
+                    }
+
                     break;
 
                 case R.id.slider_menu_exit:
@@ -280,7 +290,7 @@ public class STFUFragment extends Fragment {
         });
 
         Menu mDrawerMenuView = mDrawerNavigationView.getMenu();//侧滑栏的菜单
-        mLoginMenuItem = mDrawerMenuView.getItem(3);//第4个菜单项
+        mLoginMenuItem = mDrawerMenuView.getItem(4);//第4个菜单项
 
 
         //初次加载的界面
@@ -344,11 +354,14 @@ public class STFUFragment extends Fragment {
             STFUConfig.sUser.setPhone(accountManager.getUserData(account[0], "phone"));
             STFUConfig.sUser.setSignature(accountManager.getUserData(account[0], "signature"));
             STFUConfig.sUser.setBg_url(accountManager.getUserData(account[0], "bg_url"));
+            STFUConfig.sUser.setMoney(
+                    Float.parseFloat(accountManager.getUserData(account[0], "money")));
+            JMessageClient.init(getActivity());
             JMessageClient.login(STFUConfig.sUser.getEmail(), STFUConfig.sUser.getEmail() + "1", new BasicCallback() {
                 @Override
                 public void gotResult(int i, String s) {
                     if (i == 0) {
-                        com.orhanobut.logger.Logger.i("极光登录成功");
+                        Logger.i("极光登录成功");
                     }
                 }
             });
@@ -356,8 +369,9 @@ public class STFUFragment extends Fragment {
             new GetAuthThread().start();
 
             //设置极光头像
-            if (getMyInfo() != null) {//极光未设置头像
-                if (getMyInfo().getAvatar() == null) {
+            UserInfo userInfo = getMyInfo();
+            if (userInfo != null) {//极光未设置头像
+                if (userInfo.getAvatar() == null) {
                     try {
                         File file = new File("");
                         Bitmap bitmap = Picasso.get().load(STFUConfig.sUser.getAvatar_url()).get();

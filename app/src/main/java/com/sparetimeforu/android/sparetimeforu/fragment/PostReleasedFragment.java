@@ -16,6 +16,7 @@ import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 
 import com.sparetimeforu.android.sparetimeforu.R;
@@ -60,7 +61,7 @@ public class PostReleasedFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.post_released, container, false);
 
-        user_id=STFUConfig.sUser.getUser_id();
+        user_id = STFUConfig.sUser.getUser_id();
 //        user_id = 1;
         mFragmentManager = getFragmentManager();
 
@@ -71,6 +72,8 @@ public class PostReleasedFragment extends Fragment {
         toolbar = view.findViewById(R.id.toolbar);
         toolbar.setTitle("");
         ((AppCompatActivity) getActivity()).setSupportActionBar(toolbar);
+        ImageView avatarImageView = view.findViewById(R.id.menu_back_icon);
+        avatarImageView.setOnClickListener((v)->getActivity().finish());
 
         //设置导航切换界面
         mission_received_switch = (BottomNavigationView) view.findViewById(R.id.post_released_select);
@@ -107,6 +110,7 @@ public class PostReleasedFragment extends Fragment {
         OkHttpUtil.sendOkHttpPostRequest(url + "/get_user_posts", formBody, new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
+                if (getActivity() == null) return;
                 getActivity().runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
@@ -120,6 +124,7 @@ public class PostReleasedFragment extends Fragment {
                 List<Errand> data;
                 data = HandleMessageUtil.handleReleasedErrandMessage(response.body().string());
                 ErrandAdapter adapter = new ErrandAdapter(data, getActivity());
+                if (getActivity() == null) return;
                 getActivity().runOnUiThread(() -> recyclerView.setAdapter(adapter));
             }
         });
@@ -133,6 +138,7 @@ public class PostReleasedFragment extends Fragment {
         OkHttpUtil.sendOkHttpPostRequest(url + "/getReleasedFind", formBody, new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
+                if (getActivity() == null) return;
                 getActivity().runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
@@ -146,6 +152,7 @@ public class PostReleasedFragment extends Fragment {
                 List<SearchThing> data;
                 data = HandleMessageUtil.handlePostSearchThingMessage(response.body().string());
                 LostAndFoundAdapter adapter = new LostAndFoundAdapter(data);
+                if (getActivity() == null) return;
                 getActivity().runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
@@ -164,6 +171,7 @@ public class PostReleasedFragment extends Fragment {
         OkHttpUtil.sendOkHttpPostRequest(url + "/getReleasedStudy", formBody, new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
+                if (getActivity() == null) return;
                 getActivity().runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
@@ -177,6 +185,7 @@ public class PostReleasedFragment extends Fragment {
                 List<Study> data;
                 data = HandleMessageUtil.handlePostStudyMessage(response.body().string());
                 StudyAdapter adapter = new StudyAdapter(data);
+                if (getActivity() == null) return;
                 getActivity().runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
@@ -194,6 +203,7 @@ public class PostReleasedFragment extends Fragment {
         OkHttpUtil.sendOkHttpPostRequest(url + "/getReleasedTrade", formBody, new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
+                if (getActivity() == null) return;
                 getActivity().runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
@@ -207,6 +217,7 @@ public class PostReleasedFragment extends Fragment {
                 List<IdleThing> data;
                 data = HandleMessageUtil.handlePostIdleThingMessage(response.body().string());
                 IdleThingAdapter adapter = new IdleThingAdapter(data);
+                if (getActivity() == null) return;
                 getActivity().runOnUiThread(new Runnable() {
                     @Override
                     public void run() {

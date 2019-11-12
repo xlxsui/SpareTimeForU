@@ -22,6 +22,7 @@ import com.sparetimeforu.android.sparetimeforu.ServerConnection.OkHttpUtil;
 import com.sparetimeforu.android.sparetimeforu.activity.OthersPersonalActivity;
 import com.sparetimeforu.android.sparetimeforu.activity.post.ErrandPostActivity;
 import com.sparetimeforu.android.sparetimeforu.entity.Errand;
+import com.sparetimeforu.android.sparetimeforu.fragment.EditFragment;
 import com.sparetimeforu.android.sparetimeforu.util.ErrandDataBaseUtil;
 import com.sparetimeforu.android.sparetimeforu.util.HandleMessageUtil;
 import com.sparetimeforu.android.sparetimeforu.util.SystemDataBaseUtil;
@@ -65,7 +66,6 @@ public class ErrandAdapter extends BaseQuickAdapter<Errand, BaseViewHolder> {
             intent.putExtra("errand_id", getItem(position).getErrand_id());
             mContext.startActivity(intent);
         });
-
     }
 
     @Override
@@ -105,6 +105,7 @@ public class ErrandAdapter extends BaseQuickAdapter<Errand, BaseViewHolder> {
 
         ImageView p1 = (ImageView) helper.getView(R.id.errand_picture1);
         ImageView share = (ImageView) helper.getView(R.id.errand_share);
+        share.setVisibility(View.INVISIBLE);
         ImageView likeImageView = (ImageView) helper.getView(R.id.ic_like);
 
         Button accept_mission = (Button) helper.getView(R.id.Errand_accpet_mission);
@@ -118,6 +119,10 @@ public class ErrandAdapter extends BaseQuickAdapter<Errand, BaseViewHolder> {
         MyOnclickListener listener = new MyOnclickListener(item, helper.getAdapterPosition()
                 , accept_mission, finish_mission, cancelMissionBtn, confirmFinishMBtn,
                 notFinishBtn, deleteBtn, mission_finished_text);
+        LinearLayout likeLayout = helper.getView(R.id.like_layout);
+        LinearLayout avatarLayout = helper.getView(R.id.layout_avatar);
+        likeLayout.setOnClickListener(listener);
+        avatarLayout.setOnClickListener(listener);
         accept_mission.setOnClickListener(listener);
         finish_mission.setOnClickListener(listener);
         cancelMissionBtn.setOnClickListener(listener);
@@ -126,265 +131,8 @@ public class ErrandAdapter extends BaseQuickAdapter<Errand, BaseViewHolder> {
         deleteBtn.setOnClickListener(listener);
         mission_finished_text.setOnClickListener(listener);
 
-        helper.addOnClickListener(R.id.layout_avatar)
-                .addOnClickListener(R.id.errand_share)
-                .addOnClickListener(R.id.like_layout)
+        helper.addOnClickListener(R.id.errand_share)
                 .addOnClickListener(R.id.errand_comment);
-
-//        ErrandAdapter.this.setOnItemChildClickListener((adapter, view, position) -> {
-//            FormBody formBody;
-//            switch (view.getId()) {
-//                case R.id.layout_avatar:
-//                    //进入他人界面
-//                    Intent intent = new Intent(activity, OthersPersonalActivity.class);
-//                    intent.putExtra("user_Email", getItem(position).getUser_Email());
-//                    activity.startActivity(intent);
-//                    break;
-//                case R.id.errand_share:
-//                    Toast.makeText(mContext, "You clicked the share! ", Toast.LENGTH_SHORT).show();
-//                    break;
-//                case R.id.like_layout:
-//                    if (!VerifyUtil.isLogin(mContext)) {
-//                        break;
-//                    }
-//                    Errand e = (Errand) adapter.getItem(position);
-//                    if (e == null || STFUConfig.sUser == null) {
-//                        break;
-//                    }
-//                    FormBody body = new FormBody.Builder()
-//                            .add("post_type", 0 + "")
-//                            .add("post_id", e.getErrand_id() + "")
-//                            .add("auth_token", STFUConfig.sUser.getAuth_token())
-//                            .build();
-//                    OkHttpUtil.sendOkHttpPostRequest(STFUConfig.HOST + "/like", body, new okhttp3.Callback() {
-//                        @Override
-//                        public void onFailure(Call call, IOException e) {
-//                        }
-//
-//                        @Override
-//                        public void onResponse(Call call, Response response) throws IOException {
-//                            String str = response.body().string();
-//                            try {
-//                                JSONObject jsonObject = new JSONObject(str);
-//                                if (jsonObject.getString("status").equals("success")) {
-//                                    refreshItem(e.getErrand_id(), position);
-//                                }
-//                            } catch (JSONException e) {
-//                                Logger.e(e.toString());
-//                            }
-//                        }
-//                    });
-//                    break;
-//                case R.id.Errand_finished_text:
-//                    break;
-//                case R.id.Errand_accpet_mission:
-//                    //注册管理员账号
-//                    JMessageClient.register(STFUConfig.manager_username, STFUConfig.manager_username + "1", new BasicCallback() {
-//                        @Override
-//                        public void gotResult(int i, String s) {
-//                            Logger.i("管理员注册成功");
-//                        }
-//                    });
-//                    //发送请求到服务器  用户接收任务
-//                    formBody = new FormBody.Builder()
-//                            .add("auth_token", STFUConfig.sUser.getAuth_token())
-//                            .add("post_id", getItem(position).getErrand_id() + "")
-//                            .build();
-//                    OkHttpUtil.sendOkHttpPostRequest(STFUConfig.HOST + "/mission/receive_mission", formBody, new Callback() {
-//                        @Override
-//                        public void onFailure(Call call, IOException e) {
-//                        }
-//
-//                        @Override
-//                        public void onResponse(Call call, Response response) throws IOException {
-//                            //发送系统通知
-//
-//                            try {
-//                                JSONObject jsonObject = new JSONObject(response.body().string());
-//                                String status = jsonObject.getString("status");
-//                                if (status.equals("success")) {
-//                                    SystemMessageSendUtil.send_System_message_errand(getItem(position).getUser_Email(),
-//                                            getItem(position).getErrand_id(),
-//                                            0, SystemMessageSendUtil.Errand_message_mode_errand_accepted);
-//                                    ((Activity) mContext).runOnUiThread(() -> {
-//                                        ErrandAdapter.this.remove(position);
-//                                        ErrandAdapter.this.notifyItemRemoved(position);
-//                                    });
-//                                } else {
-//                                    ((Activity) mContext).runOnUiThread(() -> {
-//                                        Toast.makeText(mContext, "接受失败！", Toast.LENGTH_SHORT).show();
-//                                    });
-//                                }
-//                            } catch (JSONException e) {
-//                                Logger.e(e.toString());
-//                            }
-//                        }
-//                    });
-//
-//                    break;
-//                case R.id.Errand_finish_mission:
-//                    //发送请求到服务器  用户完成任务
-//                    formBody = new FormBody.Builder()
-//                            .add("auth_token", STFUConfig.sUser.getAuth_token())
-//                            .add("post_id", getItem(position).getErrand_id() + "")
-//                            .build();
-//                    OkHttpUtil.sendOkHttpPostRequest(STFUConfig.HOST + "/mission/finish_mission", formBody, new Callback() {
-//                        @Override
-//                        public void onFailure(Call call, IOException e) {
-//                        }
-//
-//                        @Override
-//                        public void onResponse(Call call, Response response) throws IOException {
-//                            //发送系统通知
-//                            try {
-//                                JSONObject jsonObject = new JSONObject(response.body().string());
-//                                String status = jsonObject.getString("status");
-//                                if (status.equals("success")) {
-//                                    ((Activity) mContext).runOnUiThread(() -> {
-//
-//                                        Errand item = getItem(position);
-//                                        SystemMessageSendUtil.send_System_message_errand(
-//                                                item.getUser_Email(), item.getErrand_id(), 0,
-//                                                SystemMessageSendUtil.Errand_message_mode_errand_solved);
-//
-//                                        accept_mission.setVisibility(View.GONE);
-//                                        finish_mission.setVisibility(View.GONE);
-//                                        cancelMissionBtn.setVisibility(View.GONE);
-//                                        notFinishBtn.setVisibility(View.GONE);
-//                                        confirmFinishMBtn.setVisibility(View.GONE);
-//                                        deleteBtn.setVisibility(View.GONE);
-//                                        mission_finished_text.setText("等待悬赏者确认");
-//                                        mission_finished_text.setVisibility(View.VISIBLE);
-//                                        Toast.makeText(mContext, "任务已经完成，等悬赏者确认！", Toast.LENGTH_SHORT).show();
-//                                    });
-//                                }
-//                            } catch (JSONException e) {
-//                                Logger.e(e.toString());
-//                            }
-//                        }
-//                    });
-//
-//                    break;
-//                case R.id.errand_cancel:
-//                    //发送请求到服务器  用户取消任务
-//                    formBody = new FormBody.Builder()
-//                            .add("auth_token", STFUConfig.sUser.getAuth_token())
-//                            .add("post_id", getItem(position).getErrand_id() + "")
-//                            .build();
-//                    OkHttpUtil.sendOkHttpPostRequest(STFUConfig.HOST + "/mission/rollback_mission", formBody, new Callback() {
-//                        @Override
-//                        public void onFailure(Call call, IOException e) {
-//                        }
-//
-//                        @Override
-//                        public void onResponse(Call call, Response response) throws IOException {
-//                            //发送系统通知
-//                            try {
-//                                JSONObject jsonObject = new JSONObject(response.body().string());
-//                                String status = jsonObject.getString("status");
-//                                if (status.equals("success")) {
-//                                    ((Activity) mContext).runOnUiThread(() -> {
-//                                        Toast.makeText(mContext, "任务已经取消！", Toast.LENGTH_SHORT).show();
-//                                        ((Activity) mContext).runOnUiThread(() -> {
-//                                            ErrandAdapter.this.remove(position);
-//                                            ErrandAdapter.this.notifyItemRemoved(position);
-//                                        });
-//                                    });
-//                                }
-//                            } catch (JSONException e) {
-//                                Logger.e(e.toString());
-//                            }
-//                        }
-//                    });
-//
-//                    break;
-//                case R.id.confirm_finish_mission:
-//                    //发送请求到服务器  悬赏者确认完成任务
-//                    formBody = new FormBody.Builder()
-//                            .add("auth_token", STFUConfig.sUser.getAuth_token())
-//                            .add("post_id", getItem(position).getErrand_id() + "")
-//                            .build();
-//                    OkHttpUtil.sendOkHttpPostRequest(STFUConfig.HOST + "/mission/confirm_finish", formBody, new Callback() {
-//                        @Override
-//                        public void onFailure(Call call, IOException e) {
-//                        }
-//
-//                        @Override
-//                        public void onResponse(Call call, Response response) throws IOException {
-//                            //发送系统通知
-//                            try {
-//                                JSONObject jsonObject = new JSONObject(response.body().string());
-//                                String status = jsonObject.getString("status");
-//                                if (status.equals("success")) {
-//                                    ((Activity) mContext).runOnUiThread(() -> {
-//                                        Toast.makeText(mContext, "悬赏者已确认，钱已经到对面账户了！", Toast.LENGTH_SHORT).show();
-//
-//                                        accept_mission.setVisibility(View.GONE);
-//                                        finish_mission.setVisibility(View.GONE);
-//                                        cancelMissionBtn.setVisibility(View.GONE);
-//                                        notFinishBtn.setVisibility(View.GONE);
-//                                        confirmFinishMBtn.setVisibility(View.GONE);
-//                                        deleteBtn.setVisibility(View.GONE);
-//                                        mission_finished_text.setText("双方确认完成");
-//                                        mission_finished_text.setVisibility(View.VISIBLE);
-//                                    });
-//                                }
-//                            } catch (JSONException e) {
-//                                Logger.e(e.toString());
-//                            }
-//                        }
-//                    });
-//                    break;
-//                case R.id.errand_not_finish:
-//                    //发送请求到服务器  用户未真正完成任务
-//                    Toast.makeText(mContext, "我们会对对方进行审批！", Toast.LENGTH_SHORT).show();
-//                    break;
-//                case R.id.Errand_delete:
-//                    ErrandDataBaseUtil.deleteErrandNow(item.getErrand_id());
-//
-//                    formBody = new FormBody.Builder()
-//                            .add("post_id", item.getErrand_id() + "")
-//                            .add("auth_token", STFUConfig.sUser.getAuth_token())
-//                            .build();
-//
-//                    OkHttpUtil.sendOkHttpPostRequest(STFUConfig.HOST + "/mission/delete_or_not", formBody, new Callback() {
-//                        @Override
-//                        public void onFailure(Call call, IOException e) {
-//                        }
-//
-//                        @Override
-//                        public void onResponse(Call call, Response response) throws IOException {
-//                            try {
-//                                JSONObject jsonObject = new JSONObject(response.body().string());
-//                                String status = jsonObject.getString("status");
-//                                if (status.equals("success")) {
-//                                    ((Activity) mContext).runOnUiThread(() -> {
-//                                        ErrandAdapter.this.remove(position);
-//                                        ErrandAdapter.this.notifyItemChanged(position);
-//                                    });
-//                                } else { // 非 success
-//                                    ((Activity) mContext).runOnUiThread(() -> {
-//                                        try {
-//                                            String error = jsonObject.getString("error");
-//                                            Toast.makeText(mContext, error, Toast.LENGTH_SHORT).show();
-//                                        } catch (JSONException e1) {
-//                                            Logger.e(e1.toString());
-//                                        }
-//                                    });
-//                                }
-//                            } catch (JSONException e) {
-//                                Logger.e(e.toString());
-//                            }
-//                        }
-//                    });
-//                    break;
-//
-//            }
-//        });
-
-
-        //set avatar img
-
 
         Picasso.get()
                 .load(url + "/avatar/" + item.getUser_Avatar())
@@ -431,6 +179,7 @@ public class ErrandAdapter extends BaseQuickAdapter<Errand, BaseViewHolder> {
                     notFinishBtn.setVisibility(View.VISIBLE);
                     confirmFinishMBtn.setVisibility(View.VISIBLE);
                     deleteBtn.setVisibility(View.GONE);
+                    mission_finished_text.setVisibility(View.GONE);
                 } else if (item.getIs_received() == 1) { // 未完成，等待
                     accept_mission.setVisibility(View.GONE);
                     finish_mission.setVisibility(View.GONE);
@@ -447,6 +196,7 @@ public class ErrandAdapter extends BaseQuickAdapter<Errand, BaseViewHolder> {
                     notFinishBtn.setVisibility(View.GONE);
                     confirmFinishMBtn.setVisibility(View.GONE);
                     deleteBtn.setVisibility(View.VISIBLE);
+                    mission_finished_text.setVisibility(View.GONE);
                 }
 
                 //接收者
@@ -640,6 +390,7 @@ public class ErrandAdapter extends BaseQuickAdapter<Errand, BaseViewHolder> {
                                 JSONObject jsonObject = new JSONObject(response.body().string());
                                 String status = jsonObject.getString("status");
                                 if (status.equals("success")) {
+                                    item.setIs_received(1);
                                     SystemMessageSendUtil.send_System_message_errand(getItem(position).getUser_Email(),
                                             getItem(position).getErrand_id(),
                                             0, SystemMessageSendUtil.Errand_message_mode_errand_accepted);
@@ -677,6 +428,8 @@ public class ErrandAdapter extends BaseQuickAdapter<Errand, BaseViewHolder> {
                                 JSONObject jsonObject = new JSONObject(response.body().string());
                                 String status = jsonObject.getString("status");
                                 if (status.equals("success")) {
+                                    item.setIs_received(1);
+                                    item.setIs_finished(1);
                                     ((Activity) mContext).runOnUiThread(() -> {
 
                                         Errand item = getItem(position);
@@ -721,6 +474,8 @@ public class ErrandAdapter extends BaseQuickAdapter<Errand, BaseViewHolder> {
                                 String status = jsonObject.getString("status");
                                 SystemMessageSendUtil.send_System_message_errand(item.getUser_Email(),item.getErrand_id(),0,SystemMessageSendUtil.Errand_message_mode_errand_canceled);
                                 if (status.equals("success")) {
+                                    item.setIs_received(0);
+                                    item.setToDefault("is_received");
                                     ((Activity) mContext).runOnUiThread(() -> {
                                         Toast.makeText(mContext, "任务已经取消！", Toast.LENGTH_SHORT).show();
                                         ((Activity) mContext).runOnUiThread(() -> {
@@ -755,6 +510,9 @@ public class ErrandAdapter extends BaseQuickAdapter<Errand, BaseViewHolder> {
                                 String status = jsonObject.getString("status");
                                 SystemMessageSendUtil.send_System_message_errand(item.getReceiver_email(),item.getErrand_id(),0,SystemMessageSendUtil.Errand_message_mode_errand_solved_agree);
                                 if (status.equals("success")) {
+                                    item.setIs_confirmed_finish(1);
+                                    item.setIs_received(1);
+                                    item.setIs_finished(1);
                                     ((Activity) mContext).runOnUiThread(() -> {
                                         Toast.makeText(mContext, "悬赏者已确认，钱已经到对面账户了！", Toast.LENGTH_SHORT).show();
 
@@ -799,6 +557,7 @@ public class ErrandAdapter extends BaseQuickAdapter<Errand, BaseViewHolder> {
                                 String status = jsonObject.getString("status");
                                 if (status.equals("success")) {
                                     ((Activity) mContext).runOnUiThread(() -> {
+                                        EditFragment.updateNativeUser((Activity) mContext);
                                         ErrandAdapter.this.remove(position);
                                         ErrandAdapter.this.notifyItemChanged(position);
                                     });
@@ -820,6 +579,7 @@ public class ErrandAdapter extends BaseQuickAdapter<Errand, BaseViewHolder> {
                     break;
 
             }
+            item.update(item.getId());
         }
     }
 

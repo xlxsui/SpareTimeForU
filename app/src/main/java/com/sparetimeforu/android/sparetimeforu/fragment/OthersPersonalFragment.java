@@ -131,6 +131,7 @@ public class OthersPersonalFragment extends Fragment implements View.OnClickList
         OkHttpUtil.sendOkHttpPostRequest(url, formBody, new okhttp3.Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
+                if (getActivity() == null) return;
                 getActivity().runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
@@ -142,6 +143,7 @@ public class OthersPersonalFragment extends Fragment implements View.OnClickList
             @Override
             public void onResponse(Call call, Response response) throws IOException {
                 others_user= HandleMessageUtil.handleLoginMessage(response.body().string());
+                if (getActivity() == null) return;
                 getActivity().runOnUiThread(new Runnable() {
                     @Override
                     public void run() {

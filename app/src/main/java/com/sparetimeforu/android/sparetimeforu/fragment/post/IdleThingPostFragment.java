@@ -190,7 +190,7 @@ public class IdleThingPostFragment extends Fragment {
     TextView mDateTextView;
     @BindView(R.id.post_reward)
     TextView mMoneyTextView;
-    @BindView(R.id.post_status)
+    @BindView(R.id.post_accept)
     Button mStatusButton;
     @BindView(R.id.post_caption)
     TextView mContentText;
@@ -208,6 +208,8 @@ public class IdleThingPostFragment extends Fragment {
     SwipeRefreshLayout mRefreshLayout;
     @BindView(R.id.post_like)
     ImageView mLikeImageView;
+    @BindView(R.id.confirm_finish)
+    Button mConfirmBotton;
 
     PostImageAdapter mPostImageAdapter;
     CommentAdapter mCommentAdapter;
@@ -263,6 +265,7 @@ public class IdleThingPostFragment extends Fragment {
             OkHttpUtil.sendOkHttpPostRequest(COMMENT_URL + "add", formBody, new Callback() {
                 @Override
                 public void onFailure(Call call, IOException e) {
+                    if (getActivity() == null) return;
                     getActivity().runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
@@ -282,6 +285,7 @@ public class IdleThingPostFragment extends Fragment {
                         Logger.e(e.toString());
                     }
                     if (status.equals("success")) {
+                        if (getActivity() == null) return;
                         getActivity().runOnUiThread(() -> {
                             mCommentEditText.setText("");
                             Gson gson = new Gson();
@@ -332,6 +336,7 @@ public class IdleThingPostFragment extends Fragment {
                 try {
                     JSONObject jsonObject = new JSONObject(str);
                     if (jsonObject.getString("status").equals("success")) {
+                        if (getActivity() == null) return;
                         getActivity().runOnUiThread(() -> refresh());
                     }
                 } catch (JSONException e) {
@@ -339,6 +344,39 @@ public class IdleThingPostFragment extends Fragment {
                 }
             }
         });
+    }
+
+    @OnClick(R.id.confirm_finish)
+    public void confirm() {
+        if (!VerifyUtil.isLogin(getActivity())) {
+            return;
+        }
+        if (postID == 0 || STFUConfig.sUser == null) {
+            return;
+        }
+        FormBody body = new FormBody.Builder()
+                .add("post_id", postID + "")
+                .add("auth_token", STFUConfig.sUser.getAuth_token())
+                .build();
+        OkHttpUtil.sendOkHttpPostRequest(STFUConfig.HOST + "/idle_thing/confirm_finish", body, new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                try {
+                    JSONObject jsonObject = new JSONObject(response.body().string());
+                    String status = jsonObject.getString("status");
+                    if (status.equals("success")) {
+
+                    }
+                } catch (JSONException e) {
+                    Logger.e(e.toString());
+                }
+            }
+        });
+
     }
 
     private void initPost() {
@@ -350,6 +388,7 @@ public class IdleThingPostFragment extends Fragment {
         OkHttpUtil.sendOkHttpPostRequest(STFUConfig.HOST + "/idle_thing/get_post_by_id", body, new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
+                if (getActivity() == null) return;
                 getActivity().runOnUiThread(() -> {
                     mRefreshLayout.setRefreshing(false);
                     Toast.makeText(getActivity(), "刷新失败", Toast.LENGTH_SHORT).show();
@@ -369,6 +408,7 @@ public class IdleThingPostFragment extends Fragment {
                 if (status.equals("success")) {
                     IdleThing idleThing = HandleMessageUtil.handlePost_IdleThing_Message(responseString);
                     List<Comment> comments = HandleMessageUtil.handlePost_Errand_Comment_Message(responseString);//获取评论信息
+                    if (getActivity() == null) return;
                     getActivity().runOnUiThread(() -> {
                         mRefreshLayout.setRefreshing(false);
                         updateViews(idleThing, comments);
@@ -436,9 +476,11 @@ public class IdleThingPostFragment extends Fragment {
                         String status = jsonObject.getString("status");
                         if (status.equals("success")) {
                             if (jsonObject.getString("is_like").equals("like")) {
+                                if (getActivity() == null) return;
                                 getActivity().runOnUiThread(
                                         () -> mLikeImageView.setImageResource(R.drawable.ic_like));
                             } else {
+                                if (getActivity() == null) return;
                                 getActivity().runOnUiThread(
                                         () -> mLikeImageView.setImageResource(R.drawable.ic_like_before));
                             }
@@ -448,6 +490,13 @@ public class IdleThingPostFragment extends Fragment {
                     }
                 }
             });
+        }
+        if (VerifyUtil.isLoginStatus(getActivity())) {
+            // 主人 + 未完成
+            if (idleThing.getUser_Email().equals(STFUConfig.sUser.getEmail()) && idleThing.getIs_finished() == 0) {
+                mStatusButton.setVisibility(View.GONE);
+                mConfirmBotton.setVisibility(View.VISIBLE);
+            }
         }
 
     }
@@ -460,6 +509,7 @@ public class IdleThingPostFragment extends Fragment {
             public void success(IdleThing idleThing, List<Comment> comments) {
                 //do something
                 Snackbar.make(getView(), R.string.refresh_success, BaseTransientBottomBar.LENGTH_SHORT).show();
+                if (getActivity() == null) return;
                 getActivity().runOnUiThread(() -> {
                     updateViews(idleThing, comments);
                     mCommentAdapter.setEnableLoadMore(true);

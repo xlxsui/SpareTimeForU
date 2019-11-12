@@ -79,7 +79,8 @@ public class ErrandContentFragment extends Fragment {
                     if (getActivity() == null) {
                         return;
                     }
-                    getActivity().runOnUiThread(() -> setupAdapter());
+                    if (getActivity() == null) return;
+                getActivity().runOnUiThread(() -> setupAdapter());
                 }
             });
         } else {
@@ -88,7 +89,8 @@ public class ErrandContentFragment extends Fragment {
             OkHttpUtil.sendOkHttpPostRequest(url + "/get_user_received_done_posts", formBody, new Callback() {
                 @Override
                 public void onFailure(Call call, IOException e) {
-                    getActivity().runOnUiThread(() -> Snackbar.make(getView(), "网络请求错误", BaseTransientBottomBar.LENGTH_SHORT).show());
+                    if (getActivity() == null) return;
+                getActivity().runOnUiThread(() -> Snackbar.make(getView(), "网络请求错误", BaseTransientBottomBar.LENGTH_SHORT).show());
                 }
 
                 @Override
@@ -97,7 +99,7 @@ public class ErrandContentFragment extends Fragment {
                     data = HandleMessageUtil.handleReleasedErrandMessage(response.body().string());
                     mAdapter = new ErrandAdapter(data, getActivity());
                     if (getActivity() == null) return;
-                    getActivity().runOnUiThread(() -> setupAdapter());
+                getActivity().runOnUiThread(() -> setupAdapter());
 
                 }
             });

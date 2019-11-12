@@ -27,8 +27,10 @@ import com.sparetimeforu.android.sparetimeforu.adapter.IdleThingAdapter;
 import com.sparetimeforu.android.sparetimeforu.data.DataServer;
 import com.sparetimeforu.android.sparetimeforu.entity.IdleThing;
 import com.sparetimeforu.android.sparetimeforu.entity.Pagination;
+import com.sparetimeforu.android.sparetimeforu.fragment.EditFragment;
 import com.sparetimeforu.android.sparetimeforu.util.HandleMessageUtil;
 import com.sparetimeforu.android.sparetimeforu.util.IdleThingDataBaseUtil;
+import com.sparetimeforu.android.sparetimeforu.util.VerifyUtil;
 import com.squareup.picasso.Picasso;
 import com.weavey.loading.lib.LoadingLayout;
 
@@ -115,7 +117,7 @@ public class IdleThingFragment extends Fragment {
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         setupAdapter(DataServer.getIdleThingData(0));
 
-        loadingLayout=(LoadingLayout)view.findViewById(R.id.idle_loading_layout);
+        loadingLayout = (LoadingLayout) view.findViewById(R.id.idle_loading_layout);
         loadingLayout.setEmptyText("空空如也呢，快来发布闲置物品信息吧");
         loadingLayout.setOnReloadListener(new LoadingLayout.OnReloadListener() {
             @Override
@@ -181,7 +183,7 @@ public class IdleThingFragment extends Fragment {
                 getActivity().runOnUiThread(() -> {
                     loadingLayout.setStatus(LoadingLayout.Success);
                     mAdapter.setNewData(data);//update data
-                    if(data.size()==0) loadingLayout.setStatus(LoadingLayout.Empty);
+                    if (data.size() == 0) loadingLayout.setStatus(LoadingLayout.Empty);
                     mAdapter.setEnableLoadMore(true);
                     mIdleThingRefreshLayout.setRefreshing(false);
 //                    Snackbar.make(getView(), R.string.refresh_finished,
@@ -194,6 +196,7 @@ public class IdleThingFragment extends Fragment {
 
             @Override
             public void fail(Exception e) {
+                if (getActivity() == null) return;
                 getActivity().runOnUiThread(new Runnable() {
                     @Override
                     public void run() {

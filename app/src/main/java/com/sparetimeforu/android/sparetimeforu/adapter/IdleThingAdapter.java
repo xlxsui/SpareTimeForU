@@ -222,7 +222,7 @@ public class IdleThingAdapter extends BaseQuickAdapter<IdleThing, BaseViewHolder
     }
 
     public static String parseDateString(String s) {
-        if(s!=null){
+        if (s != null) {
             Date time = null;
             try {
                 time = new SimpleDateFormat("EEE, dd MMM yyyy kk:mm:ss", Locale.ENGLISH)
@@ -265,6 +265,6 @@ public class IdleThingAdapter extends BaseQuickAdapter<IdleThing, BaseViewHolder
                 timeString = new SimpleDateFormat("MM-dd kk:mm", Locale.ENGLISH).format(time);
             }
             return timeString;
-        }else return null;
+        } else return null;
     }
 }

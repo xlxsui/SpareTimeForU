@@ -71,7 +71,7 @@ public class LostAndFoundPostFragment extends Fragment {
     TextView mDateTextView;
     @BindView(R.id.post_reward)
     TextView mMoneyTextView;
-    @BindView(R.id.post_status)
+    @BindView(R.id.post_accept)
     Button mStatusButton;
     @BindView(R.id.post_caption)
     TextView mContentText;
@@ -142,7 +142,8 @@ public class LostAndFoundPostFragment extends Fragment {
             OkHttpUtil.sendOkHttpPostRequest(COMMENT_URL + "add", formBody, new Callback() {
                 @Override
                 public void onFailure(Call call, IOException e) {
-                    getActivity().runOnUiThread(() -> Snackbar.make(getView(), "评论失败，请检查网络", BaseTransientBottomBar.LENGTH_SHORT).show());
+                    if (getActivity() == null) return;
+                getActivity().runOnUiThread(() -> Snackbar.make(getView(), "评论失败，请检查网络", BaseTransientBottomBar.LENGTH_SHORT).show());
                 }
 
                 @Override
@@ -156,7 +157,8 @@ public class LostAndFoundPostFragment extends Fragment {
                         Logger.e(e.toString());
                     }
                     if (status.equals("success")) {
-                        getActivity().runOnUiThread(() -> {
+                        if (getActivity() == null) return;
+                getActivity().runOnUiThread(() -> {
                             mCommentEditText.setText("");
                             Gson gson = new Gson();
                             try {
@@ -206,7 +208,8 @@ public class LostAndFoundPostFragment extends Fragment {
                 try {
                     JSONObject jsonObject = new JSONObject(str);
                     if (jsonObject.getString("status").equals("success")) {
-                        getActivity().runOnUiThread(() -> refresh());
+                        if (getActivity() == null) return;
+                getActivity().runOnUiThread(() -> refresh());
                     }
                 } catch (JSONException e) {
                     Logger.e(e.toString());
@@ -224,6 +227,7 @@ public class LostAndFoundPostFragment extends Fragment {
         OkHttpUtil.sendOkHttpPostRequest(STFUConfig.HOST + "/search_thing/get_post_by_id", body, new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
+                if (getActivity() == null) return;
                 getActivity().runOnUiThread(() -> {
                     mRefreshLayout.setRefreshing(false);
                     Toast.makeText(getActivity(), "刷新失败", Toast.LENGTH_SHORT).show();
@@ -243,7 +247,8 @@ public class LostAndFoundPostFragment extends Fragment {
                 if (status.equals("success")) {
                     SearchThing searchThing = HandleMessageUtil.handlePost_Search_Thing_Message(responseString);
                     List<Comment> comments = HandleMessageUtil.handlePost_Errand_Comment_Message(responseString);//获取评论信息
-                    getActivity().runOnUiThread(() -> {
+                    if (getActivity() == null) return;
+                getActivity().runOnUiThread(() -> {
                         mRefreshLayout.setRefreshing(false);
                         updateViews(searchThing, comments);
                     });
@@ -311,10 +316,12 @@ public class LostAndFoundPostFragment extends Fragment {
                         String status = jsonObject.getString("status");
                         if (status.equals("success")) {
                             if (jsonObject.getString("is_like").equals("like")) {
-                                getActivity().runOnUiThread(
+                                if (getActivity() == null) return;
+                getActivity().runOnUiThread(
                                         () -> mLikeImageView.setImageResource(R.drawable.ic_like));
                             } else {
-                                getActivity().runOnUiThread(
+                                if (getActivity() == null) return;
+                getActivity().runOnUiThread(
                                         () -> mLikeImageView.setImageResource(R.drawable.ic_like_before));
                             }
                         }
@@ -335,6 +342,7 @@ public class LostAndFoundPostFragment extends Fragment {
             public void success(SearchThing searchThing, List<Comment> comments) {
                 //do something
                 Snackbar.make(getView(), R.string.refresh_success, BaseTransientBottomBar.LENGTH_SHORT).show();
+                if (getActivity() == null) return;
                 getActivity().runOnUiThread(() -> {
                     updateViews(searchThing, comments);
                     mCommentAdapter.setEnableLoadMore(true);

@@ -40,6 +40,7 @@ import com.sparetimeforu.android.sparetimeforu.ServerConnection.OkHttpUtil;
 import com.sparetimeforu.android.sparetimeforu.adapter.SendPostImageAdapter;
 import com.sparetimeforu.android.sparetimeforu.entity.PhotoPopupWindow;
 import com.sparetimeforu.android.sparetimeforu.fragment.DatePickerFragment;
+import com.sparetimeforu.android.sparetimeforu.fragment.EditFragment;
 import com.sparetimeforu.android.sparetimeforu.util.VerifyUtil;
 
 import org.json.JSONException;
@@ -277,7 +278,8 @@ public class SendPostFragment extends Fragment {
             OkHttpUtil.sendOkHttpPostRequest(uri, body, new Callback() {
                 @Override
                 public void onFailure(Call call, IOException e) {
-                    getActivity().runOnUiThread(() -> {
+                    if (getActivity() == null) return;
+                getActivity().runOnUiThread(() -> {
                         Toast.makeText(getContext(), "发布失败，请检查网络", Toast.LENGTH_SHORT).show();
                     });
                 }
@@ -292,12 +294,15 @@ public class SendPostFragment extends Fragment {
                         Logger.e(e.toString());
                     }
                     if (status.equals("success")) {
-                        getActivity().runOnUiThread(() -> {
+                        if (getActivity() == null) return;
+                getActivity().runOnUiThread(() -> {
                             Toast.makeText(getContext(), "发布成功", Toast.LENGTH_SHORT).show();
+                            EditFragment.updateNativeUser(getActivity());
                             getActivity().finish();
                         });
                     } else {
-                        getActivity().runOnUiThread(() -> {
+                        if (getActivity() == null) return;
+                getActivity().runOnUiThread(() -> {
                             Toast.makeText(getContext(), "发布失败", Toast.LENGTH_SHORT).show();
                         });
                     }

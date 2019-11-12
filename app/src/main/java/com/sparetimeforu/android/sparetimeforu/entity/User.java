@@ -18,6 +18,16 @@ public class User implements Serializable {
     private String email;
     private String auth_token;
     private int user_id;
+    private float money;
+
+    public float getMoney() {
+        return money;
+    }
+
+    public void setMoney(float money) {
+        this.money = money;
+    }
+
 
     public int getUser_id() {
         return user_id;
@@ -114,6 +124,7 @@ public class User implements Serializable {
                 ", email='" + email + '\'' +
                 ", auth_token='" + auth_token + '\'' +
                 ", user_id=" + user_id +
+                ", money=" + money +
                 ", bg_url='" + bg_url + '\'' +
                 '}';
     }

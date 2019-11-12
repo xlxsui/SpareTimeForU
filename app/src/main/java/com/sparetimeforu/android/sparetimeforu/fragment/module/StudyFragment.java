@@ -25,8 +25,10 @@ import com.sparetimeforu.android.sparetimeforu.ServerConnection.OkHttpUtil;
 import com.sparetimeforu.android.sparetimeforu.adapter.StudyAdapter;
 import com.sparetimeforu.android.sparetimeforu.entity.Pagination;
 import com.sparetimeforu.android.sparetimeforu.entity.Study;
+import com.sparetimeforu.android.sparetimeforu.fragment.EditFragment;
 import com.sparetimeforu.android.sparetimeforu.util.HandleMessageUtil;
 import com.sparetimeforu.android.sparetimeforu.util.StudyDataBaseUtil;
+import com.sparetimeforu.android.sparetimeforu.util.VerifyUtil;
 import com.squareup.picasso.Picasso;
 import com.weavey.loading.lib.LoadingLayout;
 
@@ -113,7 +115,7 @@ public class StudyFragment extends Fragment {
         List<Study> list = new ArrayList<>();
         setupAdapter(list);
 
-        loadingLayout=(LoadingLayout)view.findViewById(R.id.study_loading_layout);
+        loadingLayout = (LoadingLayout) view.findViewById(R.id.study_loading_layout);
         loadingLayout.setEmptyText("空空如也呢，快来发布学习上的问题吧");
         loadingLayout.setOnReloadListener(new LoadingLayout.OnReloadListener() {
             @Override
@@ -177,7 +179,7 @@ public class StudyFragment extends Fragment {
                 getActivity().runOnUiThread(() -> {
                     loadingLayout.setStatus(LoadingLayout.Success);
                     mAdapter.setNewData(data);//update data
-                    if(data.size()==0) loadingLayout.setStatus(LoadingLayout.Empty);
+                    if (data.size() == 0) loadingLayout.setStatus(LoadingLayout.Empty);
                     mAdapter.setEnableLoadMore(true);
                     mStudyRefreshLayout.setRefreshing(false);
                     if (data.size() < 6) {
@@ -200,9 +202,9 @@ public class StudyFragment extends Fragment {
                 });
 
 
-
             }
         }, getActivity()).start();
+
     }
 
     private void search(String query) {
@@ -215,6 +217,7 @@ public class StudyFragment extends Fragment {
         OkHttpUtil.sendOkHttpPostRequest(STFUConfig.HOST + "/study/search", body, new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
+                if (getActivity() == null) return;
                 getActivity().runOnUiThread(() -> {
                     mStudyRefreshLayout.setRefreshing(false);
                     mAdapter.setEnableLoadMore(false);// 防止可以上拉加载
@@ -225,6 +228,7 @@ public class StudyFragment extends Fragment {
             @Override
             public void onResponse(Call call, Response response) throws IOException {
                 List<Study> studies = HandleMessageUtil.handlePostStudyMessage(response.body().string());
+                if (getActivity() == null) return;
                 getActivity().runOnUiThread(() -> {
                     mStudyRefreshLayout.setRefreshing(false);
                     mAdapter.setNewData(studies);//update data
@@ -246,6 +250,7 @@ public class StudyFragment extends Fragment {
         OkHttpUtil.sendOkHttpPostRequest(STFUConfig.HOST + "/study/load_more", body, new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
+                if (getActivity() == null) return;
                 getActivity().runOnUiThread(() -> {
                     mAdapter.loadMoreFail();
                 });
@@ -262,6 +267,7 @@ public class StudyFragment extends Fragment {
                     Logger.e(e.toString());
                 }
                 if (status.equals("success")) {
+                    if (getActivity() == null) return;
                     getActivity().runOnUiThread(() -> {
                         List<Study> studies = HandleMessageUtil
                                 .handlePostStudyMessage(responseString);
@@ -277,6 +283,7 @@ public class StudyFragment extends Fragment {
                         }
                     });
                 } else {
+                    if (getActivity() == null) return;
                     getActivity().runOnUiThread(() -> mAdapter.loadMoreFail());
                 }
             }

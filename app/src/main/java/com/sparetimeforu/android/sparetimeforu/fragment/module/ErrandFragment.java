@@ -67,8 +67,10 @@ import com.sparetimeforu.android.sparetimeforu.adapter.ErrandAdapter;
 import com.sparetimeforu.android.sparetimeforu.data.DataServer;
 import com.sparetimeforu.android.sparetimeforu.entity.Errand;
 import com.sparetimeforu.android.sparetimeforu.entity.Pagination;
+import com.sparetimeforu.android.sparetimeforu.fragment.EditFragment;
 import com.sparetimeforu.android.sparetimeforu.util.ErrandDataBaseUtil;
 import com.sparetimeforu.android.sparetimeforu.util.HandleMessageUtil;
+import com.sparetimeforu.android.sparetimeforu.util.VerifyUtil;
 import com.weavey.loading.lib.LoadingLayout;
 
 import org.json.JSONObject;
@@ -199,9 +201,9 @@ public class ErrandFragment extends Fragment implements BaiduMap.OnMarkerClickLi
         LitePal.initialize(getContext());
         Bundle args = getArguments();
         String query = args.getString("query", "not_query");
-        loadingLayout=(LoadingLayout)view.findViewById(R.id.errand_Loading_layout);
-        if(!destination_location.equals("随机"))
-            loadingLayout.setEmptyText("没有到"+destination_location+"的任务哦，找找别的吧");
+        loadingLayout = (LoadingLayout) view.findViewById(R.id.errand_Loading_layout);
+        if (!destination_location.equals("随机"))
+            loadingLayout.setEmptyText("没有到" + destination_location + "的任务哦，找找别的吧");
         else loadingLayout.setEmptyText("空空如也呢，快来发布任务吧!");
         loadingLayout.setOnReloadListener(new LoadingLayout.OnReloadListener() {
             @Override
@@ -363,7 +365,12 @@ public class ErrandFragment extends Fragment implements BaiduMap.OnMarkerClickLi
 
     private void initRefreshLayout() {
         //下拉刷新部分
-        mErrandRefreshLayout.setOnRefreshListener(this::refresh);
+        mErrandRefreshLayout.setOnRefreshListener(() -> {
+            if (VerifyUtil.isLoginStatus(getActivity())) {
+                EditFragment.updateNativeUser(getActivity());// 人懒封装成静态方法来刷新User了
+            }
+            refresh();
+        });
         //上拉刷新部分
         mRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
@@ -398,23 +405,19 @@ public class ErrandFragment extends Fragment implements BaiduMap.OnMarkerClickLi
                 //do something
 
                 if (getActivity() == null) return;
-                getActivity().runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        loadingLayout.setStatus(LoadingLayout.Success);
+                getActivity().runOnUiThread(() -> {
+                    loadingLayout.setStatus(LoadingLayout.Success);
 
-                        if(data.size()==0){
-                            loadingLayout.setStatus(LoadingLayout.Empty);
-                        }
-                        setupAdapter(data);
-                        Toast.makeText(getActivity(), "获取数据成功", Toast.LENGTH_SHORT).show();
-                        mAdapter.setEnableLoadMore(true);
-                        mErrandRefreshLayout.setRefreshing(false);
-                        if (data.size() < 6) {
-                            mAdapter.loadMoreEnd();
-                        }
-
+                    if (data.size() == 0) {
+                        loadingLayout.setStatus(LoadingLayout.Empty);
                     }
+                    setupAdapter(data);
+                    mAdapter.setEnableLoadMore(true);
+                    mErrandRefreshLayout.setRefreshing(false);
+                    if (data.size() < 6) {
+                        mAdapter.loadMoreEnd();
+                    }
+
                 });
 
             }
@@ -478,6 +481,7 @@ public class ErrandFragment extends Fragment implements BaiduMap.OnMarkerClickLi
         OkHttpUtil.sendOkHttpPostRequest(STFUConfig.HOST + "/mission/search", body, new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
+                if (getActivity() == null) return;
                 getActivity().runOnUiThread(() -> {
                     mErrandRefreshLayout.setRefreshing(false);
                     mAdapter.setEnableLoadMore(false);// 搜索之后不能下拉加载
@@ -488,7 +492,7 @@ public class ErrandFragment extends Fragment implements BaiduMap.OnMarkerClickLi
             @Override
             public void onResponse(Call call, Response response) throws IOException {
                 List<Errand> errands = HandleMessageUtil.handleReleasedErrandMessage(response.body().string());
-
+                if (getActivity() == null) return;
                 getActivity().runOnUiThread(() -> {
                     mErrandRefreshLayout.setRefreshing(false);
                     setupAdapter(errands);
@@ -509,6 +513,7 @@ public class ErrandFragment extends Fragment implements BaiduMap.OnMarkerClickLi
         OkHttpUtil.sendOkHttpPostRequest(STFUConfig.HOST + "/study/load_more", body, new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
+                if (getActivity() == null) return;
                 getActivity().runOnUiThread(() -> {
                     mAdapter.loadMoreFail();
                 });
@@ -525,6 +530,7 @@ public class ErrandFragment extends Fragment implements BaiduMap.OnMarkerClickLi
                     Logger.e(e.toString());
                 }
                 if (status.equals("success")) {
+                    if (getActivity() == null) return;
                     getActivity().runOnUiThread(() -> {
                         List<Errand> errands = HandleMessageUtil
                                 .handleReleasedErrandMessage(responseString);
@@ -540,6 +546,7 @@ public class ErrandFragment extends Fragment implements BaiduMap.OnMarkerClickLi
                         }
                     });
                 } else {
+                    if (getActivity() == null) return;
                     getActivity().runOnUiThread(() -> mAdapter.loadMoreFail());
                 }
             }

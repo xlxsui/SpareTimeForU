@@ -27,9 +27,11 @@ import com.sparetimeforu.android.sparetimeforu.data.DataServer;
 import com.sparetimeforu.android.sparetimeforu.entity.IdleThing;
 import com.sparetimeforu.android.sparetimeforu.entity.Pagination;
 import com.sparetimeforu.android.sparetimeforu.entity.SearchThing;
+import com.sparetimeforu.android.sparetimeforu.fragment.EditFragment;
 import com.sparetimeforu.android.sparetimeforu.util.HandleMessageUtil;
 import com.sparetimeforu.android.sparetimeforu.util.IdleThingDataBaseUtil;
 import com.sparetimeforu.android.sparetimeforu.util.SearchThingBaseUtil;
+import com.sparetimeforu.android.sparetimeforu.util.VerifyUtil;
 import com.squareup.picasso.Picasso;
 import com.weavey.loading.lib.LoadingLayout;
 
@@ -117,7 +119,7 @@ public class SearchThingFragment extends Fragment {
         List<SearchThing> list = new ArrayList<>();
         setupAdapter(list);
 
-        loadingLayout=(LoadingLayout)view.findViewById(R.id.search_loading_layout);
+        loadingLayout = (LoadingLayout) view.findViewById(R.id.search_loading_layout);
         loadingLayout.setEmptyText("空空如也呢");
         loadingLayout.setOnReloadListener(new LoadingLayout.OnReloadListener() {
             @Override
@@ -209,6 +211,7 @@ public class SearchThingFragment extends Fragment {
 
             }
         }, getActivity()).start();
+
     }
 
     private void search(String query) {

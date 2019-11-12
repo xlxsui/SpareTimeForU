@@ -11,7 +11,7 @@
         android:id="@+id/errand_origin"
         android:layout_width="0dp"
         android:layout_height="match_parent"
-        android:layout_weight="3"
+        android:layout_weight="2.5"
         android:gravity="center"
         android:text="任务未设置" />
 
@@ -25,7 +25,7 @@
         android:id="@+id/errand_destination"
         android:layout_width="0dp"
         android:layout_height="match_parent"
-        android:layout_weight="3"
+        android:layout_weight="2.5"
         android:gravity="center"
         android:text="修远" />
 
@@ -33,14 +33,14 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:layout_weight="1.4"
+        android:layout_weight="2.4"
         android:orientation="vertical">
 
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center"
-            android:text="Deadline:"
+            android:text="@string/deadline"
             android:textSize="@dimen/sp_12" />
 
         <TextView
@@ -49,6 +49,7 @@
             android:layout_height="wrap_content"
             android:gravity="center"
             android:text="18:30"
+            android:textColor="@android:color/holo_blue_dark"
             android:textSize="@dimen/sp_12" />
 
     </LinearLayout>

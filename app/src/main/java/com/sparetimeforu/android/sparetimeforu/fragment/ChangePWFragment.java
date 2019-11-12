@@ -117,6 +117,7 @@ public class ChangePWFragment extends Fragment {
         OkHttpUtil.sendOkHttpPostRequest(url, body, new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
+                if (getActivity() == null) return;
                 getActivity().runOnUiThread(() -> Toast.makeText(getActivity(), "网络请求错误", Toast.LENGTH_SHORT).show());
             }
 
@@ -128,11 +129,13 @@ public class ChangePWFragment extends Fragment {
                     JSONObject jsonObject = new JSONObject(response_body);
                     String status = jsonObject.getString("status");
                     if (Objects.equals(status, "success")) {
-                        getActivity().runOnUiThread(() -> {
+                        if (getActivity() == null) return;
+                getActivity().runOnUiThread(() -> {
                             Toast.makeText(getActivity(), "发送验证码成功，请到邮箱查收！", Toast.LENGTH_SHORT).show();
                         });
                     } else if (Objects.equals(status, "error")) {
-                        getActivity().runOnUiThread(() -> {
+                        if (getActivity() == null) return;
+                getActivity().runOnUiThread(() -> {
                             try {
                                 Toast.makeText(getActivity(), jsonObject.getString("error"), Toast.LENGTH_SHORT).show();
                             } catch (JSONException e) {
@@ -168,7 +171,8 @@ public class ChangePWFragment extends Fragment {
                 new Callback() {
                     @Override
                     public void onFailure(Call call, IOException e) {
-                        getActivity().runOnUiThread(() -> Toast.makeText(getActivity(), "网络请求错误", Toast.LENGTH_SHORT).show());
+                        if (getActivity() == null) return;
+                getActivity().runOnUiThread(() -> Toast.makeText(getActivity(), "网络请求错误", Toast.LENGTH_SHORT).show());
                     }
 
                     @Override
@@ -179,12 +183,14 @@ public class ChangePWFragment extends Fragment {
                             JSONObject jsonObject = new JSONObject(response_body);
                             String status = jsonObject.getString("status");
                             if (Objects.equals(status, "success")) {
-                                getActivity().runOnUiThread(() -> {
+                                if (getActivity() == null) return;
+                getActivity().runOnUiThread(() -> {
                                     Toast.makeText(getActivity(), "修改密码成功", Toast.LENGTH_SHORT).show();
                                     getActivity().finish();
                                 });
                             } else if (Objects.equals(status, "error")) {
-                                getActivity().runOnUiThread(() -> {
+                                if (getActivity() == null) return;
+                getActivity().runOnUiThread(() -> {
                                     try {
                                         Toast.makeText(getActivity(), jsonObject.getString("error"), Toast.LENGTH_SHORT).show();
                                     } catch (JSONException e) {

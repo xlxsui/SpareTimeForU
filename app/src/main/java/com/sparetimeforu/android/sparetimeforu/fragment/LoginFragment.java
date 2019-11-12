@@ -136,7 +136,8 @@ public class LoginFragment extends Fragment {
                     new Callback() {
                         @Override
                         public void onFailure(Call call, IOException e) {
-                            getActivity().runOnUiThread(() -> Toast.makeText(LoginFragment.this.getActivity(),
+                            if (getActivity() == null) return;
+                getActivity().runOnUiThread(() -> Toast.makeText(LoginFragment.this.getActivity(),
                                     "无法获取用户信息，请检查网络是否正常", Toast.LENGTH_SHORT).show());
                         }
 
@@ -144,14 +145,15 @@ public class LoginFragment extends Fragment {
                         public void onResponse(Call call, Response response) throws IOException {
                             final User user = HandleMessageUtil.handleLoginMessage(response.body().string());
                             if (user == null) {
-                                getActivity().runOnUiThread(() ->
+                                if (getActivity() == null) return;
+                getActivity().runOnUiThread(() ->
                                         Toast.makeText(LoginFragment.this.getActivity(),
                                                 "用户名或者密码错误", Toast.LENGTH_SHORT).show());
                             } else {
                                 mUser = user;//给成员变量mUser赋值，user从json解析得来
                                 STFUConfig.sUser = user;//顺便帮全局User赋值，懒得搞
-                                Logger.i(mUser.toString());
-                                getActivity().runOnUiThread(() -> {
+                                if (getActivity() == null) return;
+                getActivity().runOnUiThread(() -> {
                                     //添加账户
                                     JMessageClient.login(user.getEmail(), user.getEmail() + "1", new BasicCallback() {
                                         @Override
@@ -227,5 +229,6 @@ public class LoginFragment extends Fragment {
         am.setUserData(account, "phone", mUser.getPhone());
         am.setUserData(account, "gender", mUser.getGender());
         am.setUserData(account, "bg_url", mUser.getBg_url());
+        am.setUserData(account, "money", mUser.getMoney()+"");
     }
 }

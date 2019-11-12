@@ -9,6 +9,7 @@
     android:weightSum="5">
 
     <LinearLayout
+        android:id="@+id/layout_avatar"
         android:layout_width="0dp"
         android:layout_height="match_parent"
         android:layout_margin="0.5dp"
@@ -67,6 +68,7 @@
             android:id="@+id/post_reward"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:textColor="@color/white"
             android:layout_margin="10dp"
             android:gravity="center"
             android:text="XXX" />
@@ -75,21 +77,95 @@
     <LinearLayout
         android:layout_width="0dp"
         android:layout_height="match_parent"
+        android:layout_gravity="center_vertical"
         android:layout_weight="1.4"
-        android:orientation="vertical">
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
 
         <Button
-            android:id="@+id/post_status"
+            android:id="@+id/post_accept"
             android:layout_width="wrap_content"
             android:layout_height="30dip"
             android:layout_gravity="center"
-            android:layout_marginTop="10dip"
             android:background="@drawable/button_style"
             android:gravity="center"
             android:text="@string/accpet_mission"
             android:textColor="#fb7299"
             android:textSize="12sp"
             android:textStyle="bold" />
+
+        <Button
+            android:id="@+id/post_finish"
+            android:layout_width="@dimen/dp_40"
+            android:layout_height="30dip"
+            android:layout_margin="@dimen/dp_2"
+            android:background="@drawable/button_style"
+            android:text="@string/finish_mission"
+            android:textColor="#fb7299"
+            android:textSize="12sp"
+            android:textStyle="bold"
+            android:visibility="gone" />
+
+        <Button
+            android:id="@+id/post_cancel"
+            android:layout_width="@dimen/dp_40"
+            android:layout_height="30dp"
+            android:layout_margin="@dimen/dp_2"
+            android:background="@drawable/button_style"
+            android:text="@string/cancel"
+            android:textColor="#fb7299"
+            android:textSize="12sp"
+            android:textStyle="bold"
+            android:visibility="gone" />
+
+        <Button
+            android:id="@+id/confirm_finish"
+            android:layout_width="48dp"
+            android:layout_height="30dip"
+            android:background="@drawable/button_style"
+            android:text="@string/finish_mission"
+            android:textColor="#fb7299"
+            android:textSize="12sp"
+            android:textStyle="bold"
+            android:visibility="gone" />
+
+        <Button
+            android:id="@+id/post_not_finish"
+            android:layout_width="48dp"
+            android:layout_height="30dip"
+            android:layout_margin="@dimen/dp_2"
+            android:background="@drawable/button_style"
+            android:text="@string/cancel"
+            android:textColor="#fb7299"
+            android:textSize="12sp"
+            android:textStyle="bold"
+            android:visibility="gone" />
+
+        <Button
+            android:id="@+id/post_delete"
+            android:layout_width="wrap_content"
+            android:layout_height="30dip"
+            android:layout_margin="@dimen/dp_2"
+            android:background="@drawable/button_style"
+            android:text="@string/delete_mission"
+            android:textColor="#fb7299"
+            android:textSize="12sp"
+            android:textStyle="bold"
+            android:visibility="gone" />
+
+        <TextView
+            android:id="@+id/post_status_text"
+            android:layout_width="wrap_content"
+            android:layout_height="30dip"
+            android:layout_gravity="center"
+            android:background="@color/white"
+            android:gravity="center"
+            android:padding="@dimen/dp_2"
+            android:text="@string/mission_finished"
+            android:textColor="#fb7299"
+            android:textSize="12sp"
+            android:textStyle="bold"
+            android:visibility="gone" />
     </LinearLayout>
 
 </LinearLayout>
